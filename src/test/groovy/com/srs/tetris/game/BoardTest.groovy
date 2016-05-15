@@ -164,7 +164,7 @@ class BoardTest {
 		def piece = PieceType.L.board
 		def board = new Board(4, 7)
 
-		board = board.place(piece, 1, 1)
+		board.place(piece, 1, 1)
 		assert board.grid == [
 			[0, 0, 0, 0],
 			[0, 0, 0, 1],
@@ -175,7 +175,7 @@ class BoardTest {
 			[0, 0, 0, 0],
 		]
 
-		board = board.place(piece, 1, 4)
+		board.place(piece, 1, 4)
 		assert board.grid == [
 			[0, 0, 0, 0],
 			[0, 0, 0, 1],
@@ -184,26 +184,6 @@ class BoardTest {
 			[0, 0, 0, 1],
 			[0, 1, 1, 1],
 			[0, 0, 0, 0],
-		]
-	}
-
-	@Test
-	public void place_immutable() {
-		def piece = PieceType.L.board
-		def board = new Board(3, 3)
-
-		// Placing a piece shouldn't change the original board
-		def placedBoard = board.place(piece, 0, 0)
-		assert placedBoard.grid == [
-			[0, 0, 1],
-			[1, 1, 1],
-			[0, 0, 0],
-		]
-
-		assert board.grid == [
-			[0, 0, 0],
-			[0, 0, 0],
-			[0, 0, 0],
 		]
 	}
 
@@ -214,7 +194,7 @@ class BoardTest {
 
 		assert board.canPlace(piece, 0, 0)
 
-		board = board.place(piece, 0, 0)
+		board.place(piece, 0, 0)
 		assert board.grid == [
 			[0, 0, 1, 0],
 			[1, 1, 1, 0],
