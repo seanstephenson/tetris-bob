@@ -78,11 +78,12 @@ public class Board implements Cloneable {
 		return rotateLeft().rotateLeft().rotateLeft();
 	}
 
-	public void place(Board piece, int x, int y) {
+	public void place(Board piece, int x, int y, int value) {
 		for (int pieceX = 0; pieceX < piece.width; pieceX++) {
 			for (int pieceY = 0; pieceY < piece.height; pieceY++) {
-				int value = piece.get(pieceX, pieceY);
-				set(x + pieceX, y + pieceY, value);
+				if (checkRange(x + pieceX, y + pieceY) && !piece.isEmpty(pieceX, pieceY)) {
+					set(x + pieceX, y + pieceY, value);
+				}
 			}
 		}
 	}
@@ -96,6 +97,10 @@ public class Board implements Cloneable {
 			}
 		}
 		return true;
+	}
+
+	private boolean checkRange(int x, int y) {
+		return x >= 0 && y >= 0 && x < width && y < height;
 	}
 
 	@Override
