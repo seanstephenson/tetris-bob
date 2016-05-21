@@ -6,8 +6,6 @@ import java.util.Random;
 
 public class Game {
 
-	private static Random random = new Random();
-
 	private Player player;
 	private Board board;
 
@@ -50,8 +48,8 @@ public class Game {
 
 	private void setupGame() {
 		// Create a random piece, and a random next piece.
-		piece = createRandomPiece();
-		nextPiece = createRandomPiece();
+		piece = Piece.random();
+		nextPiece = Piece.random();
 	}
 
 	private void updateGame() {
@@ -71,7 +69,8 @@ public class Game {
 	}
 
 	private boolean canPieceMoveDown() {
-		return false;
+		// Try to move the piece down
+		return board.canPlace(piece.moveDown());
 	}
 
 	private void checkCompleteLines() {
@@ -80,13 +79,6 @@ public class Game {
 
 	private boolean isGameOver() {
 		return false;
-	}
-
-	private Piece createRandomPiece() {
-		return new Piece(
-			PieceType.values()[random.nextInt(PieceType.values().length)],
-			Color.values()[random.nextInt(Color.values().length)]
-		);
 	}
 
 	public Player getPlayer() {

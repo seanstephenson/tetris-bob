@@ -78,6 +78,10 @@ public class Board implements Cloneable {
 		return rotateLeft().rotateLeft().rotateLeft();
 	}
 
+	public void place(Piece piece) {
+		place(piece.getBoard(), piece.getX(), piece.getY(), piece.getColor().ordinal());
+	}
+
 	public void place(Board piece, int x, int y, int value) {
 		for (int pieceX = 0; pieceX < piece.width; pieceX++) {
 			for (int pieceY = 0; pieceY < piece.height; pieceY++) {
@@ -86,6 +90,10 @@ public class Board implements Cloneable {
 				}
 			}
 		}
+	}
+
+	public boolean canPlace(Piece piece) {
+		return canPlace(piece.getBoard(), piece.getX(), piece.getY());
 	}
 
 	public boolean canPlace(Board piece, int x, int y) {

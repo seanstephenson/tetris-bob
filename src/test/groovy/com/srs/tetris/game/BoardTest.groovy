@@ -160,7 +160,7 @@ class BoardTest {
 	}
 
 	@Test
-	public void place() {
+	void place() {
 		def piece = PieceType.L.board
 		def board = new Board(4, 7)
 
@@ -199,7 +199,7 @@ class BoardTest {
 	}
 
 	@Test
-	public void place_walls() {
+	void place_walls() {
 		def piece = PieceType.L.board
 		def board = new Board(4, 4)
 
@@ -245,7 +245,7 @@ class BoardTest {
 	}
 
 	@Test
-	public void canPlace() {
+	void canPlace() {
 		def piece = PieceType.L.board
 		def board = new Board(4, 4)
 

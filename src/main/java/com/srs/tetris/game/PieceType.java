@@ -1,5 +1,7 @@
 package com.srs.tetris.game;
 
+import java.util.Random;
+
 public enum PieceType {
 	Bar(new Board(new int[][]{
 		{0, 0, 0, 0},
@@ -43,13 +45,32 @@ public enum PieceType {
 		{0, 1, 0},
 	}));
 
-	private Board board;
+	private static Random random = new Random();
+
+	private Board[] boards;
 
 	private PieceType(Board board) {
-		this.board = board;
+		createBoards(board);
+	}
+
+	private void createBoards(Board board) {
+		boards = new Board[] {
+			board,
+			board.rotateLeft(),
+			board.rotateLeft().rotateLeft(),
+			board.rotateLeft().rotateLeft().rotateLeft()
+		};
 	}
 
 	public Board getBoard() {
-		return board;
+		return getBoard(0);
+	}
+
+	public Board getBoard(int orientation) {
+		return boards[orientation % 4];
+	}
+
+	public static PieceType random() {
+		return values()[random.nextInt(values().length)];
 	}
 }
