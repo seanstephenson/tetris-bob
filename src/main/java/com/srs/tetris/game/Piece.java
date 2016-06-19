@@ -38,6 +38,10 @@ public class Piece implements Cloneable {
 		return color;
 	}
 
+	public Piece moveTo(int x, int y) {
+		return moveTo(x, y, orientation);
+	}
+
 	public Piece moveTo(int x, int y, int orientation) {
 		Piece moved = this.clone();
 		moved.x = x;
@@ -48,6 +52,14 @@ public class Piece implements Cloneable {
 
 	public Piece moveDown() {
 		return moveTo(x, y + 1, orientation);
+	}
+
+	public Piece moveLeft() {
+		return moveTo(x - 1, y, orientation);
+	}
+
+	public Piece moveRight() {
+		return moveTo(x + 1, y, orientation);
 	}
 
 	public Piece rotateLeft() {
