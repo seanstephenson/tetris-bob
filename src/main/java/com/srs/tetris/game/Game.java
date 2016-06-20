@@ -7,7 +7,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class Game {
 
@@ -16,6 +15,7 @@ public class Game {
 
 	private static final long DEFAULT_STARTING_DROP_INTERVAL = 1000;
 	private static final long DEFAULT_PIECE_MOVE_INTERVAL = 250;
+	private static final long DEFAULT_PIECE_MANUAL_DOWN_INTERVAL = 100;
 	private static final long DEFAULT_FRAME_INTERVAL = 25;
 
 	private static final Executor DEFAULT_LISTENER_EXECUTOR = Executors.newCachedThreadPool();
@@ -45,6 +45,9 @@ public class Game {
 
 	private long pieceMoveInterval;
 	private long pieceMoveDelay;
+
+	private long pieceManualDownInterval;
+	private long pieceManualDownDelay;
 
 	private boolean pieceSwapped;
 
@@ -106,6 +109,7 @@ public class Game {
 		frameInterval = DEFAULT_FRAME_INTERVAL;
 		dropInterval = DEFAULT_STARTING_DROP_INTERVAL;
 		pieceMoveInterval = DEFAULT_PIECE_MOVE_INTERVAL;
+		pieceManualDownInterval = DEFAULT_PIECE_MANUAL_DOWN_INTERVAL;
 
 		// Create a random next piece, and drop it.
 		nextPiece = Piece.random();
@@ -113,11 +117,15 @@ public class Game {
 
 		// Set the time for the last frame.
 		lastFrame = System.currentTimeMillis();
+
+		// Assume empty input at the beginning of the game.
+		lastInput = new Input();
+		input = new Input();
 	}
 
 	private void updateGame(long interval) {
-		// Check if the current piece needs to move down.
-		updatePieceDrop(interval);
+		// See if the piece needs to be swapped.
+		updatePieceSwap();
 
 		// See if the piece needs to move left or right.
 		updatePieceMoveLeftRight(interval);
@@ -125,60 +133,8 @@ public class Game {
 		// See if the piece needs to rotate.
 		updatePieceRotate();
 
-		// See if the piece needs to be swapped.
-		updatePieceSwap();
-	}
-
-	private void updatePieceDrop(long interval) {
-		dropDelay -= interval;
-		if (dropDelay <= 0 || input.isDown()) {
-			// They are pressing down or enough time has passed that the piece should move.
-			if (!movePieceDown()) {
-				// The piece is already at the bottom or is blocked.  So place it.
-				placePiece();
-			}
-
-			// Reset the delay for the next drop.
-			dropDelay = dropInterval;
-		}
-
-		if ((lastInput == null || !lastInput.isDrop()) && input.isDrop()) {
-			// They pressed the drop button, so move it all the way down and then place it.
-			while (movePieceDown());
-			placePiece();
-		}
-	}
-
-	private void updatePieceMoveLeftRight(long interval) {
-		if (!input.isLeft() && !input.isRight()) {
-			// If no buttons are pressed reset the piece move delay to allow the piece to move again immediately.
-			pieceMoveDelay = 0;
-
-		} else {
-			// Otherwise, if they are holding left or right only move the piece after the piece delay expires.
-			pieceMoveDelay -= interval;
-
-			if (pieceMoveDelay <= 0) {
-				if (input.isLeft() && board.canPlace(piece.moveLeft())) {
-					piece = piece.moveLeft();
-				}
-				if (input.isRight() && board.canPlace(piece.moveRight())) {
-					piece = piece.moveRight();
-				}
-
-				// Reset the delay for the next move.
-				pieceMoveDelay = pieceMoveInterval;
-			}
-		}
-	}
-
-	private void updatePieceRotate() {
-		if ((lastInput == null || !lastInput.isRotateLeft()) && input.isRotateLeft() && board.canPlace(piece.rotateLeft())) {
-			piece = piece.rotateLeft();
-		}
-		if ((lastInput == null || !lastInput.isRotateRight()) && input.isRotateRight() && board.canPlace(piece.rotateRight())) {
-			piece = piece.rotateRight();
-		}
+		// Check if the current piece needs to move down.
+		updatePieceDrop(interval);
 	}
 
 	private void updatePieceSwap() {
@@ -199,6 +155,84 @@ public class Game {
 
 			// Don't allow it to be swapped again until they place this one.
 			pieceSwapped = true;
+		}
+	}
+
+	private void updatePieceMoveLeftRight(long interval) {
+		if (!input.isLeft() && !input.isRight()) {
+			// If no buttons are pressed reset the piece move delay to allow the piece to move again immediately.
+			pieceMoveDelay = 0;
+
+		} else {
+			// Otherwise, if they are holding an arrow only move the piece after the piece delay expires.
+			pieceMoveDelay -= interval;
+
+			if (pieceMoveDelay <= 0) {
+				if (input.isLeft() && board.canPlace(piece.moveLeft())) {
+					piece = piece.moveLeft();
+				}
+				if (input.isRight() && board.canPlace(piece.moveRight())) {
+					piece = piece.moveRight();
+				}
+
+				// Reset the delay for the next move.
+				pieceMoveDelay = pieceMoveInterval;
+			}
+		}
+	}
+
+	private void updatePieceRotate() {
+		if (!lastInput.isRotateLeft() && input.isRotateLeft() && board.canPlace(piece.rotateLeft())) {
+			piece = piece.rotateLeft();
+		}
+		if (!lastInput.isRotateRight() && input.isRotateRight() && board.canPlace(piece.rotateRight())) {
+			piece = piece.rotateRight();
+		}
+	}
+
+	private void updatePieceDrop(long interval) {
+		boolean moveDown = false;
+
+		// Check for a manual move down.
+		if (!input.isDown()) {
+			// If they aren't holding down, reset the delay so the piece can be manually moved down immediately.
+			pieceManualDownDelay = 0;
+
+		} else {
+			// If they are holding down, only allow the piece to go down if the delay expires.
+			pieceManualDownDelay -= interval;
+
+			if (pieceManualDownDelay <= 0) {
+				// The delay expired, so move it down.
+				moveDown = true;
+
+				// Reset the manual delay until it moves down again.
+				pieceManualDownDelay = pieceManualDownInterval;
+			}
+		}
+
+		// Check if the automatic drop delay is expired.
+		dropDelay -= interval;
+		if (dropDelay <= 0) {
+			// The delay epired, so move it down.
+			moveDown = true;
+		}
+
+		if (moveDown) {
+			// They are pressing down or enough time has passed that the piece should move.
+			if (!movePieceDown()) {
+				// The piece is already at the bottom or is blocked.  So place it.
+				placePiece();
+			}
+
+			// Reset the delay for the next drop.
+			dropDelay = dropInterval;
+		}
+
+		if (!lastInput.isDrop() && input.isDrop()) {
+			// They pressed the drop button, so move it all the way down and then place it.
+			while (movePieceDown());
+			placePiece();
 		}
 	}
 

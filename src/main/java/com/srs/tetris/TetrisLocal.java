@@ -3,13 +3,20 @@ package com.srs.tetris;
 import com.srs.tetris.game.Board;
 import com.srs.tetris.game.Game;
 import com.srs.tetris.game.GameListener;
+import com.srs.tetris.player.LocalPlayer;
 import com.srs.tetris.player.NoPlayer;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -26,8 +33,9 @@ import static com.srs.tetris.game.Color.*;
 public class TetrisLocal extends Application implements GameListener {
 
 	private Game game;
+	private LocalPlayer player;
 
-	private Group root;
+	private Scene scene;
 	private Rectangle[][] boardGrid;
 
 	public static void main(String[] args) {
@@ -37,7 +45,8 @@ public class TetrisLocal extends Application implements GameListener {
 	@Override
 	public void init() throws Exception {
 		// Create the game.
-		game = new Game(new NoPlayer());
+		player = new LocalPlayer();
+		game = new Game(player);
 		game.addListener(this);
 		game.init();
 
@@ -47,11 +56,12 @@ public class TetrisLocal extends Application implements GameListener {
 		double squareSize = 30.0;
 
 		// Create the UI objects.
-		root = new Group();
+		Group root = new Group();
 
 		Pane boardPane = new Pane();
 		boardPane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 		boardPane.setPrefSize(width * squareSize, height * squareSize);
+		boardPane.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, null, new BorderWidths(2))));
 
 		boardGrid = new Rectangle[width][height];
 		for (int x = 0; x < width; x++) {
@@ -64,13 +74,18 @@ public class TetrisLocal extends Application implements GameListener {
 		}
 
 		root.getChildren().add(boardPane);
+
+		// Create the scene.
+		scene = new Scene(root);
+		scene.setOnKeyPressed(player);
+		scene.setOnKeyReleased(player);
 	}
 
 	private void setSquareColor(Rectangle square, com.srs.tetris.game.Color gameColor) {
 		Color color = translateGameColor(gameColor);
 
 		square.setFill(new LinearGradient(0, 1, 1, 0, true, CycleMethod.NO_CYCLE,
-			new Stop(0, color.darker().darker()), new Stop(1, color.brighter().brighter())));
+			new Stop(0, color.darker()), new Stop(1, color.brighter().brighter())));
 
 		square.setStroke(color.darker().darker());
 		square.setStrokeWidth(2);
@@ -95,8 +110,8 @@ public class TetrisLocal extends Application implements GameListener {
 	public void start(Stage primaryStage) throws Exception {
 		// Configure the stage.
 		primaryStage.setTitle("Tetris Bob");
+		primaryStage.setScene(scene);
 		primaryStage.setOnHidden((event) -> System.exit(0));
-		primaryStage.setScene(new Scene(root));
 		primaryStage.show();
 
 		// Run the game in a separate thread.

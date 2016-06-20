@@ -67,7 +67,7 @@ public enum PieceType {
 	}
 
 	public Board getBoard(int orientation) {
-		return boards[orientation % 4];
+		return boards[Math.floorMod(orientation, 4)];
 	}
 
 	public static PieceType random() {
