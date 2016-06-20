@@ -1,7 +1,13 @@
 package com.srs.tetris.game;
 
 import com.srs.tetris.player.Player;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Game {
 
@@ -10,7 +16,11 @@ public class Game {
 
 	private static final long DEFAULT_STARTING_DROP_INTERVAL = 1000;
 	private static final long DEFAULT_PIECE_MOVE_INTERVAL = 250;
-	private static final long DEFAULT_FRAME_INTERVAL = 10;
+	private static final long DEFAULT_FRAME_INTERVAL = 25;
+
+	private static final Executor DEFAULT_LISTENER_EXECUTOR = Executors.newCachedThreadPool();
+
+	private Executor listenerExecutor;
 
 	private Player player;
 	private Board board;
@@ -38,11 +48,18 @@ public class Game {
 
 	private boolean pieceSwapped;
 
+	private List<GameListener> listeners = new ArrayList<>();
+
 	private enum Status { New, InProgress, Complete }
 	private Status status = Status.New;
 
 	public Game(Player player) {
 		this.player = player;
+	}
+
+	public void init() {
+		// Set up the game.
+		setupGame();
 	}
 
 	public void run() {
@@ -52,29 +69,36 @@ public class Game {
 
 		status = Status.InProgress;
 
-		// Set up the game
-		setupGame();
+		notifyListeners((listener) -> listener.onGameStart());
 
 		while (!isGameOver()) {
 			long frame = System.currentTimeMillis();
 			long interval = frame - lastFrame;
 
-			// Get the input state from the player
+			// Get the input state from the player.
 			lastInput = input;
 			input = player.input(this);
 
-			// Update the game state
+			// Update the game state.
 			updateGame(interval);
 
-			// Sleep until the next frame
+			notifyListeners((listener) -> listener.onFrame());
+
+			// Sleep until the next frame.
 			lastFrame = frame;
 			sleep(frameInterval);
 		}
 
 		status = Status.Complete;
+
+		notifyListeners((listener) -> listener.onGameOver());
 	}
 
 	private void setupGame() {
+		// By default, execute each listener in a different thread.  This way, no matter how long they take to do their logic
+		// (e.g. painting the game or getting network input), the game will run at the predetermined speed.
+		listenerExecutor = DEFAULT_LISTENER_EXECUTOR;
+
 		// Create the empty game board.
 		board = new Board(DEFAULT_BOARD_WIDTH, DEFAULT_BOARD_HEIGHT);
 
@@ -88,7 +112,7 @@ public class Game {
 		dropNextPiece();
 
 		// Set the time for the last frame.
-		lastFrame = System.nanoTime();
+		lastFrame = System.currentTimeMillis();
 	}
 
 	private void updateGame(long interval) {
@@ -107,8 +131,8 @@ public class Game {
 
 	private void updatePieceDrop(long interval) {
 		dropDelay -= interval;
-		if (dropDelay <= 0) {
-			// Enough time has passed that the piece should move.
+		if (dropDelay <= 0 || input.isDown()) {
+			// They are pressing down or enough time has passed that the piece should move.
 			if (!movePieceDown()) {
 				// The piece is already at the bottom or is blocked.  So place it.
 				placePiece();
@@ -116,6 +140,12 @@ public class Game {
 
 			// Reset the delay for the next drop.
 			dropDelay = dropInterval;
+		}
+
+		if ((lastInput == null || !lastInput.isDrop()) && input.isDrop()) {
+			// They pressed the drop button, so move it all the way down and then place it.
+			while (movePieceDown());
+			placePiece();
 		}
 	}
 
@@ -231,6 +261,14 @@ public class Game {
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private void notifyListeners(Consumer<? super GameListener> consumer) {
+		listenerExecutor.execute(() -> listeners.forEach(consumer));
+	}
+
+	public void addListener(GameListener listener) {
+		listeners.add(listener);
 	}
 
 	public Player getPlayer() {
