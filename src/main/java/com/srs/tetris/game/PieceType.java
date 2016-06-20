@@ -8,49 +8,51 @@ public enum PieceType {
 		{1, 1, 1, 1},
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
-	})),
+	}), Color.Blue),
 
 	Square(new Board(new int[][]{
 		{1, 1},
 		{1, 1},
-	})),
+	}), Color.Green),
 
 	J(new Board(new int[][]{
 		{1, 0, 0},
 		{1, 1, 1},
 		{0, 0, 0},
-	})),
+	}), Color.Purple),
 
 	L(new Board(new int[][]{
 		{0, 0, 1},
 		{1, 1, 1},
 		{0, 0, 0},
-	})),
+	}), Color.Gray),
 
 	S(new Board(new int[][]{
 		{0, 1, 1},
 		{1, 1, 0},
 		{0, 0, 0},
-	})),
+	}), Color.Orange),
 
 	Z(new Board(new int[][]{
 		{1, 1, 0},
 		{0, 1, 1},
 		{0, 0, 0},
-	})),
+	}), Color.Cyan),
 
 	T(new Board(new int[][]{
 		{0, 0, 0},
 		{1, 1, 1},
 		{0, 1, 0},
-	}));
+	}), Color.Red);
 
 	private static Random random = new Random();
 
 	private Board[] boards;
+	private Color color;
 
-	private PieceType(Board board) {
+	private PieceType(Board board, Color color) {
 		createBoards(board);
+		this.color = color;
 	}
 
 	private void createBoards(Board board) {
@@ -60,6 +62,10 @@ public enum PieceType {
 			board.rotateLeft().rotateLeft(),
 			board.rotateLeft().rotateLeft().rotateLeft()
 		};
+	}
+
+	public Color getColor() {
+		return color;
 	}
 
 	public Board getBoard() {

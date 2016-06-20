@@ -6,21 +6,19 @@ public class Piece implements Cloneable {
 	private static Random random = new Random();
 
 	private PieceType type;
-	private Color color;
 	private int x, y;
 	private int orientation;
 
-	public Piece(PieceType type, Color color) {
-		this(type, color, 0);
+	public Piece(PieceType type) {
+		this(type, 0);
 	}
 
-	public Piece(PieceType type, Color color, int orientation) {
-		this(type, color, orientation, 0, 0);
+	public Piece(PieceType type, int orientation) {
+		this(type, orientation, 0, 0);
 	}
 
-	public Piece(PieceType type, Color color, int orientation, int x, int y) {
+	public Piece(PieceType type, int orientation, int x, int y) {
 		this.type = type;
-		this.color = color;
 		this.x = x;
 		this.y = y;
 		this.orientation = orientation;
@@ -35,7 +33,7 @@ public class Piece implements Cloneable {
 	}
 
 	public Color getColor() {
-		return color;
+		return getType().getColor();
 	}
 
 	public Piece moveTo(int x, int y) {
@@ -93,7 +91,6 @@ public class Piece implements Cloneable {
 	public static Piece random() {
 		return new Piece(
 			PieceType.random(),
-			Color.random(),
 			random.nextInt(4)
 		);
 	}

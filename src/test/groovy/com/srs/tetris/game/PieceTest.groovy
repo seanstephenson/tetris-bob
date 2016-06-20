@@ -5,7 +5,7 @@ import org.junit.Test
 class PieceTest {
 	@Test
 	void board() {
-		def piece = new Piece(PieceType.L, Color.Red)
+		def piece = new Piece(PieceType.L)
 		assert piece.board.grid == PieceType.L.getBoard(0).grid
 
 		piece = piece.rotateLeft()
@@ -14,7 +14,7 @@ class PieceTest {
 
 	@Test
 	void moveDown() {
-		def piece = new Piece(PieceType.L, Color.Red, 0, 1, 2)
+		def piece = new Piece(PieceType.L, 0, 1, 2)
 		assert piece.x == 1
 		assert piece.y == 2
 
@@ -29,7 +29,7 @@ class PieceTest {
 
 	@Test
 	void rotateLeft() {
-		def piece = new Piece(PieceType.L, Color.Red, 0, 1, 2)
+		def piece = new Piece(PieceType.L, 0, 1, 2)
 		assert piece.orientation == 0
 
 		def rotated = piece.rotateLeft()
@@ -39,7 +39,7 @@ class PieceTest {
 
 	@Test
 	void rotateRight() {
-		def piece = new Piece(PieceType.L, Color.Red, 0, 1, 2)
+		def piece = new Piece(PieceType.L, 0, 1, 2)
 		assert piece.orientation == 0
 
 		def rotated = piece.rotateRight()
