@@ -3,6 +3,7 @@ package com.srs.tetris;
 import com.srs.tetris.game.Board;
 import com.srs.tetris.game.Game;
 import com.srs.tetris.game.GameListener;
+import com.srs.tetris.game.Piece;
 import com.srs.tetris.player.LocalPlayer;
 import com.srs.tetris.player.NoPlayer;
 import javafx.application.Application;
@@ -82,8 +83,18 @@ public class TetrisLocal extends Application implements GameListener {
 	}
 
 	private void setSquareColor(Rectangle square, com.srs.tetris.game.Color gameColor) {
-		Color color = translateGameColor(gameColor);
+		setSquareColor(square, translateGameColor(gameColor));
+	}
 
+	private void setTransparentSquareColor(Rectangle square, com.srs.tetris.game.Color gameColor) {
+		setSquareColor(square, makeTransparent(translateGameColor(gameColor)));
+	}
+
+	private Color makeTransparent(Color color) {
+		return new Color(color.getRed(), color.getGreen(), color.getBlue(), 0.3);
+	}
+
+	private void setSquareColor(Rectangle square, Color color) {
 		square.setFill(new LinearGradient(0, 1, 1, 0, true, CycleMethod.NO_CYCLE,
 			new Stop(0, color.darker()), new Stop(1, color.brighter().brighter())));
 
@@ -122,11 +133,30 @@ public class TetrisLocal extends Application implements GameListener {
 	public void onFrame() {
 		Platform.runLater(() -> {
 			Board board = game.getBoard().clone();
+
+			// Find where the piece would be if it dropped now.
+			Piece droppedPiece = game.getPiece();
+			while (board.canPlace(droppedPiece.moveDown())) {
+				droppedPiece = droppedPiece.moveDown();
+			}
+
+			// Now put the piece on the board where it is now.
 			board.place(game.getPiece());
 
+			// Set each square color.
 			for (int x = 0; x < board.getWidth(); x++) {
 				for (int y = 0; y < board.getHeight(); y++) {
 					setSquareColor(boardGrid[x][y], board.getColor(x, y));
+				}
+			}
+
+			// Draw a semi-transparent copy of the piece in the drop location.
+			for (int pieceX = 0; pieceX < droppedPiece.getBoard().getWidth(); pieceX++) {
+				for (int pieceY = 0; pieceY < droppedPiece.getBoard().getHeight(); pieceY++) {
+					int boardX = pieceX + droppedPiece.getX(), boardY = pieceY + droppedPiece.getY();
+					if (!droppedPiece.getBoard().isEmpty(pieceX, pieceY) && board.isEmpty(boardX, boardY)) {
+						setTransparentSquareColor(boardGrid[boardX][boardY], droppedPiece.getColor());
+					}
 				}
 			}
 		});
