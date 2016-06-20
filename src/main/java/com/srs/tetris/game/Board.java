@@ -110,6 +110,36 @@ public class Board implements Cloneable {
 		return true;
 	}
 
+	public boolean isLineComplete(int y) {
+		for (int x = 0; x < getWidth(); x++) {
+			if (isEmpty(x, y)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public void fillLine(int y, int value) {
+		for (int x = 0; x < getWidth(); x++) {
+			set(x, y, value);
+		}
+	}
+
+	public void removeLine(int y) {
+		while (y > 0) {
+			// Copy the line above down to this one.
+			for (int x = 0; x < getWidth(); x++) {
+				set(x, y, get(x, y - 1));
+			}
+
+			// Move to the line above.
+			y--;
+		}
+
+		// Empty the top line.
+		fillLine(0, 0);
+	}
+
 	private boolean checkRange(int x, int y) {
 		return x >= 0 && y >= 0 && x < width && y < height;
 	}

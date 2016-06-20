@@ -283,6 +283,11 @@ public class Game {
 
 	private void checkCompleteLines() {
 		// Loop over each line and check if it is complete.
+		for (int y = 0; y < board.getHeight(); y++) {
+			if (board.isLineComplete(y)) {
+				board.removeLine(y);
+			}
+		}
 	}
 
 	private boolean isGameOver() {

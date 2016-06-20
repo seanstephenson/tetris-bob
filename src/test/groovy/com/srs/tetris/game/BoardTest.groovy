@@ -281,4 +281,94 @@ class BoardTest {
 		assert board.canPlace(piece, 0, 2)
 		assert !board.canPlace(piece, 0, 3)
 	}
+
+	@Test
+	void isLineComplete() {
+		def board = new Board([
+			[0, 0, 0, 0],
+			[0, 0, 1, 1],
+			[1, 1, 1, 1],
+		] as int[][])
+
+		assert !board.isLineComplete(0)
+		assert !board.isLineComplete(1)
+		assert board.isLineComplete(2)
+	}
+
+	@Test
+	void fillLine() {
+		def board = new Board([
+			[0, 0, 0, 0],
+			[0, 0, 1, 1],
+			[1, 1, 1, 1],
+		] as int[][])
+
+		assert board.grid == [
+			[0, 0, 0, 0],
+			[0, 0, 1, 1],
+			[1, 1, 1, 1],
+		]
+
+		board.fillLine(0, 2)
+		assert board.grid == [
+			[2, 2, 2, 2],
+			[0, 0, 1, 1],
+			[1, 1, 1, 1],
+		]
+
+		board.fillLine(1, 0)
+		assert board.grid == [
+			[2, 2, 2, 2],
+			[0, 0, 0, 0],
+			[1, 1, 1, 1],
+		]
+
+		board.fillLine(2, 3)
+		assert board.grid == [
+			[2, 2, 2, 2],
+			[0, 0, 0, 0],
+			[3, 3, 3, 3],
+		]
+	}
+
+	@Test
+	void removeLine() {
+		def board = new Board([
+			[0, 0, 0, 1],
+			[0, 0, 1, 1],
+			[1, 1, 1, 1],
+			[2, 2, 2, 2],
+		] as int[][])
+
+		assert board.grid == [
+			[0, 0, 0, 1],
+			[0, 0, 1, 1],
+			[1, 1, 1, 1],
+			[2, 2, 2, 2],
+		]
+
+		board.removeLine(2)
+		assert board.grid == [
+			[0, 0, 0, 0],
+			[0, 0, 0, 1],
+			[0, 0, 1, 1],
+			[2, 2, 2, 2],
+		]
+
+		board.removeLine(0)
+		assert board.grid == [
+			[0, 0, 0, 0],
+			[0, 0, 0, 1],
+			[0, 0, 1, 1],
+			[2, 2, 2, 2],
+		]
+
+		board.removeLine(3)
+		assert board.grid == [
+			[0, 0, 0, 0],
+			[0, 0, 0, 0],
+			[0, 0, 0, 1],
+			[0, 0, 1, 1],
+		]
+	}
 }
