@@ -265,4 +265,20 @@ class BoardTest {
 
 		assert board.canPlace(piece, 1, 1)
 	}
+
+	@Test
+	void canPlace_walls() {
+		def piece = PieceType.L.board
+		def board = new Board(4, 4)
+
+		assert board.canPlace(piece, 0, 0)
+		assert !board.canPlace(piece, -1, 0)
+		assert !board.canPlace(piece, 0, -1)
+
+		assert board.canPlace(piece, 1, 0)
+		assert !board.canPlace(piece, 2, 0)
+
+		assert board.canPlace(piece, 0, 2)
+		assert !board.canPlace(piece, 0, 3)
+	}
 }

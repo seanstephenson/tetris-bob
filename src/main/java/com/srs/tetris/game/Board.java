@@ -99,8 +99,11 @@ public class Board implements Cloneable {
 	public boolean canPlace(Board piece, int x, int y) {
 		for (int pieceX = 0; pieceX < piece.width; pieceX++) {
 			for (int pieceY = 0; pieceY < piece.height; pieceY++) {
-				if (!piece.isEmpty(pieceX, pieceY) && !isEmpty(x + pieceX, y + pieceY)) {
-					return false;
+				if (!piece.isEmpty(pieceX, pieceY)) {
+					int placeX = x + pieceX, placeY = y + pieceY;
+					if (!checkRange(placeX, placeY) || !isEmpty(placeX, placeY)) {
+						return false;
+					}
 				}
 			}
 		}
