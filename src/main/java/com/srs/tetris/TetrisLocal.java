@@ -12,6 +12,9 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
@@ -26,7 +29,6 @@ public class TetrisLocal extends Application implements GameListener {
 
 	private Group root;
 	private Rectangle[][] boardGrid;
-	private Stage primaryStage;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -66,7 +68,10 @@ public class TetrisLocal extends Application implements GameListener {
 
 	private void setSquareColor(Rectangle square, com.srs.tetris.game.Color gameColor) {
 		Color color = translateGameColor(gameColor);
-		square.setFill(color);
+
+		square.setFill(new LinearGradient(0, 1, 1, 0, true, CycleMethod.NO_CYCLE,
+			new Stop(0, color.darker().darker()), new Stop(1, color.brighter().brighter())));
+
 		square.setStroke(color.darker().darker());
 		square.setStrokeWidth(2);
 	}
@@ -89,8 +94,6 @@ public class TetrisLocal extends Application implements GameListener {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// Configure the stage.
-		this.primaryStage = primaryStage;
-
 		primaryStage.setTitle("Tetris Bob");
 		primaryStage.setOnHidden((event) -> System.exit(0));
 		primaryStage.setScene(new Scene(root));
