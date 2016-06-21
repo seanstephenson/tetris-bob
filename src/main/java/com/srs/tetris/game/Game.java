@@ -14,11 +14,13 @@ public class Game {
 	private static final int DEFAULT_BOARD_HEIGHT = 20;
 
 	private static final long DEFAULT_STARTING_DROP_INTERVAL = 1000;
+	private static final long DEFAULT_MIN_DROP_INTERVAL = 100;
 	private static final long DEFAULT_PIECE_MOVE_INTERVAL = 150;
 	private static final long DEFAULT_PIECE_MANUAL_DOWN_INTERVAL = 100;
 	private static final long DEFAULT_FRAME_INTERVAL = 25;
 
 	private static final int DEFAULT_LINES_PER_LEVEL = 10;
+	private static final double DEFAULT_LEVEL_ACCELERATOR = 0.25;
 
 	private static final Executor DEFAULT_LISTENER_EXECUTOR = Executors.newCachedThreadPool();
 
@@ -41,10 +43,13 @@ public class Game {
 	private int score;
 
 	private int linesPerLevel;
+	private double levelAccelerator;
 
 	private long lastFrame;
 	private long frameInterval;
 
+	private long startingDropInterval;
+	private long minDropInterval;
 	private long dropInterval;
 	private long dropDelay;
 
@@ -112,11 +117,14 @@ public class Game {
 
 		// Set up the game parameters.
 		frameInterval = DEFAULT_FRAME_INTERVAL;
+		startingDropInterval = DEFAULT_STARTING_DROP_INTERVAL;
+		minDropInterval = DEFAULT_MIN_DROP_INTERVAL;
 		dropInterval = DEFAULT_STARTING_DROP_INTERVAL;
 		pieceMoveInterval = DEFAULT_PIECE_MOVE_INTERVAL;
 		pieceManualDownInterval = DEFAULT_PIECE_MANUAL_DOWN_INTERVAL;
 
 		linesPerLevel = DEFAULT_LINES_PER_LEVEL;
+		levelAccelerator = DEFAULT_LEVEL_ACCELERATOR;
 
 		// Create a random next piece, and drop it.
 		nextPiece = Piece.random();
@@ -128,6 +136,9 @@ public class Game {
 		// Assume empty input at the beginning of the game.
 		lastInput = new Input();
 		input = new Input();
+
+		// Calculate the starting level.
+		updateLevel();
 	}
 
 	private void updateGame(long interval) {
@@ -329,12 +340,25 @@ public class Game {
 
 		if (lines > 0) {
 			completedLines += lines;
-			score += computeScoreDelta(lines);
-			level = completedLines / linesPerLevel;
+			score += computeScoreDeltaForLines(lines);
+
+			// Update the current level.
+			updateLevel();
 		}
 	}
 
-	private int computeScoreDelta(int lines) {
+	private void updateLevel() {
+		// Update the level based on the number of lines completed.
+		level = completedLines / linesPerLevel;
+
+		// Update the drop interval (faster with every level).
+		dropInterval = (long) (startingDropInterval / ((level * levelAccelerator) + 1));
+		if (dropInterval < minDropInterval) {
+			dropInterval = minDropInterval;
+		}
+	}
+
+	private int computeScoreDeltaForLines(int lines) {
 		assert lines >= 1 && lines <= 4 : "Unexpected number of completed lines: " + lines;
 
 		// This is the original NES scoring system.
