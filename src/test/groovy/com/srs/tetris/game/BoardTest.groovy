@@ -283,6 +283,32 @@ class BoardTest {
 	}
 
 	@Test
+	void isColumnEmpty() {
+		def board = new Board([
+			[0, 0, 0],
+			[0, 1, 0],
+			[1, 1, 0],
+		] as int[][])
+
+		assert !board.isColumnEmpty(0)
+		assert !board.isColumnEmpty(1)
+		assert board.isColumnEmpty(2)
+	}
+
+	@Test
+	void isLineEmpty() {
+		def board = new Board([
+			[0, 0, 0, 0],
+			[0, 0, 1, 1],
+			[1, 1, 1, 1],
+		] as int[][])
+
+		assert board.isLineEmpty(0)
+		assert !board.isLineEmpty(1)
+		assert !board.isLineEmpty(2)
+	}
+
+	@Test
 	void isLineComplete() {
 		def board = new Board([
 			[0, 0, 0, 0],

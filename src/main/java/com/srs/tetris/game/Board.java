@@ -110,6 +110,24 @@ public class Board implements Cloneable {
 		return true;
 	}
 
+	public boolean isColumnEmpty(int x) {
+		for (int y = 0; y < getHeight(); y++) {
+			if (!isEmpty(x, y)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public boolean isLineEmpty(int y) {
+		for (int x = 0; x < getWidth(); x++) {
+			if (!isEmpty(x, y)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public boolean isLineComplete(int y) {
 		for (int x = 0; x < getWidth(); x++) {
 			if (isEmpty(x, y)) {

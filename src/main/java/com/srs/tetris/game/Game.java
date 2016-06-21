@@ -14,7 +14,7 @@ public class Game {
 	private static final int DEFAULT_BOARD_HEIGHT = 20;
 
 	private static final long DEFAULT_STARTING_DROP_INTERVAL = 1000;
-	private static final long DEFAULT_PIECE_MOVE_INTERVAL = 250;
+	private static final long DEFAULT_PIECE_MOVE_INTERVAL = 150;
 	private static final long DEFAULT_PIECE_MANUAL_DOWN_INTERVAL = 100;
 	private static final long DEFAULT_FRAME_INTERVAL = 25;
 
@@ -168,15 +168,20 @@ public class Game {
 			pieceMoveDelay -= interval;
 
 			if (pieceMoveDelay <= 0) {
+				boolean moved = false;
 				if (input.isLeft() && board.canPlace(piece.moveLeft())) {
 					piece = piece.moveLeft();
+					moved = true;
 				}
 				if (input.isRight() && board.canPlace(piece.moveRight())) {
 					piece = piece.moveRight();
+					moved = true;
 				}
 
 				// Reset the delay for the next move.
-				pieceMoveDelay = pieceMoveInterval;
+				if (moved) {
+					pieceMoveDelay = pieceMoveInterval;
+				}
 			}
 		}
 	}
@@ -241,6 +246,11 @@ public class Game {
 		piece = nextPiece;
 		movePieceToTopCenter();
 
+		// If the new piece is blocked, the game is over.
+		if (!board.canPlace(piece)) {
+			status = Status.Complete;
+		}
+
 		// Create the next next piece.
 		nextPiece = Piece.random();
 
@@ -266,7 +276,26 @@ public class Game {
 	}
 
 	private void movePieceToTopCenter() {
-		piece = piece.moveTo((board.getWidth() - piece.getBoard().getWidth()) / 2, 0);
+		// Find the center of the piece, taking into account empty columns.
+		double center = piece.getBoard().getWidth() / 2.0;
+		int x = 0;
+		while (piece.getBoard().isColumnEmpty(x++)) {
+			center += 0.5;
+		}
+
+		x = piece.getBoard().getWidth() - 1;
+		while (piece.getBoard().isColumnEmpty(x--)) {
+			center -= 0.5;
+		}
+
+		// Find the top of the piece, taking into account empty rows.
+		int top = 0;
+		while (piece.getBoard().isLineEmpty(top)) {
+			top++;
+		}
+
+		// Place the piece at the top center of the board, taking into account the empty space.
+		piece = piece.moveTo((int) Math.round(board.getWidth() / 2.0 - center), -top);
 	}
 
 	private boolean movePieceDown() {
@@ -291,7 +320,7 @@ public class Game {
 	}
 
 	private boolean isGameOver() {
-		return false;
+		return status == Status.Complete;
 	}
 
 	private void sleep(long interval) {
