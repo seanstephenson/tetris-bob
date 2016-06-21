@@ -18,6 +18,8 @@ public class Game {
 	private static final long DEFAULT_PIECE_MANUAL_DOWN_INTERVAL = 100;
 	private static final long DEFAULT_FRAME_INTERVAL = 25;
 
+	private static final int DEFAULT_LINES_PER_LEVEL = 10;
+
 	private static final Executor DEFAULT_LISTENER_EXECUTOR = Executors.newCachedThreadPool();
 
 	private Executor listenerExecutor;
@@ -34,8 +36,11 @@ public class Game {
 	private Input input;
 
 	private int totalPieces;
+	private int completedLines;
+	private int level;
 	private int score;
-	private int lines;
+
+	private int linesPerLevel;
 
 	private long lastFrame;
 	private long frameInterval;
@@ -105,11 +110,13 @@ public class Game {
 		// Create the empty game board.
 		board = new Board(DEFAULT_BOARD_WIDTH, DEFAULT_BOARD_HEIGHT);
 
-		// Set up the intervals.
+		// Set up the game parameters.
 		frameInterval = DEFAULT_FRAME_INTERVAL;
 		dropInterval = DEFAULT_STARTING_DROP_INTERVAL;
 		pieceMoveInterval = DEFAULT_PIECE_MOVE_INTERVAL;
 		pieceManualDownInterval = DEFAULT_PIECE_MANUAL_DOWN_INTERVAL;
+
+		linesPerLevel = DEFAULT_LINES_PER_LEVEL;
 
 		// Create a random next piece, and drop it.
 		nextPiece = Piece.random();
@@ -312,11 +319,27 @@ public class Game {
 
 	private void checkCompleteLines() {
 		// Loop over each line and check if it is complete.
+		int lines = 0;
 		for (int y = 0; y < board.getHeight(); y++) {
 			if (board.isLineComplete(y)) {
 				board.removeLine(y);
+				lines++;
 			}
 		}
+
+		if (lines > 0) {
+			completedLines += lines;
+			score += computeScoreDelta(lines);
+			level = completedLines / linesPerLevel;
+		}
+	}
+
+	private int computeScoreDelta(int lines) {
+		assert lines >= 1 && lines <= 4 : "Unexpected number of completed lines: " + lines;
+
+		// This is the original NES scoring system.
+		int[] multipliers = {40, 100, 300, 1200};
+		return multipliers[lines - 1] * level;
 	}
 
 	private boolean isGameOver() {
@@ -357,5 +380,21 @@ public class Game {
 
 	public Piece getSwapPiece() {
 		return swapPiece;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public int getCompletedLines() {
+		return completedLines;
+	}
+
+	public int getTotalPieces() {
+		return totalPieces;
 	}
 }
