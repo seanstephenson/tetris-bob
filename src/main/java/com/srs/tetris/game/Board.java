@@ -1,6 +1,8 @@
 package com.srs.tetris.game;
 
 public class Board implements Cloneable {
+	private static final int EMPTY = 0;
+
 	private int width;
 	private int height;
 	private int[] grid;
@@ -42,7 +44,7 @@ public class Board implements Cloneable {
 	}
 
 	public boolean isEmpty(int x, int y) {
-		return get(x, y) == 0;
+		return get(x, y) == EMPTY;
 	}
 
 	public Color getColor(int x, int y) {
@@ -80,6 +82,10 @@ public class Board implements Cloneable {
 
 	public void place(Piece piece) {
 		place(piece.getBoard(), piece.getX(), piece.getY(), piece.getColor().ordinal());
+	}
+
+	public void remove(Piece piece) {
+		place(piece.getBoard(), piece.getX(), piece.getY(), EMPTY);
 	}
 
 	public void place(Board piece, int x, int y, int value) {
@@ -155,7 +161,7 @@ public class Board implements Cloneable {
 		}
 
 		// Empty the top line.
-		fillLine(0, 0);
+		fillLine(0, EMPTY);
 	}
 
 	private boolean checkRange(int x, int y) {

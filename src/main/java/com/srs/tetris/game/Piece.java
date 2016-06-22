@@ -21,7 +21,7 @@ public class Piece implements Cloneable {
 		this.type = type;
 		this.x = x;
 		this.y = y;
-		this.orientation = orientation;
+		this.orientation = normalizeOrientation(orientation);
 	}
 
 	public PieceType getType() {
@@ -44,8 +44,12 @@ public class Piece implements Cloneable {
 		Piece moved = this.clone();
 		moved.x = x;
 		moved.y = y;
-		moved.orientation = orientation;
+		moved.orientation = normalizeOrientation(orientation);
 		return moved;
+	}
+
+	private int normalizeOrientation(int orientation) {
+		return Math.floorMod(orientation, 4);
 	}
 
 	public Piece moveDown() {
@@ -68,20 +72,20 @@ public class Piece implements Cloneable {
 		return moveTo(x, y, orientation - 1);
 	}
 
-	public int getX() {
-		return x;
-	}
-
-	public int getY() {
-		return y;
-	}
-
 	public Piece clone() {
 		try {
 			return (Piece) super.clone();
 		} catch (CloneNotSupportedException e) {
 			throw new IllegalStateException();
 		}
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
 	}
 
 	public int getOrientation() {

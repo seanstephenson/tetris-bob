@@ -8,16 +8,20 @@ public interface GameListener {
 	/**
 	 * Called when the game starts.
 	 */
-	void onGameStart();
+	default void onGameStart() {}
 
 	/**
 	 * Called when the game is over.
 	 */
-	void onGameOver();
+	default void onGameOver() {}
 
 	/**
 	 * Called after each frame is completed.
 	 */
-	void onFrame();
+	default void onFrame() {}
 
+	/**
+	 * Called after each piece starts dropping.
+	 */
+	default void onPieceStart() {}
 }

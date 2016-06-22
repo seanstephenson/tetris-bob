@@ -1,13 +1,17 @@
 package com.srs.tetris;
 
+import com.srs.tetris.bob.BobPlayer;
 import com.srs.tetris.game.Board;
 import com.srs.tetris.game.Game;
 import com.srs.tetris.game.GameListener;
 import com.srs.tetris.game.Piece;
+import com.srs.tetris.player.CompositePlayer;
 import com.srs.tetris.player.LocalPlayer;
 import com.srs.tetris.player.NoPlayer;
+import com.srs.tetris.player.Player;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
@@ -34,7 +38,7 @@ import static com.srs.tetris.game.Color.*;
 public class TetrisLocal extends Application implements GameListener {
 
 	private Game game;
-	private LocalPlayer player;
+	private LocalPlayer localPlayer;
 
 	private Scene scene;
 	private Rectangle[][] boardGrid;
@@ -46,8 +50,11 @@ public class TetrisLocal extends Application implements GameListener {
 	@Override
 	public void init() throws Exception {
 		// Create the game.
-		player = new LocalPlayer();
-		game = new Game(player);
+		localPlayer = new LocalPlayer();
+		game = new Game(new CompositePlayer(
+			new BobPlayer(),
+			localPlayer
+		));
 		game.addListener(this);
 		game.init();
 
@@ -78,8 +85,8 @@ public class TetrisLocal extends Application implements GameListener {
 
 		// Create the scene.
 		scene = new Scene(root);
-		scene.setOnKeyPressed(player);
-		scene.setOnKeyReleased(player);
+		scene.setOnKeyPressed(localPlayer);
+		scene.setOnKeyReleased(localPlayer);
 	}
 
 	private void setSquareColor(Rectangle square, com.srs.tetris.game.Color gameColor) {
@@ -160,13 +167,5 @@ public class TetrisLocal extends Application implements GameListener {
 				}
 			}
 		});
-	}
-
-	@Override
-	public void onGameStart() {
-	}
-
-	@Override
-	public void onGameOver() {
 	}
 }

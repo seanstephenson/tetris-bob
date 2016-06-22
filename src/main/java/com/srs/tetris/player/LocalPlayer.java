@@ -56,7 +56,7 @@ public class LocalPlayer implements EventHandler<KeyEvent>, Player {
 	}
 
 	@Override
-	public Input input(Game game) {
+	public Input input() {
 		return input.clone();
 	}
 }

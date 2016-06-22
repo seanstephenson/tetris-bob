@@ -28,6 +28,21 @@ class PieceTest {
 	}
 
 	@Test
+	void orientation() {
+		def piece = new Piece(PieceType.L, 2)
+		assert piece.orientation == 2
+
+		piece = new Piece(PieceType.L, 10)
+		assert piece.orientation == 2
+
+		piece = new Piece(PieceType.L, -2)
+		assert piece.orientation == 2
+
+		piece = new Piece(PieceType.L, -3)
+		assert piece.orientation == 1
+	}
+
+	@Test
 	void rotateLeft() {
 		def piece = new Piece(PieceType.L, 0, 1, 2)
 		assert piece.orientation == 0
@@ -43,7 +58,7 @@ class PieceTest {
 		assert piece.orientation == 0
 
 		def rotated = piece.rotateRight()
-		assert rotated.orientation == -1
+		assert rotated.orientation == 3
 		assert piece.orientation == 0
 	}
 }

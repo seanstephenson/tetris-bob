@@ -5,7 +5,7 @@ import com.srs.tetris.game.Input;
 
 public class NoPlayer implements Player {
 	@Override
-	public Input input(Game game) {
+	public Input input() {
 		return new Input();
 	}
 }

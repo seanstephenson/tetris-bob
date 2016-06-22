@@ -71,6 +71,9 @@ public class Game {
 	}
 
 	public void init() {
+		// Initialize the player.
+		player.init(this);
+
 		// Set up the game.
 		setupGame();
 	}
@@ -87,10 +90,11 @@ public class Game {
 		while (!isGameOver()) {
 			long frame = System.currentTimeMillis();
 			long interval = frame - lastFrame;
+			lastFrame = frame;
 
 			// Get the input state from the player.
 			lastInput = input;
-			input = player.input(this);
+			input = player.input();
 
 			// Update the game state.
 			updateGame(interval);
@@ -98,7 +102,6 @@ public class Game {
 			notifyListeners((listener) -> listener.onFrame());
 
 			// Sleep until the next frame.
-			lastFrame = frame;
 			sleep(frameInterval);
 		}
 
@@ -277,6 +280,9 @@ public class Game {
 
 		// Keep track of the total pieces played.
 		totalPieces++;
+
+		// Notify listeners that the piece is starting.
+		notifyListeners((listener) -> listener.onPieceStart());
 	}
 
 	private void placePiece() {
