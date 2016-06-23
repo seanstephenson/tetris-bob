@@ -8,7 +8,7 @@ import com.srs.tetris.game.Board;
 public class BoardEvaluator {
 	// Overall
 	private static final double HEIGHT_WEIGHT = -1.0;
-	private static final double HOLE_WEIGHT = -5.0;
+	private static final double HOLE_WEIGHT = -10.0;
 	private static final double COMPLETED_LINES_WEIGHT = 2.0;
 
 	public Score evaluate(Board board) {
