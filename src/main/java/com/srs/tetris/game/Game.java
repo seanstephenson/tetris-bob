@@ -26,6 +26,8 @@ public class Game {
 
 	private Executor listenerExecutor;
 
+	private PieceGenerator pieceGenerator;
+
 	private Player player;
 	private Board board;
 
@@ -73,6 +75,11 @@ public class Game {
 	public void init() {
 		// Initialize the player.
 		player.init(this);
+
+		// Create a piece generator if there isn't one set.
+		if (pieceGenerator == null) {
+			pieceGenerator = new RandomPieceGenerator();
+		}
 
 		// Set up the game.
 		setupGame();
@@ -130,7 +137,7 @@ public class Game {
 		levelAccelerator = DEFAULT_LEVEL_ACCELERATOR;
 
 		// Create a random next piece, and drop it.
-		nextPiece = Piece.random();
+		nextPiece = pieceGenerator.generate();
 		dropNextPiece();
 
 		// Set the time for the last frame.
@@ -273,7 +280,7 @@ public class Game {
 		}
 
 		// Create the next next piece.
-		nextPiece = Piece.random();
+		nextPiece = pieceGenerator.generate();
 
 		// Reset the drop delay
 		dropDelay = dropInterval;
@@ -390,6 +397,14 @@ public class Game {
 
 	public void addListener(GameListener listener) {
 		listeners.add(listener);
+	}
+
+	public PieceGenerator getPieceGenerator() {
+		return pieceGenerator;
+	}
+
+	public void setPieceGenerator(PieceGenerator pieceGenerator) {
+		this.pieceGenerator = pieceGenerator;
 	}
 
 	public Player getPlayer() {

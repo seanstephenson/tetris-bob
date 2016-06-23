@@ -3,7 +3,6 @@ package com.srs.tetris.game;
 import java.util.Random;
 
 public class Piece implements Cloneable {
-	private static Random random = new Random();
 
 	private PieceType type;
 	private int x, y;
@@ -90,12 +89,5 @@ public class Piece implements Cloneable {
 
 	public int getOrientation() {
 		return orientation;
-	}
-
-	public static Piece random() {
-		return new Piece(
-			PieceType.random(),
-			random.nextInt(4)
-		);
 	}
 }
