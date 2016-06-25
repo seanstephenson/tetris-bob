@@ -215,12 +215,44 @@ public class Game {
 	}
 
 	private void updatePieceRotate() {
-		if (!lastInput.isRotateLeft() && input.isRotateLeft() && board.canPlace(piece.rotateLeft())) {
-			piece = piece.rotateLeft();
+		if (!lastInput.isRotateLeft() && input.isRotateLeft()) {
+			Piece rotated = adjustPieceAfterRotation(piece.rotateLeft());
+			if (rotated != null) {
+				piece = rotated;
+			}
 		}
-		if (!lastInput.isRotateRight() && input.isRotateRight() && board.canPlace(piece.rotateRight())) {
-			piece = piece.rotateRight();
+		if (!lastInput.isRotateRight() && input.isRotateRight()) {
+			Piece rotated = adjustPieceAfterRotation(piece.rotateRight());
+			if (rotated != null) {
+				piece = rotated;
+			}
 		}
+	}
+
+	private Piece adjustPieceAfterRotation(Piece piece) {
+		Piece original = piece;
+		if (!board.canPlace(piece)) {
+			piece = original.moveLeft();
+			if (!board.canPlace(piece)) {
+				piece = original.moveRight();
+				if (!board.canPlace(piece)) {
+					piece = original.moveLeft().moveLeft();
+					if (!board.canPlace(piece)) {
+						piece = original.moveRight().moveRight();
+						if (!board.canPlace(piece)) {
+							piece = original.moveDown();
+							if (!board.canPlace(piece)) {
+								piece = original.moveDown().moveDown();
+								if (!board.canPlace(piece)) {
+									return null;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return piece;
 	}
 
 	private void updatePieceDrop(long interval) {
