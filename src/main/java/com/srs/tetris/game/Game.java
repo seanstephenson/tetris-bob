@@ -244,7 +244,10 @@ public class Game {
 							if (!board.canPlace(piece)) {
 								piece = original.moveDown().moveDown();
 								if (!board.canPlace(piece)) {
-									return null;
+									piece = original.moveUp();
+									if (!board.canPlace(piece)) {
+										return null;
+									}
 								}
 							}
 						}

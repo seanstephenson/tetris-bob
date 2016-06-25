@@ -55,6 +55,10 @@ public class Piece implements Cloneable {
 		return moveTo(x, y + 1, orientation);
 	}
 
+	public Piece moveUp() {
+		return moveTo(x, y - 1, orientation);
+	}
+
 	public Piece moveLeft() {
 		return moveTo(x - 1, y, orientation);
 	}
