@@ -78,7 +78,7 @@ public class Game {
 
 		// Create a piece generator if there isn't one set.
 		if (pieceGenerator == null) {
-			pieceGenerator = new RandomPieceGenerator();
+			pieceGenerator = new BagPieceGenerator();
 		}
 
 		// Set up the game.
