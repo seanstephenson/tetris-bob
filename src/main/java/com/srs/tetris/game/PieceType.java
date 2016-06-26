@@ -16,9 +16,9 @@ public enum PieceType {
 	}), Color.Yellow),
 
 	T(new Board(new int[][]{
-		{0, 0, 0},
-		{1, 1, 1},
 		{0, 1, 0},
+		{1, 1, 1},
+		{0, 0, 0},
 	}), Color.Purple),
 
 	S(new Board(new int[][]{

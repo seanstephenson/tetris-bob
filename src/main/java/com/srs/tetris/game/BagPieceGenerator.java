@@ -41,9 +41,9 @@ public class BagPieceGenerator implements PieceGenerator {
 		List<Piece> pieces = new ArrayList<>();
 
 		while (pieces.size() < bagSize) {
-			pieces.addAll(Arrays.stream(PieceType.values()).map((type) ->
-				new Piece(type)
-			).collect(toList()));
+			pieces.addAll(Arrays.stream(PieceType.values())
+				.map((type) -> new Piece(type))
+				.collect(toList()));
 		}
 
 		Collections.shuffle(pieces);
