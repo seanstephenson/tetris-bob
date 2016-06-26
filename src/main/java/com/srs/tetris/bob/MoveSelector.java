@@ -1,5 +1,7 @@
 package com.srs.tetris.bob;
 
+import com.srs.tetris.bob.evaluator.BoardEvaluator;
+import com.srs.tetris.bob.evaluator.SapientEvaluator;
 import com.srs.tetris.game.Board;
 import com.srs.tetris.game.Game;
 import com.srs.tetris.game.Piece;
@@ -20,7 +22,7 @@ public class MoveSelector {
 	}
 
 	public Move getMove() {
-		BoardEvaluator evaluator = new BoardEvaluator();
+		BoardEvaluator evaluator = new SapientEvaluator();
 
 		Board board = this.board.clone();
 

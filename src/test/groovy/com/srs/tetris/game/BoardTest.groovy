@@ -33,7 +33,7 @@ class BoardTest {
 
 	@Test
 	void rotateLeft_bar() {
-		def board = PieceType.Bar.board
+		def board = PieceType.I.board
 		assert board.grid == [
 			[0, 0, 0, 0],
 			[1, 1, 1, 1],
@@ -65,7 +65,7 @@ class BoardTest {
 
 	@Test
 	void rotateRight_bar() {
-		def board = PieceType.Bar.board
+		def board = PieceType.I.board
 		assert board.grid == [
 			[0, 0, 0, 0],
 			[1, 1, 1, 1],

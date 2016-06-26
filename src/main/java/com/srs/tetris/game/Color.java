@@ -12,8 +12,7 @@ public enum Color {
 	Cyan(0, 255, 255),
 	Purple(160, 32, 240),
 	Orange(255, 125, 0),
-	Yellow(255, 255, 0),
-	Gray(128, 128, 128);
+	Yellow(255, 255, 0);
 
 	private static Random random = new Random();
 

@@ -3,47 +3,47 @@ package com.srs.tetris.game;
 import java.util.Random;
 
 public enum PieceType {
-	Bar(new Board(new int[][]{
+	I(new Board(new int[][]{
 		{0, 0, 0, 0},
 		{1, 1, 1, 1},
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
-	}), Color.Blue),
-
-	Square(new Board(new int[][]{
-		{1, 1},
-		{1, 1},
-	}), Color.Green),
-
-	J(new Board(new int[][]{
-		{1, 0, 0},
-		{1, 1, 1},
-		{0, 0, 0},
-	}), Color.Purple),
-
-	L(new Board(new int[][]{
-		{0, 0, 1},
-		{1, 1, 1},
-		{0, 0, 0},
-	}), Color.Gray),
-
-	S(new Board(new int[][]{
-		{0, 1, 1},
-		{1, 1, 0},
-		{0, 0, 0},
-	}), Color.Orange),
-
-	Z(new Board(new int[][]{
-		{1, 1, 0},
-		{0, 1, 1},
-		{0, 0, 0},
 	}), Color.Cyan),
+
+	O(new Board(new int[][]{
+		{1, 1},
+		{1, 1},
+	}), Color.Yellow),
 
 	T(new Board(new int[][]{
 		{0, 0, 0},
 		{1, 1, 1},
 		{0, 1, 0},
-	}), Color.Red);
+	}), Color.Purple),
+
+	S(new Board(new int[][]{
+		{0, 1, 1},
+		{1, 1, 0},
+		{0, 0, 0},
+	}), Color.Green),
+
+	Z(new Board(new int[][]{
+		{1, 1, 0},
+		{0, 1, 1},
+		{0, 0, 0},
+	}), Color.Red),
+
+	J(new Board(new int[][]{
+		{1, 0, 0},
+		{1, 1, 1},
+		{0, 0, 0},
+	}), Color.Blue),
+
+	L(new Board(new int[][]{
+		{0, 0, 1},
+		{1, 1, 1},
+		{0, 0, 0},
+	}), Color.Orange);
 
 	private static Random random = new Random();
 

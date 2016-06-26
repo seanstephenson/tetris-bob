@@ -1,6 +1,6 @@
 package com.srs.tetris.bob;
 
-import com.srs.tetris.game.Piece;
+import com.srs.tetris.bob.evaluator.Score;
 
 public class Move {
 	private int x, y, orientation;

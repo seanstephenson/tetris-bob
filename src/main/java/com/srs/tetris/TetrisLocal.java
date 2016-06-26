@@ -119,7 +119,6 @@ public class TetrisLocal extends Application implements GameListener {
 			case Purple: return Color.PURPLE;
 			case Orange: return Color.ORANGE;
 			case Yellow: return Color.YELLOW;
-			case Gray: return Color.GRAY;
 			default: throw new IllegalStateException();
 		}
 	}
