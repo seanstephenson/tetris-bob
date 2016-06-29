@@ -6,7 +6,7 @@ import org.junit.Test
 class HolesEvaluatorTest {
 	@Test
 	public void empty() {
-		HolesEvaluator evaluator = new HolesEvaluator(10, 1)
+		def evaluator = new HolesEvaluator(10, 1)
 
 		def score = evaluator.evaluate(new Board([
 		    [0, 0, 0],
@@ -22,7 +22,7 @@ class HolesEvaluatorTest {
 
 	@Test
 	public void zeroHoles() {
-		HolesEvaluator evaluator = new HolesEvaluator(10, 1)
+		def evaluator = new HolesEvaluator(10, 1)
 
 		def score = evaluator.evaluate(new Board([
 		    [0, 0, 0],
@@ -38,7 +38,7 @@ class HolesEvaluatorTest {
 
 	@Test
 	public void singleHole() {
-		HolesEvaluator evaluator = new HolesEvaluator(10, 1)
+		def evaluator = new HolesEvaluator(10, 1)
 
 		def score = evaluator.evaluate(new Board([
 		    [0, 0, 0],
@@ -54,7 +54,7 @@ class HolesEvaluatorTest {
 
 	@Test
 	public void twoHoles() {
-		HolesEvaluator evaluator = new HolesEvaluator(10, 1)
+		def evaluator = new HolesEvaluator(10, 1)
 
 		def score = evaluator.evaluate(new Board([
 		    [1, 0, 0],
@@ -70,7 +70,7 @@ class HolesEvaluatorTest {
 
 	@Test
 	public void deepHole() {
-		HolesEvaluator evaluator = new HolesEvaluator(10, 1)
+		def evaluator = new HolesEvaluator(10, 1)
 
 		// A hole only counts as 1 no matter how deep it is.
 		def score = evaluator.evaluate(new Board([

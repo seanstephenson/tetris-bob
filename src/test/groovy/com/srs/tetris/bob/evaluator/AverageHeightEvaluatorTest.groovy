@@ -6,7 +6,7 @@ import org.junit.Test
 class AverageHeightEvaluatorTest {
 	@Test
 	public void evaluate() {
-		AverageHeightEvaluator evaluator = new AverageHeightEvaluator()
+		def evaluator = new AverageHeightEvaluator()
 
 		assert evaluator.evaluate(new Board([
 		    [0, 0, 0],

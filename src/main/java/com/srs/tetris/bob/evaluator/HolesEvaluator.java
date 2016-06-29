@@ -23,6 +23,9 @@ public class HolesEvaluator implements BoardEvaluator {
 		int holes = 0;
 		int covers = 0;
 
+		// Ignore the completed lines.
+		board = removeCompletedLines(board);
+
 		for (int x = 0; x < board.getWidth(); x++) {
 			int y = board.getHeight() - 1;
 
@@ -55,6 +58,18 @@ public class HolesEvaluator implements BoardEvaluator {
 		}
 
 		return new HolesScore(holes, covers);
+	}
+
+	private Board removeCompletedLines(Board board) {
+		board = board.clone();
+
+		for (int y = 0; y < board.getHeight(); y++) {
+			if (board.isLineComplete(y)) {
+				board.removeLine(y);
+			}
+		}
+
+		return board;
 	}
 
 	public class HolesScore implements Score {

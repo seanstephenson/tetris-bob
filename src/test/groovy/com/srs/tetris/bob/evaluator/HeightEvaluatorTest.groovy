@@ -6,7 +6,7 @@ import org.junit.Test
 class HeightEvaluatorTest {
 	@Test
 	public void evaluate() {
-		HeightEvaluator evaluator = new HeightEvaluator()
+		def evaluator = new HeightEvaluator()
 
 		assert evaluator.evaluate(new Board([
 		    [0, 0, 0],

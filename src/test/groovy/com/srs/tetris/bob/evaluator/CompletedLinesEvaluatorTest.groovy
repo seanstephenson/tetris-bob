@@ -6,7 +6,7 @@ import org.junit.Test
 class CompletedLinesEvaluatorTest {
 	@Test
 	public void evaluate() {
-		CompletedLinesEvaluator evaluator = new CompletedLinesEvaluator()
+		def evaluator = new CompletedLinesEvaluator()
 
 		assert evaluator.evaluate(new Board([
 		    [0, 0, 0],
