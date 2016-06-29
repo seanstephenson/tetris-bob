@@ -109,6 +109,8 @@ public class BobPlayer implements Player, GameListener {
 		if (lastInput.isRotateRight()) input.setRotateRight(false);
 		if (lastInput.isDrop()) input.setDrop(false);
 		if (lastInput.isSwap()) input.setSwap(false);
+		if (lastInput.isLeft()) input.setLeft(false);
+		if (lastInput.isRight()) input.setRight(false);
 	}
 
 	private boolean shouldRotateRight(Move move) {
