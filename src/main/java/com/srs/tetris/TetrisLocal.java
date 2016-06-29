@@ -55,6 +55,9 @@ public class TetrisLocal extends Application implements GameListener {
 			new BobPlayer(),
 			localPlayer
 		));
+
+		//game.setBoard(new Board(20, 20));
+
 		game.addListener(this);
 		game.init();
 

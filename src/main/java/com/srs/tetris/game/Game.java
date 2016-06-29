@@ -123,7 +123,9 @@ public class Game {
 		listenerExecutor = DEFAULT_LISTENER_EXECUTOR;
 
 		// Create the empty game board.
-		board = new Board(DEFAULT_BOARD_WIDTH, DEFAULT_BOARD_HEIGHT);
+		if (board == null) {
+			board = new Board(DEFAULT_BOARD_WIDTH, DEFAULT_BOARD_HEIGHT);
+		}
 
 		// Set up the game parameters.
 		frameInterval = DEFAULT_FRAME_INTERVAL;
@@ -448,6 +450,10 @@ public class Game {
 
 	public Board getBoard() {
 		return board;
+	}
+
+	public void setBoard(Board board) {
+		this.board = board;
 	}
 
 	public Piece getPiece() {
