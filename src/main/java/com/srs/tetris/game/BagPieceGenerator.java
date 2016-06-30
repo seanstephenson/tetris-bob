@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Random;
 import java.util.concurrent.SynchronousQueue;
 
 import static java.util.stream.Collectors.*;
@@ -17,6 +18,7 @@ import static java.util.stream.Collectors.*;
 public class BagPieceGenerator implements PieceGenerator {
 	private static final int DEFAULT_BAG_SIZE = PieceType.values().length;
 
+	private Random random;
 	private int bagSize;
 	private Queue<Piece> bag;
 
@@ -25,8 +27,17 @@ public class BagPieceGenerator implements PieceGenerator {
 	}
 
 	public BagPieceGenerator(int bagSize) {
+		this(bagSize, new Random());
+	}
+
+	public BagPieceGenerator(int bagSize, long seed) {
+		this(bagSize, new Random(seed));
+	}
+
+	public BagPieceGenerator(int bagSize, Random random) {
 		this.bagSize = bagSize;
 		this.bag = new ArrayDeque<>();
+		this.random = random;
 	}
 
 	@Override

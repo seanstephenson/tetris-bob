@@ -10,23 +10,9 @@ import java.util.function.Consumer;
 
 public class Game {
 
-	private static final int DEFAULT_BOARD_WIDTH = 10;
-	private static final int DEFAULT_BOARD_HEIGHT = 20;
-
-	private static final long DEFAULT_STARTING_DROP_INTERVAL = 1000;
-	private static final long DEFAULT_MIN_DROP_INTERVAL = 100;
-	private static final long DEFAULT_PIECE_MOVE_INTERVAL = 150;
-	private static final long DEFAULT_PIECE_MANUAL_DOWN_INTERVAL = 100;
-	private static final long DEFAULT_FRAME_INTERVAL = 25;
-
-	private static final int DEFAULT_LINES_PER_LEVEL = 10;
-	private static final double DEFAULT_LEVEL_ACCELERATOR = 0.25;
-
-	private static final Executor DEFAULT_LISTENER_EXECUTOR = Executors.newCachedThreadPool();
-
-	private Executor listenerExecutor;
-
+	private GameSettings settings;
 	private PieceGenerator pieceGenerator;
+	private Executor listenerExecutor;
 
 	private Player player;
 	private Board board;
@@ -44,21 +30,11 @@ public class Game {
 	private int level;
 	private int score;
 
-	private int linesPerLevel;
-	private double levelAccelerator;
-
 	private long lastFrame;
-	private long frameInterval;
 
-	private long startingDropInterval;
-	private long minDropInterval;
 	private long dropInterval;
 	private long dropDelay;
-
-	private long pieceMoveInterval;
 	private long pieceMoveDelay;
-
-	private long pieceManualDownInterval;
 	private long pieceManualDownDelay;
 
 	private boolean pieceSwapped;
@@ -68,18 +44,16 @@ public class Game {
 	private enum Status { New, InProgress, Complete }
 	private Status status = Status.New;
 
-	public Game(Player player) {
-		this.player = player;
+	public Game(GameSettings settings) {
+		this.settings = settings;
+		this.player = settings.getPlayer();
+		this.pieceGenerator = settings.getPieceGenerator();
+		this.listenerExecutor = settings.getListenerExecutor();
 	}
 
 	public void init() {
 		// Initialize the player.
 		player.init(this);
-
-		// Create a piece generator if there isn't one set.
-		if (pieceGenerator == null) {
-			pieceGenerator = new BagPieceGenerator();
-		}
 
 		// Set up the game.
 		setupGame();
@@ -109,7 +83,7 @@ public class Game {
 			notifyListeners((listener) -> listener.onFrame());
 
 			// Sleep until the next frame.
-			sleep(frameInterval);
+			sleep(settings.getFrameInterval());
 		}
 
 		status = Status.Complete;
@@ -118,25 +92,8 @@ public class Game {
 	}
 
 	private void setupGame() {
-		// By default, execute each listener in a different thread.  This way, no matter how long they take to do their logic
-		// (e.g. painting the game or getting network input), the game will run at the predetermined speed.
-		listenerExecutor = DEFAULT_LISTENER_EXECUTOR;
-
 		// Create the empty game board.
-		if (board == null) {
-			board = new Board(DEFAULT_BOARD_WIDTH, DEFAULT_BOARD_HEIGHT);
-		}
-
-		// Set up the game parameters.
-		frameInterval = DEFAULT_FRAME_INTERVAL;
-		startingDropInterval = DEFAULT_STARTING_DROP_INTERVAL;
-		minDropInterval = DEFAULT_MIN_DROP_INTERVAL;
-		dropInterval = DEFAULT_STARTING_DROP_INTERVAL;
-		pieceMoveInterval = DEFAULT_PIECE_MOVE_INTERVAL;
-		pieceManualDownInterval = DEFAULT_PIECE_MANUAL_DOWN_INTERVAL;
-
-		linesPerLevel = DEFAULT_LINES_PER_LEVEL;
-		levelAccelerator = DEFAULT_LEVEL_ACCELERATOR;
+		board = new Board(settings.getWidth(), settings.getHeight());
 
 		// Create a random next piece, and drop it.
 		nextPiece = pieceGenerator.generate();
@@ -210,7 +167,7 @@ public class Game {
 
 				// Reset the delay for the next move.
 				if (moved) {
-					pieceMoveDelay = pieceMoveInterval;
+					pieceMoveDelay = settings.getPieceMoveInterval();
 				}
 			}
 		}
@@ -277,7 +234,7 @@ public class Game {
 				moveDown = true;
 
 				// Reset the manual delay until it moves down again.
-				pieceManualDownDelay = pieceManualDownInterval;
+				pieceManualDownDelay = settings.getPieceManualDownInterval();
 			}
 		}
 
@@ -399,12 +356,12 @@ public class Game {
 
 	private void updateLevel() {
 		// Update the level based on the number of lines completed.
-		level = completedLines / linesPerLevel;
+		level = completedLines / settings.getLinesPerLevel();
 
 		// Update the drop interval (faster with every level).
-		dropInterval = (long) (startingDropInterval / ((level * levelAccelerator) + 1));
-		if (dropInterval < minDropInterval) {
-			dropInterval = minDropInterval;
+		dropInterval = (long) (settings.getStartingDropInterval() / ((level * settings.getLevelAccelerator()) + 1));
+		if (dropInterval < settings.getMinDropInterval()) {
+			dropInterval = settings.getMinDropInterval();
 		}
 	}
 
@@ -436,24 +393,12 @@ public class Game {
 		listeners.add(listener);
 	}
 
-	public PieceGenerator getPieceGenerator() {
-		return pieceGenerator;
-	}
-
-	public void setPieceGenerator(PieceGenerator pieceGenerator) {
-		this.pieceGenerator = pieceGenerator;
-	}
-
 	public Player getPlayer() {
 		return player;
 	}
 
 	public Board getBoard() {
 		return board;
-	}
-
-	public void setBoard(Board board) {
-		this.board = board;
 	}
 
 	public Piece getPiece() {

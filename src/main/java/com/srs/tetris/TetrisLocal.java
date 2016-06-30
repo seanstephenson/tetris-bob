@@ -4,6 +4,7 @@ import com.srs.tetris.bob.BobPlayer;
 import com.srs.tetris.game.Board;
 import com.srs.tetris.game.Game;
 import com.srs.tetris.game.GameListener;
+import com.srs.tetris.game.GameSettings;
 import com.srs.tetris.game.Piece;
 import com.srs.tetris.player.CompositePlayer;
 import com.srs.tetris.player.LocalPlayer;
@@ -49,14 +50,15 @@ public class TetrisLocal extends Application implements GameListener {
 
 	@Override
 	public void init() throws Exception {
-		// Create the game.
-		localPlayer = new LocalPlayer();
-		game = new Game(new CompositePlayer(
+		// Create the player.
+		Player player = new CompositePlayer(
 			new BobPlayer(),
-			localPlayer
-		));
+			localPlayer = new LocalPlayer()
+		);
 
-		//game.setBoard(new Board(20, 20));
+		// Create the game.
+		GameSettings gameSettings = GameSettings.standard(player);
+		game = new Game(gameSettings);
 
 		game.addListener(this);
 		game.init();
