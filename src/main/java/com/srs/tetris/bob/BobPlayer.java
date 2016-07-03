@@ -1,9 +1,12 @@
 package com.srs.tetris.bob;
 
+import com.google.common.util.concurrent.MoreExecutors;
 import com.srs.tetris.game.Game;
 import com.srs.tetris.game.GameListener;
+import com.srs.tetris.game.GameSettings;
 import com.srs.tetris.game.Input;
-import com.srs.tetris.player.Player;
+import com.srs.tetris.game.Piece;
+import com.srs.tetris.player.DirectPlayer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,8 +15,8 @@ import java.util.concurrent.Future;
 /**
  * A computer controlled player.
  */
-public class BobPlayer implements Player, GameListener {
-	private ExecutorService executor;
+public class BobPlayer implements DirectPlayer, GameListener {
+	private ExecutorService moveSelectionExecutor;
 	private Game game;
 
 	private Future<Move> moveFuture;
@@ -22,7 +25,15 @@ public class BobPlayer implements Player, GameListener {
 	@Override
 	public void init(Game game) {
 		this.game = game;
-		this.executor = Executors.newCachedThreadPool();
+
+		if (game.getSettings().getInputMode() == GameSettings.InputMode.Direct) {
+			// This game is in direct input mode, so make sure that the moves are selected in the current thread.
+			moveSelectionExecutor = MoreExecutors.newDirectExecutorService();
+
+		} else {
+			// This game is in standard input mode, so use a separate thread to select moves.
+			this.moveSelectionExecutor = Executors.newCachedThreadPool();
+		}
 
 		lastInput = new Input();
 
@@ -38,7 +49,7 @@ public class BobPlayer implements Player, GameListener {
 		}
 
 		// Select a move for the new piece.
-		moveFuture = executor.submit(() -> new MoveSelector(game).getMove());
+		moveFuture = moveSelectionExecutor.submit(() -> new MoveSelector(game).getMove());
 	}
 
 	private Move getCurrentMove() {
@@ -50,6 +61,21 @@ public class BobPlayer implements Player, GameListener {
 			}
 
 		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public Piece directInput() {
+		// Get the current move that we are trying to execute.
+		Move move = getCurrentMove();
+
+		if (move != null) {
+			// If ew have a move already, pass back the coordinates directly.
+			return game.getPiece().moveTo(move.getX(), move.getY(), move.getOrientation());
+
+		} else {
+			// Otherwise we aren't ready yet, so make no move yet.
 			return null;
 		}
 	}

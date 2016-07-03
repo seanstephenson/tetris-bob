@@ -1,10 +1,10 @@
 package com.srs.tetris.game;
 
+import com.srs.tetris.player.DirectPlayer;
 import com.srs.tetris.player.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -52,6 +52,9 @@ public class Game {
 	}
 
 	public void init() {
+		// Validate the game settings.
+		validate();
+
 		// Initialize the player.
 		player.init(this);
 
@@ -74,8 +77,7 @@ public class Game {
 			lastFrame = frame;
 
 			// Get the input state from the player.
-			lastInput = input;
-			input = player.input();
+			updateInput();
 
 			// Update the game state.
 			updateGame(interval);
@@ -89,6 +91,12 @@ public class Game {
 		status = Status.Complete;
 
 		notifyListeners((listener) -> listener.onGameOver());
+	}
+
+	private void validate() {
+		if (settings.getInputMode() == GameSettings.InputMode.Direct && !(player instanceof DirectPlayer)) {
+			throw new IllegalStateException("Invalid player for direct input mode");
+		}
 	}
 
 	private void setupGame() {
@@ -108,6 +116,31 @@ public class Game {
 
 		// Calculate the starting level.
 		updateLevel();
+	}
+
+	private void updateInput() {
+		// Get input from the player.
+
+		if (player instanceof DirectPlayer && settings.getInputMode() == GameSettings.InputMode.Direct) {
+			// This is a direct player and we are in direct input mode, so get it directly.
+			Piece move = ((DirectPlayer) player).directInput();
+
+			lastInput = new Input();
+			input = new Input();
+
+			if (move != null && board.canPlace(move)) {
+				assert move.getType() == piece.getType() : "Invalid piece type for direct input";
+				assert board.canPlace(move) : "Invalid move, could not place on board";
+
+				piece = piece.moveTo(move.getX(), move.getY(), move.getOrientation());
+				input.setDrop(true);
+			}
+
+		} else {
+			// Otherwise, it's just a normal input player.
+			lastInput = input;
+			input = player.input();
+		}
 	}
 
 	private void updateGame(long interval) {
@@ -379,7 +412,9 @@ public class Game {
 
 	private void sleep(long interval) {
 		try {
-			TimeUnit.MILLISECONDS.sleep(interval);
+			if (interval > 0) {
+				TimeUnit.MILLISECONDS.sleep(interval);
+			}
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
@@ -391,6 +426,10 @@ public class Game {
 
 	public void addListener(GameListener listener) {
 		listeners.add(listener);
+	}
+
+	public GameSettings getSettings() {
+		return settings;
 	}
 
 	public Player getPlayer() {

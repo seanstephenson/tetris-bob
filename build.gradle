@@ -21,6 +21,7 @@ targetCompatibility = 1.8
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.springframework.boot:spring-boot-starter-actuator')
+	compile('com.google.guava:guava:19.0')
 	testCompile('junit:junit')
 	testCompile('org.codehaus.groovy:groovy-all:2.4.6')
 }

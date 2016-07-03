@@ -1,6 +1,5 @@
 package com.srs.tetris.player;
 
-import com.srs.tetris.game.Game;
 import com.srs.tetris.game.Input;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;

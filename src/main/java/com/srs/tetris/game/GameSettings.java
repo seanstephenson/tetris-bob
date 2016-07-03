@@ -1,16 +1,36 @@
 package com.srs.tetris.game;
 
+import com.google.common.util.concurrent.MoreExecutors;
+import com.srs.tetris.player.DirectPlayer;
 import com.srs.tetris.player.LocalPlayer;
 import com.srs.tetris.player.Player;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class GameSettings {
 
 	private static final Executor DEFAULT_LISTENER_EXECUTOR = Executors.newCachedThreadPool();
+	private static final Executor DIRECT_EXECUTOR = MoreExecutors.directExecutor();
 
+	/**
+	 * Creates a new game with standard settings.
+	 */
 	public static GameSettings standard(Player player) {
 		return new GameSettings(player);
+	}
+
+	/**
+	 * Creates a new game with no delays for instant play.
+	 */
+	public static GameSettings direct(DirectPlayer player) {
+		GameSettings settings = new GameSettings(player);
+		settings.setListenerExecutor(DIRECT_EXECUTOR);
+		settings.setInputMode(InputMode.Direct);
+		settings.setFrameInterval(0);
+		settings.setPieceMoveInterval(0);
+		settings.setPieceManualDownInterval(0);
+		return settings;
 	}
 
 	private Player player;
@@ -32,6 +52,9 @@ public class GameSettings {
 	private Executor listenerExecutor = DEFAULT_LISTENER_EXECUTOR;
 
 	private PieceGenerator pieceGenerator = new BagPieceGenerator();
+
+	public enum InputMode { Normal, Direct }
+	private InputMode inputMode = InputMode.Normal;
 
 	public GameSettings(Player player) {
 		this.player = player;
@@ -127,5 +150,13 @@ public class GameSettings {
 
 	public void setPieceGenerator(PieceGenerator pieceGenerator) {
 		this.pieceGenerator = pieceGenerator;
+	}
+
+	public InputMode getInputMode() {
+		return inputMode;
+	}
+
+	public void setInputMode(InputMode inputMode) {
+		this.inputMode = inputMode;
 	}
 }

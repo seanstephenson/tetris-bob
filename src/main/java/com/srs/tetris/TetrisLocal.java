@@ -7,6 +7,7 @@ import com.srs.tetris.game.GameListener;
 import com.srs.tetris.game.GameSettings;
 import com.srs.tetris.game.Piece;
 import com.srs.tetris.player.CompositePlayer;
+import com.srs.tetris.player.DirectPlayer;
 import com.srs.tetris.player.LocalPlayer;
 import com.srs.tetris.player.NoPlayer;
 import com.srs.tetris.player.Player;
@@ -39,7 +40,6 @@ import static com.srs.tetris.game.Color.*;
 public class TetrisLocal extends Application implements GameListener {
 
 	private Game game;
-	private LocalPlayer localPlayer;
 
 	private Scene scene;
 	private Rectangle[][] boardGrid;
@@ -51,13 +51,12 @@ public class TetrisLocal extends Application implements GameListener {
 	@Override
 	public void init() throws Exception {
 		// Create the player.
-		Player player = new CompositePlayer(
-			new BobPlayer(),
-			localPlayer = new LocalPlayer()
-		);
+		//Player player = new LocalPlayer();
+		DirectPlayer player = new BobPlayer();
 
 		// Create the game.
-		GameSettings gameSettings = GameSettings.standard(player);
+		//GameSettings gameSettings = GameSettings.standard(player);
+		GameSettings gameSettings = GameSettings.direct(player);
 		game = new Game(gameSettings);
 
 		game.addListener(this);
@@ -90,8 +89,12 @@ public class TetrisLocal extends Application implements GameListener {
 
 		// Create the scene.
 		scene = new Scene(root);
-		scene.setOnKeyPressed(localPlayer);
-		scene.setOnKeyReleased(localPlayer);
+
+		if (player instanceof LocalPlayer) {
+			LocalPlayer localPlayer = (LocalPlayer) player;
+			scene.setOnKeyPressed(localPlayer);
+			scene.setOnKeyReleased(localPlayer);
+		}
 	}
 
 	private void setSquareColor(Rectangle square, com.srs.tetris.game.Color gameColor) {
