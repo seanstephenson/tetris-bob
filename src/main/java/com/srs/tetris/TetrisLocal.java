@@ -9,6 +9,7 @@ import com.srs.tetris.game.Piece;
 import com.srs.tetris.player.DirectPlayer;
 import com.srs.tetris.player.LocalPlayer;
 import java.io.IOException;
+import java.text.NumberFormat;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -56,8 +57,10 @@ public class TetrisLocal extends Application implements GameListener {
 
 	private Scene scene;
 	private Rectangle[][] boardGrid;
+
 	private Text scoreText;
 	private Text linesText;
+	private Text levelText;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -114,43 +117,10 @@ public class TetrisLocal extends Application implements GameListener {
 		}
 
 		// Create the info pane.
-		scoreText = new Text();
-		scoreText.setFont(new Font(20));
-		scoreText.setFill(Color.LIGHTGRAY);
-
-		Text scoreLabel = new Text("Score");
-		scoreLabel.setFill(Color.LIGHTGRAY);
-
-		VBox scoreBox = new VBox(5,
-			scoreLabel,
-			scoreText
-		);
-		scoreBox.setAlignment(Pos.CENTER);
-		scoreBox.setPrefWidth(150);
-		scoreBox.setPadding(new Insets(5));
-		scoreBox.setBackground(new Background(new BackgroundFill(EMPTY_SQUARE, null, null)));
-		scoreBox.setBorder(new Border(new BorderStroke(BOARD_BORDER_COLOR, BorderStrokeStyle.SOLID, null, new BorderWidths(BOARD_BORDER))));
-
-		linesText = new Text();
-		linesText.setFont(new Font(20));
-		linesText.setFill(Color.LIGHTGRAY);
-
-		Text linesLabel = new Text("Lines");
-		linesLabel.setFill(Color.LIGHTGRAY);
-
-		VBox linesBox = new VBox(5,
-			linesLabel,
-			linesText
-		);
-		linesBox.setAlignment(Pos.CENTER);
-		linesBox.setPrefWidth(150);
-		linesBox.setPadding(new Insets(5));
-		linesBox.setBackground(new Background(new BackgroundFill(EMPTY_SQUARE, null, null)));
-		linesBox.setBorder(new Border(new BorderStroke(BOARD_BORDER_COLOR, BorderStrokeStyle.SOLID, null, new BorderWidths(BOARD_BORDER))));
-
 		VBox infoPane = new VBox(15,
-			scoreBox,
-			linesBox
+			createInfoBox("Score", scoreText = new Text()),
+			createInfoBox("Level", levelText = new Text()),
+			createInfoBox("Lines", linesText = new Text())
 		);
 		infoPane.setPadding(new Insets(0, 0, 0, 25));
 
@@ -161,6 +131,26 @@ public class TetrisLocal extends Application implements GameListener {
 		root.setRight(infoPane);
 
 		return root;
+	}
+
+	private VBox createInfoBox(String label, Text infoText) {
+		infoText.setFont(new Font(20));
+		infoText.setFill(Color.LIGHTGRAY);
+
+		Text infoLabel = new Text(label);
+		infoLabel.setFill(Color.LIGHTGRAY);
+
+		VBox infoBox = new VBox(5,
+			infoLabel,
+			infoText
+		);
+		infoBox.setAlignment(Pos.CENTER);
+		infoBox.setPrefWidth(150);
+		infoBox.setPadding(new Insets(5));
+		infoBox.setBackground(new Background(new BackgroundFill(EMPTY_SQUARE, null, null)));
+		infoBox.setBorder(new Border(new BorderStroke(BOARD_BORDER_COLOR, BorderStrokeStyle.SOLID, null, new BorderWidths(BOARD_BORDER))));
+
+		return infoBox;
 	}
 
 	@Override
@@ -190,8 +180,10 @@ public class TetrisLocal extends Application implements GameListener {
 	private void updateUI() {
 		Platform.runLater(() -> {
 			// Update the info pane.
-			scoreText.setText(Integer.toString(game.getScore()));
-			linesText.setText(Integer.toString(game.getCompletedLines()));
+			NumberFormat formatter = NumberFormat.getIntegerInstance();
+			scoreText.setText(formatter.format(game.getScore()));
+			levelText.setText(formatter.format(game.getLevel()));
+			linesText.setText(formatter.format(game.getCompletedLines()));
 
 			// Draw the board.
 			Board board = game.getBoard().clone();
