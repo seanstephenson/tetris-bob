@@ -323,6 +323,9 @@ public class Game {
 		// Place the piece on the board.
 		board.place(piece);
 
+		// Update the score.
+		score += computeScoreDeltaForPiece();
+
 		// Check for complete lines.
 		checkCompleteLines();
 
@@ -398,12 +401,17 @@ public class Game {
 		}
 	}
 
+	private int computeScoreDeltaForPiece() {
+		// This is the original NES scoring system.
+		return (level + 1) * 5;
+	}
+
 	private int computeScoreDeltaForLines(int lines) {
 		assert lines >= 1 && lines <= 4 : "Unexpected number of completed lines: " + lines;
 
 		// This is the original NES scoring system.
 		int[] multipliers = {40, 100, 300, 1200};
-		return multipliers[lines - 1] * level;
+		return multipliers[lines - 1] * (level + 1);
 	}
 
 	private boolean isGameOver() {
