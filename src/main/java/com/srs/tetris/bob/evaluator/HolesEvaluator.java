@@ -61,10 +61,13 @@ public class HolesEvaluator implements BoardEvaluator {
 	}
 
 	private Board removeCompletedLines(Board board) {
-		board = board.clone();
+		Board originalBoard = board;
 
 		for (int y = 0; y < board.getHeight(); y++) {
 			if (board.isLineComplete(y)) {
+				if (board == originalBoard) {
+					board = board.clone();
+				}
 				board.removeLine(y);
 			}
 		}
