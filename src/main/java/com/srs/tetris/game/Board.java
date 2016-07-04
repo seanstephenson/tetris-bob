@@ -1,26 +1,33 @@
 package com.srs.tetris.game;
 
 public class Board implements Cloneable {
-	private static final int EMPTY = 0;
+
+	private static final int MAX_WIDTH = 32;
 
 	private int width;
 	private int height;
 	private int[] grid;
 
+	private int lineMask;
+
 	public Board(int width, int height) {
 		this.width = width;
 		this.height = height;
-		this.grid = new int[width * height];
+		this.grid = new int[height];
+
+		if (this.width > MAX_WIDTH) {
+			throw new IllegalArgumentException(String.format("width=%d, width must be 32 or less"));
+		}
+
+		this.lineMask = (int) ((1L << width) - 1);
 	}
 
 	public Board(int[][] grid) {
-		this.width = grid[0].length;
-		this.height = grid.length;
-		this.grid = new int[width * height];
+		this(grid[0].length, grid.length);
 
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
-				set(x, y, grid[y][x]);
+				set(x, y, grid[y][x] != 0);
 			}
 		}
 	}
@@ -37,30 +44,38 @@ public class Board implements Cloneable {
 		int[][] output = new int[height][width];
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				output[y][x] = get(x, y);
+				output[y][x] = get(x, y) ? 1 : 0;
 			}
 		}
 		return output;
 	}
 
 	public boolean isEmpty(int x, int y) {
-		return get(x, y) == EMPTY;
+		return !get(x, y);
 	}
 
 	public Color getColor(int x, int y) {
-		return Color.values()[get(x, y)];
+		return get(x, y) ? Color.Green : Color.Empty;
 	}
 
-	public int get(int x, int y) {
+	public boolean get(int x, int y) {
 		assert x >= 0 && x < width : String.format("x=%d, width=%d", x, width);
 		assert y >= 0 && y < height : String.format("y=%d, height=%d", y, height);
-		return grid[y * width + x];
+		return (grid[y] & mask(x)) > 0;
 	}
 
-	public void set(int x, int y, int value) {
-		assert x >= 0 && x < width;
-		assert y >= 0 && y < height;
-		grid[y * width + x] = value;
+	public void set(int x, int y, boolean value) {
+		assert x >= 0 && x < width : String.format("x=%d, width=%d", x, width);
+		assert y >= 0 && y < height : String.format("y=%d, height=%d", y, height);
+		if (value) {
+			grid[y] |= mask(x);
+		} else {
+			grid[y] &= ~mask(x);
+		}
+	}
+
+	private int mask(int x) {
+		return 1 << x;
 	}
 
 	public Board rotateLeft() {
@@ -68,7 +83,7 @@ public class Board implements Cloneable {
 
 		for (int x = 0; x < rotated.width; x++) {
 			for (int y = 0; y < rotated.height; y++) {
-				int value = get((rotated.height - 1) - y, x);
+				boolean value = get((rotated.height - 1) - y, x);
 				rotated.set(x, y, value);
 			}
 		}
@@ -81,18 +96,25 @@ public class Board implements Cloneable {
 	}
 
 	public void place(Piece piece) {
-		place(piece.getBoard(), piece.getX(), piece.getY(), piece.getColor().ordinal());
+		place(piece.getBoard(), piece.getX(), piece.getY(), true);
 	}
 
 	public void remove(Piece piece) {
-		place(piece.getBoard(), piece.getX(), piece.getY(), EMPTY);
+		place(piece.getBoard(), piece.getX(), piece.getY(), false);
 	}
 
-	public void place(Board piece, int x, int y, int value) {
-		for (int pieceX = 0; pieceX < piece.width; pieceX++) {
-			for (int pieceY = 0; pieceY < piece.height; pieceY++) {
-				if (checkRange(x + pieceX, y + pieceY) && !piece.isEmpty(pieceX, pieceY)) {
-					set(x + pieceX, y + pieceY, value);
+	public void place(Board piece, int x, int y, boolean value) {
+		for (int pieceY = 0; pieceY < piece.height; pieceY++) {
+			int pieceLine = piece.grid[pieceY];
+			if (pieceLine != 0) {
+				int placeY = y + pieceY;
+				if (placeY >= 0 && placeY < height) {
+					int mask = (x > 0 ? pieceLine << x : pieceLine >> -x) & lineMask;
+					if (value) {
+						grid[placeY] |= mask;
+					} else {
+						grid[placeY] &= ~mask;
+					}
 				}
 			}
 		}
@@ -103,11 +125,39 @@ public class Board implements Cloneable {
 	}
 
 	public boolean canPlace(Board piece, int x, int y) {
-		for (int pieceX = 0; pieceX < piece.width; pieceX++) {
-			for (int pieceY = 0; pieceY < piece.height; pieceY++) {
-				if (!piece.isEmpty(pieceX, pieceY)) {
-					int placeX = x + pieceX, placeY = y + pieceY;
-					if (!checkRange(placeX, placeY) || !isEmpty(placeX, placeY)) {
+		for (int pieceY = 0; pieceY < piece.height; pieceY++) {
+			int pieceLine = piece.grid[pieceY];
+			if (pieceLine != 0) {
+				int placeY = y + pieceY;
+				if (placeY >= 0 && placeY < height) {
+					int placeX = x;
+
+					while (placeX < 0) {
+						// This is out of bounds for X, so if the piece has any filled spaces for those bits, it won't fit.
+						if ((pieceLine & 1) != 0) {
+							return false;
+						}
+
+						pieceLine >>= 1;
+						placeX++;
+					}
+
+					// Shift the piece into X position.
+					int mask = pieceLine << placeX;
+
+					// If it has any bits set that are outside of the line then it won't fit.
+					if (mask > lineMask) {
+						return false;
+					}
+
+					// Finally check if it collides with any existing pieces.
+					if ((mask & grid[placeY]) != 0) {
+						return false;
+					}
+
+				} else {
+					// This is out of bounds for Y, so if the piece has any filled spaces at this line, it won't fit.
+					if (piece.grid[pieceY] != 0) {
 						return false;
 					}
 				}
@@ -126,46 +176,24 @@ public class Board implements Cloneable {
 	}
 
 	public boolean isLineEmpty(int y) {
-		for (int x = 0; x < getWidth(); x++) {
-			if (!isEmpty(x, y)) {
-				return false;
-			}
-		}
-		return true;
+		return grid[y] == 0;
 	}
 
 	public boolean isLineComplete(int y) {
-		for (int x = 0; x < getWidth(); x++) {
-			if (isEmpty(x, y)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	public void fillLine(int y, int value) {
-		for (int x = 0; x < getWidth(); x++) {
-			set(x, y, value);
-		}
+		return grid[y] == lineMask;
 	}
 
 	public void removeLine(int y) {
 		while (y > 0) {
 			// Copy the line above down to this one.
-			for (int x = 0; x < getWidth(); x++) {
-				set(x, y, get(x, y - 1));
-			}
+			grid[y] = grid[y - 1];
 
 			// Move to the line above.
 			y--;
 		}
 
 		// Empty the top line.
-		fillLine(0, EMPTY);
-	}
-
-	private boolean checkRange(int x, int y) {
-		return x >= 0 && y >= 0 && x < width && y < height;
+		grid[0] = 0;
 	}
 
 	@Override
