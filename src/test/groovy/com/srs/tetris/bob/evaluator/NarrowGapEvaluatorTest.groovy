@@ -139,4 +139,38 @@ class NarrowGapEvaluatorTest {
 		assert score.fourGaps == 2
 		assert score.score == 12
 	}
+
+	@Test
+	public void coveredGap_wall() {
+		def evaluator = new NarrowGapEvaluator()
+
+		def score = evaluator.evaluate(new Board([
+		    [0, 0, 0],
+		    [1, 1, 0],
+		    [0, 1, 1],
+		    [0, 1, 1],
+		] as int[][]))
+
+		assert score.twoGaps == 1
+		assert score.threeGaps == 0
+		assert score.fourGaps == 0
+		assert score.score == 0.5
+	}
+
+	@Test
+	public void coveredGap_middle() {
+		def evaluator = new NarrowGapEvaluator()
+
+		def score = evaluator.evaluate(new Board([
+		    [0, 0, 0],
+		    [1, 1, 0],
+		    [1, 0, 1],
+		    [1, 0, 1],
+		] as int[][]))
+
+		assert score.twoGaps == 1
+		assert score.threeGaps == 0
+		assert score.fourGaps == 0
+		assert score.score == 0.5
+	}
 }

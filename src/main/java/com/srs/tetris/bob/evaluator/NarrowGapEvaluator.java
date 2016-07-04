@@ -15,46 +15,40 @@ public class NarrowGapEvaluator implements BoardEvaluator {
 
 	@Override
 	public NarrowGapScore evaluate(Board board) {
-		// Calculate the height of each column.
-		int[] heights = new int[board.getWidth()];
-		for (int x = 0; x < board.getWidth(); x++) {
-			heights[x] = calculateHeight(board, x);
-		}
+		int width = board.getWidth();
+		int height = board.getHeight();
 
-		// Now count the narrow gaps.
 		int twoGaps = 0;
 		int threeGaps = 0;
 		int fourGaps = 0;
 
-		for (int x = 0; x < board.getWidth(); x++) {
-			int height = heights[x];
+		for (int x = 0; x < width; x++) {
+			int gapHeight = 0;
 
-			int leftHeight = (x == 0) ? board.getHeight() : heights[x - 1];
-			int rightHeight = (x == board.getWidth() - 1) ? board.getHeight() : heights[x + 1];
+			for (int y = height - 1; y >= -1; y--) {
+				// Determine if this block is part of a narrow gap (surrounded on both sides).
+				if (y >= 0 && board.isEmpty(x, y) && (x == 0 || !board.isEmpty(x - 1, y)) && (x == width - 1 || !board.isEmpty(x + 1, y))) {
+					// Currently in a gap, so increment the height.
+					gapHeight++;
 
-			if (height < leftHeight && height < rightHeight) {
-				int gapHeight = Math.min(leftHeight, rightHeight) - height;
+				} else {
+					if (gapHeight > 0) {
+						// We were in a gap but not anymore, so increment this one.
+						if (gapHeight == 2) {
+							twoGaps++;
+						} else if (gapHeight == 3) {
+							threeGaps++;
+						} else if (gapHeight >= 4) {
+							fourGaps++;
+						}
+					}
 
-				if (gapHeight == 2) {
-					twoGaps++;
-				} else if (gapHeight == 3) {
-					threeGaps++;
-				} else if (gapHeight >= 4) {
-					fourGaps++;
+					gapHeight = 0;
 				}
 			}
 		}
 
 		return new NarrowGapScore(twoGaps, threeGaps, fourGaps);
-	}
-
-	private int calculateHeight(Board board, int x) {
-		for (int y = 0; y < board.getHeight(); y++) {
-			if (!board.isEmpty(x, y)) {
-				return board.getHeight() - y;
-			}
-		}
-		return 0;
 	}
 
 	public static class NarrowGapScore implements Score {
