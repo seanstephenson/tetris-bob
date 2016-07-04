@@ -2,6 +2,7 @@ package com.srs.tetris;
 
 import com.srs.tetris.bob.BobPlayer;
 import com.srs.tetris.game.Board;
+import com.srs.tetris.game.ColorBoard;
 import com.srs.tetris.game.Game;
 import com.srs.tetris.game.GameListener;
 import com.srs.tetris.game.GameSettings;
@@ -186,7 +187,7 @@ public class TetrisLocal extends Application implements GameListener {
 			linesText.setText(formatter.format(game.getCompletedLines()));
 
 			// Draw the board.
-			Board board = game.getBoard().clone();
+			ColorBoard board = game.getBoard().clone();
 
 			// Find where the piece would be if it dropped now.
 			Piece droppedPiece = game.getPiece();

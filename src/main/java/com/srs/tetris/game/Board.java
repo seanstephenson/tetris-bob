@@ -1,5 +1,8 @@
 package com.srs.tetris.game;
 
+/**
+ * A grid of squares, each of which can be filled or empty.
+ */
 public class Board implements Cloneable {
 
 	private static final int MAX_WIDTH = 32;
@@ -54,10 +57,6 @@ public class Board implements Cloneable {
 		return !get(x, y);
 	}
 
-	public Color getColor(int x, int y) {
-		return get(x, y) ? Color.Green : Color.Empty;
-	}
-
 	public boolean get(int x, int y) {
 		assert x >= 0 && x < width : String.format("x=%d, width=%d", x, width);
 		assert y >= 0 && y < height : String.format("y=%d, height=%d", y, height);
@@ -96,25 +95,17 @@ public class Board implements Cloneable {
 	}
 
 	public void place(Piece piece) {
-		place(piece.getBoard(), piece.getX(), piece.getY(), true);
+		place(piece.getBoard(), piece.getX(), piece.getY());
 	}
 
-	public void remove(Piece piece) {
-		place(piece.getBoard(), piece.getX(), piece.getY(), false);
-	}
-
-	public void place(Board piece, int x, int y, boolean value) {
+	public void place(Board piece, int x, int y) {
 		for (int pieceY = 0; pieceY < piece.height; pieceY++) {
 			int pieceLine = piece.grid[pieceY];
 			if (pieceLine != 0) {
 				int placeY = y + pieceY;
 				if (placeY >= 0 && placeY < height) {
 					int mask = (x > 0 ? pieceLine << x : pieceLine >> -x) & lineMask;
-					if (value) {
-						grid[placeY] |= mask;
-					} else {
-						grid[placeY] &= ~mask;
-					}
+					grid[placeY] |= mask;
 				}
 			}
 		}

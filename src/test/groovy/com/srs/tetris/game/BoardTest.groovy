@@ -164,7 +164,7 @@ class BoardTest {
 		def piece = PieceType.L.board
 		def board = new Board(4, 7)
 
-		board.place(piece, 1, 1, true)
+		board.place(piece, 1, 1)
 		assert board.grid == [
 			[0, 0, 0, 0],
 			[0, 0, 0, 1],
@@ -175,7 +175,7 @@ class BoardTest {
 			[0, 0, 0, 0],
 		]
 
-		board.place(piece, 1, 4, true)
+		board.place(piece, 1, 4)
 		assert board.grid == [
 			[0, 0, 0, 0],
 			[0, 0, 0, 1],
@@ -186,7 +186,7 @@ class BoardTest {
 			[0, 0, 0, 0],
 		]
 
-		board.place(piece, 0, 0, true)
+		board.place(piece, 0, 0)
 		assert board.grid == [
 			[0, 0, 1, 0],
 			[1, 1, 1, 1],
@@ -203,7 +203,7 @@ class BoardTest {
 		def piece = PieceType.L.board
 		def board = new Board(4, 4)
 
-		board.place(piece, 50, 50, true)
+		board.place(piece, 50, 50)
 		assert board.grid == [
 			[0, 0, 0, 0],
 			[0, 0, 0, 0],
@@ -211,7 +211,7 @@ class BoardTest {
 			[0, 0, 0, 0],
 		]
 
-		board.place(piece, -50, -50, true)
+		board.place(piece, -50, -50)
 		assert board.grid == [
 			[0, 0, 0, 0],
 			[0, 0, 0, 0],
@@ -219,7 +219,7 @@ class BoardTest {
 			[0, 0, 0, 0],
 		]
 
-		board.place(piece, -2, -1, true)
+		board.place(piece, -2, -1)
 		assert board.grid == [
 			[1, 0, 0, 0],
 			[0, 0, 0, 0],
@@ -227,7 +227,7 @@ class BoardTest {
 			[0, 0, 0, 0],
 		]
 
-		board.place(piece, 2, -1, true)
+		board.place(piece, 2, -1)
 		assert board.grid == [
 			[1, 0, 1, 1],
 			[0, 0, 0, 0],
@@ -235,7 +235,7 @@ class BoardTest {
 			[0, 0, 0, 0],
 		]
 
-		board.place(piece, 1, 3, true)
+		board.place(piece, 1, 3)
 		assert board.grid == [
 			[1, 0, 1, 1],
 			[0, 0, 0, 0],
@@ -251,7 +251,7 @@ class BoardTest {
 
 		assert board.canPlace(piece, 0, 0)
 
-		board.place(piece, 0, 0, true)
+		board.place(piece, 0, 0)
 		assert board.grid == [
 			[0, 0, 1, 0],
 			[1, 1, 1, 0],

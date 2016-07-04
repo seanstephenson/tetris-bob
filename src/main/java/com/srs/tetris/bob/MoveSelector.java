@@ -15,7 +15,7 @@ public class MoveSelector {
 	//private Piece nextPiece, swapPiece;
 
 	public MoveSelector(Game game) {
-		this.board = game.getBoard();
+		this.board = game.getBoard().toBitBoard();
 		this.piece = game.getPiece();
 		//this.nextPiece = game.getNextPiece();
 		//this.swapPiece = game.getSwapPiece();

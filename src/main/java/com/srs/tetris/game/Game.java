@@ -15,7 +15,7 @@ public class Game {
 	private Executor listenerExecutor;
 
 	private Player player;
-	private Board board;
+	private ColorBoard board;
 
 	private Piece piece;
 
@@ -116,7 +116,7 @@ public class Game {
 
 	private void setupGame() {
 		// Create the empty game board.
-		board = new Board(settings.getWidth(), settings.getHeight());
+		board = new ColorBoard(settings.getWidth(), settings.getHeight());
 
 		// Create a random next piece, and drop it.
 		nextPiece = pieceGenerator.generate();
@@ -459,7 +459,7 @@ public class Game {
 		return player;
 	}
 
-	public Board getBoard() {
+	public ColorBoard getBoard() {
 		return board;
 	}
 
