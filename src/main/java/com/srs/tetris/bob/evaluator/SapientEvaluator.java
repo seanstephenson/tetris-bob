@@ -15,7 +15,7 @@ public class SapientEvaluator extends CompositeEvaluator {
 	private static final double HOLE_WEIGHT = -15.0;
 	private static final double HOLE_COVER_WEIGHT = -2.0;
 
-	private static final double NARROW_GAP_WEIGHT = -1.0;
+	private static final double NARROW_GAP_WEIGHT = -3.0;
 
 
 	public SapientEvaluator() {
