@@ -84,21 +84,4 @@ class HolesEvaluatorTest {
 		assert 1 == score.covers
 		assert 11 == score.score
 	}
-
-	@Test
-	public void completedLine() {
-		HolesEvaluator evaluator = new HolesEvaluator(10, 1)
-
-		// Completed lines shouldn't count.
-		def score = evaluator.evaluate(new Board([
-		    [1, 1, 1],
-		    [1, 0, 0],
-		    [0, 1, 0],
-		    [1, 1, 0],
-		] as int[][]))
-
-		assert 1 == score.holes
-		assert 1 == score.covers
-		assert 11 == score.score
-	}
 }
