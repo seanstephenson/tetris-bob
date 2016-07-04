@@ -24,22 +24,19 @@ public class MoveSelector {
 	public Move getMove() {
 		BoardEvaluator evaluator = new SapientEvaluator();
 
-		Board board = this.board.clone();
-
 		// Enumerate all the current moves.
 		List<Move> moves = findPossibleMoves(board);
 
 		Move best = null;
 		for (Move move : moves) {
+			Board board = this.board.clone();
+
 			// Draw the piece on the board so we can see what it would look like after.
 			Piece piece = this.piece.moveTo(move.getX(), move.getY(), move.getOrientation());
 			board.place(piece);
 
 			// Evaluate the position.
 			move.setScore(evaluator.evaluate(board));
-
-			// Now remove the piece from the board.
-			board.remove(piece);
 
 			// If this move is the best so far, remember it.
 			if (best == null || move.getScore().getScore() > best.getScore().getScore()) {
