@@ -3,43 +3,43 @@ package com.srs.tetris.game;
 import java.util.Random;
 
 public enum PieceType {
-	I(new Board(new int[][]{
+	I(new BitBoard(new int[][]{
 		{0, 0, 0, 0},
 		{1, 1, 1, 1},
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
 	}), Color.Cyan),
 
-	O(new Board(new int[][]{
+	O(new BitBoard(new int[][]{
 		{1, 1},
 		{1, 1},
 	}), Color.Yellow),
 
-	T(new Board(new int[][]{
+	T(new BitBoard(new int[][]{
 		{0, 1, 0},
 		{1, 1, 1},
 		{0, 0, 0},
 	}), Color.Purple),
 
-	S(new Board(new int[][]{
+	S(new BitBoard(new int[][]{
 		{0, 1, 1},
 		{1, 1, 0},
 		{0, 0, 0},
 	}), Color.Green),
 
-	Z(new Board(new int[][]{
+	Z(new BitBoard(new int[][]{
 		{1, 1, 0},
 		{0, 1, 1},
 		{0, 0, 0},
 	}), Color.Red),
 
-	J(new Board(new int[][]{
+	J(new BitBoard(new int[][]{
 		{1, 0, 0},
 		{1, 1, 1},
 		{0, 0, 0},
 	}), Color.Blue),
 
-	L(new Board(new int[][]{
+	L(new BitBoard(new int[][]{
 		{0, 0, 1},
 		{1, 1, 1},
 		{0, 0, 0},
@@ -47,16 +47,16 @@ public enum PieceType {
 
 	private static Random random = new Random();
 
-	private Board[] boards;
+	private BitBoard[] boards;
 	private Color color;
 
-	private PieceType(Board board, Color color) {
+	private PieceType(BitBoard board, Color color) {
 		createBoards(board);
 		this.color = color;
 	}
 
-	private void createBoards(Board board) {
-		boards = new Board[] {
+	private void createBoards(BitBoard board) {
+		boards = new BitBoard[] {
 			board,
 			board.rotateLeft(),
 			board.rotateLeft().rotateLeft(),
@@ -72,7 +72,7 @@ public enum PieceType {
 		return getBoard(0);
 	}
 
-	public Board getBoard(int orientation) {
+	public BitBoard getBoard(int orientation) {
 		return boards[Math.floorMod(orientation, 4)];
 	}
 

@@ -1,8 +1,7 @@
 package com.srs.tetris;
 
 import com.srs.tetris.bob.BobPlayer;
-import com.srs.tetris.game.Board;
-import com.srs.tetris.game.ColorBoard;
+import com.srs.tetris.game.GameBoard;
 import com.srs.tetris.game.Game;
 import com.srs.tetris.game.GameListener;
 import com.srs.tetris.game.GameSettings;
@@ -16,7 +15,6 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
@@ -187,7 +185,7 @@ public class TetrisLocal extends Application implements GameListener {
 			linesText.setText(formatter.format(game.getCompletedLines()));
 
 			// Draw the board.
-			ColorBoard board = game.getBoard().clone();
+			GameBoard board = game.getBoard().clone();
 
 			// Find where the piece would be if it dropped now.
 			Piece droppedPiece = game.getPiece();
@@ -201,7 +199,7 @@ public class TetrisLocal extends Application implements GameListener {
 			// Set each square color.
 			for (int x = 0; x < board.getWidth(); x++) {
 				for (int y = 0; y < board.getHeight(); y++) {
-					setSquare(boardGrid[x][y], board.getColor(x, y));
+					setSquare(boardGrid[x][y], board.get(x, y));
 				}
 			}
 

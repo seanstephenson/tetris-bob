@@ -1,6 +1,6 @@
 package com.srs.tetris.bob.evaluator;
 
-import com.srs.tetris.game.Board;
+import com.srs.tetris.game.BitBoard;
 
 /**
  * Evaluates the position, incurring penalities for tall, narrow gaps which are hard to fill.
@@ -14,7 +14,7 @@ public class NarrowGapEvaluator implements BoardEvaluator {
 	private static final double GAP_COUNT_EXPONENT = 2.0;
 
 	@Override
-	public NarrowGapScore evaluate(Board board) {
+	public NarrowGapScore evaluate(BitBoard board) {
 		int width = board.getWidth();
 		int height = board.getHeight();
 		int top = board.findHighestBlock();

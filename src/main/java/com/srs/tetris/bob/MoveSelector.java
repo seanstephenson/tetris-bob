@@ -2,14 +2,14 @@ package com.srs.tetris.bob;
 
 import com.srs.tetris.bob.evaluator.BoardEvaluator;
 import com.srs.tetris.bob.evaluator.SapientEvaluator;
-import com.srs.tetris.game.Board;
+import com.srs.tetris.game.BitBoard;
 import com.srs.tetris.game.Game;
 import com.srs.tetris.game.Piece;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MoveSelector {
-	private Board board;
+	private BitBoard board;
 	private Piece piece;
 
 	//private Piece nextPiece, swapPiece;
@@ -29,7 +29,7 @@ public class MoveSelector {
 
 		Move best = null;
 		for (Move move : moves) {
-			Board board = this.board.clone();
+			BitBoard board = this.board.clone();
 
 			// Draw the piece on the board so we can see what it would look like after.
 			Piece piece = this.piece.moveTo(move.getX(), move.getY(), move.getOrientation());
@@ -47,7 +47,7 @@ public class MoveSelector {
 		return best;
 	}
 
-	private ArrayList<Move> findPossibleMoves(Board board) {
+	private ArrayList<Move> findPossibleMoves(BitBoard board) {
 		ArrayList<Move> moves = new ArrayList<>(board.getWidth() * 4);
 
 		// For each possible orientation.

@@ -1,163 +1,90 @@
 package com.srs.tetris.game;
 
-/**
- * A grid of squares, each of which can be filled or empty.
- */
-public class Board implements Cloneable {
+public interface Board<T> extends Cloneable {
+	/**
+	 * Returns the width of this board.
+	 */
+	public int getWidth();
 
-	private static final int MAX_WIDTH = 32;
+	/**
+	 * Returns the height of this board.
+	 */
+	public int getHeight();
 
-	private int width;
-	private int height;
-	private int[] grid;
+	/**
+	 * Indicates if the given square is empty.  The position must be in bounds, or else the behavior is undefined.
+	 */
+	boolean isEmpty(int x, int y);
 
-	private int lineMask;
+	/**
+	 * Removes the value at the given position, leaving it empty.  The position must be in bounds, or else the behavior is undefined.
+	 */
+	void remove(int x, int y);
 
-	public Board(int width, int height) {
-		this.width = width;
-		this.height = height;
-		this.grid = new int[height];
+	/**
+	 * Gets the value at the given position.  The position must be in bounds, or else the behavior is undefined.
+	 */
+	T get(int x, int y);
 
-		if (this.width > MAX_WIDTH) {
-			throw new IllegalArgumentException(String.format("width=%d, width must be 32 or less"));
-		}
+	/**
+	 * Sets the value at the given position.  The position must be in bounds, or else the behavior is undefined.
+	 */
+	void set(int x, int y, T value);
 
-		this.lineMask = (int) ((1L << width) - 1);
-	}
+	/**
+	 * Places the given piece on the board, overwriting any previous values at that position.  If the piece is
+	 * partially out of bounds, the values that are out of bounds will be ignored.
+	 */
+	void place(Piece piece);
 
-	public Board(int[][] grid) {
-		this(grid[0].length, grid.length);
+	/**
+	 * Indicates if the given piece can be placed without overwriting any non-empty value or colliding with walls.
+	 */
+	default boolean canPlace(Piece piece) {
+		Board pieceBoard = piece.getBoard();
 
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				set(x, y, grid[y][x] != 0);
-			}
-		}
-	}
+		for (int pieceX = 0; pieceX < pieceBoard.getWidth(); pieceX++) {
+			for (int pieceY = 0; pieceY < pieceBoard.getHeight(); pieceY++) {
+				int placeX = piece.getX() + pieceX;
+				int placeY = piece.getY() + pieceY;
 
-	public int getWidth() {
-		return width;
-	}
-
-	public int getHeight() {
-		return height;
-	}
-
-	public int[][] getGrid() {
-		int[][] output = new int[height][width];
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
-				output[y][x] = get(x, y) ? 1 : 0;
-			}
-		}
-		return output;
-	}
-
-	public boolean isEmpty(int x, int y) {
-		return !get(x, y);
-	}
-
-	public boolean get(int x, int y) {
-		assert x >= 0 && x < width : String.format("x=%d, width=%d", x, width);
-		assert y >= 0 && y < height : String.format("y=%d, height=%d", y, height);
-		return (grid[y] & mask(x)) > 0;
-	}
-
-	public void set(int x, int y, boolean value) {
-		assert x >= 0 && x < width : String.format("x=%d, width=%d", x, width);
-		assert y >= 0 && y < height : String.format("y=%d, height=%d", y, height);
-		if (value) {
-			grid[y] |= mask(x);
-		} else {
-			grid[y] &= ~mask(x);
-		}
-	}
-
-	private int mask(int x) {
-		return 1 << x;
-	}
-
-	public Board rotateLeft() {
-		Board rotated = new Board(height, width);
-
-		for (int x = 0; x < rotated.width; x++) {
-			for (int y = 0; y < rotated.height; y++) {
-				boolean value = get((rotated.height - 1) - y, x);
-				rotated.set(x, y, value);
-			}
-		}
-
-		return rotated;
-	}
-
-	public Board rotateRight() {
-		return rotateLeft().rotateLeft().rotateLeft();
-	}
-
-	public void place(Piece piece) {
-		place(piece.getBoard(), piece.getX(), piece.getY());
-	}
-
-	public void place(Board piece, int x, int y) {
-		for (int pieceY = 0; pieceY < piece.height; pieceY++) {
-			int pieceLine = piece.grid[pieceY];
-			if (pieceLine != 0) {
-				int placeY = y + pieceY;
-				if (placeY >= 0 && placeY < height) {
-					int mask = (x > 0 ? pieceLine << x : pieceLine >> -x) & lineMask;
-					grid[placeY] |= mask;
+				if (!pieceBoard.isEmpty(pieceX, pieceY) && (!checkRange(placeX, placeY) || !isEmpty(placeX, placeY))) {
+					return false;
 				}
 			}
 		}
-	}
 
-	public boolean canPlace(Piece piece) {
-		return canPlace(piece.getBoard(), piece.getX(), piece.getY());
-	}
-
-	public boolean canPlace(Board piece, int x, int y) {
-		for (int pieceY = 0; pieceY < piece.height; pieceY++) {
-			int pieceLine = piece.grid[pieceY];
-			if (pieceLine != 0) {
-				int placeY = y + pieceY;
-				if (placeY >= 0 && placeY < height) {
-					int placeX = x;
-
-					while (placeX < 0) {
-						// This is out of bounds for X, so if the piece has any filled spaces for those bits, it won't fit.
-						if ((pieceLine & 1) != 0) {
-							return false;
-						}
-
-						pieceLine >>= 1;
-						placeX++;
-					}
-
-					// Shift the piece into X position.
-					int mask = pieceLine << placeX;
-
-					// If it has any bits set that are outside of the line then it won't fit.
-					if (mask > lineMask) {
-						return false;
-					}
-
-					// Finally check if it collides with any existing pieces.
-					if ((mask & grid[placeY]) != 0) {
-						return false;
-					}
-
-				} else {
-					// This is out of bounds for Y, so if the piece has any filled spaces at this line, it won't fit.
-					if (piece.grid[pieceY] != 0) {
-						return false;
-					}
-				}
-			}
-		}
 		return true;
 	}
 
-	public boolean isColumnEmpty(int x) {
+	/**
+	 * Removes the given line, moving all other lines that were above it down.
+	 */
+	default void removeLine(int y) {
+		assertRange(0, y);
+
+		while (y > 0) {
+			// Copy the line above down to this one.
+			for (int x = 0; x < getWidth(); x++) {
+				set(x, y, get(x, y - 1));
+			}
+
+			// Move to the line above.
+			y--;
+		}
+
+		// Empty the top line.
+		for (int x = 0; x < getWidth(); x++) {
+			remove(x, 0);
+		}
+	}
+
+	/**
+	 * Indicates if the given column is entirely empty.
+	 */
+	default boolean isColumnEmpty(int x) {
+		assertRange(x, 0);
+
 		for (int y = 0; y < getHeight(); y++) {
 			if (!isEmpty(x, y)) {
 				return false;
@@ -166,49 +93,46 @@ public class Board implements Cloneable {
 		return true;
 	}
 
-	public boolean isLineEmpty(int y) {
-		return grid[y] == 0;
-	}
+	/**
+	 * Indicates if the given line is entirely empty.
+	 */
+	default boolean isLineEmpty(int y) {
+		assertRange(0, y);
 
-	public boolean isLineComplete(int y) {
-		return grid[y] == lineMask;
-	}
-
-	public void removeLine(int y) {
-		while (y > 0) {
-			// Copy the line above down to this one.
-			grid[y] = grid[y - 1];
-
-			// Move to the line above.
-			y--;
-		}
-
-		// Empty the top line.
-		grid[0] = 0;
-	}
-
-	public int countBlocksInLine(int y) {
-		return Integer.bitCount(grid[y]);
-	}
-
-	public int findHighestBlock() {
-		for (int y = 0; y < height; y++) {
-			if (grid[y] != 0) {
-				return y;
+		for (int x = 0; x < getWidth(); x++) {
+			if (!isEmpty(x, y)) {
+				return false;
 			}
 		}
-		return height;
+		return true;
 	}
 
-	@Override
-	public Board clone() {
-		try {
-			Board clone = (Board) super.clone();
-			clone.grid = grid.clone();
-			return clone;
+	/**
+	 * Indicates if the given line is entirely complete.
+	 */
+	default boolean isLineComplete(int y) {
+		assertRange(0, y);
 
-		} catch (CloneNotSupportedException e) {
-			throw new IllegalStateException();
+		for (int x = 0; x < getWidth(); x++) {
+			if (isEmpty(x, y)) {
+				return false;
+			}
 		}
+		return true;
+	}
+
+	/**
+	 * Checks the range of the arguments, throwing an assertion error if assertions are enabled.
+	 */
+	default void assertRange(int x, int y) {
+		assert x >= 0 && x < getWidth() : String.format("x=%d, width=%d", x, getWidth());
+		assert y >= 0 && y < getHeight() : String.format("y=%d, height=%d", y, getHeight());
+	}
+
+	/**
+	 * Checks the range of the arguments, returning true if they are in bounds and false otherwise.
+	 */
+	default boolean checkRange(int x, int y) {
+		return x >= 0 && x < getWidth() && y >= 0 && y < getHeight();
 	}
 }

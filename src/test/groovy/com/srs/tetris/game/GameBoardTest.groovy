@@ -2,21 +2,11 @@ package com.srs.tetris.game
 
 import org.junit.Test
 
-class ColorBoardTest {
-	@Test(expected = UnsupportedOperationException)
-	void rotateLeft() {
-		new ColorBoard(4, 4).rotateLeft();
-	}
-
-	@Test(expected = UnsupportedOperationException)
-	void rotateRight() {
-		new ColorBoard(4, 4).rotateRight();
-	}
-
+class GameBoardTest {
 	@Test
 	void place() {
 		def piece = new Piece(PieceType.L)
-		def board = new ColorBoard(4, 7)
+		def board = new GameBoard(4, 7)
 		
 		board.place(piece.moveTo(1, 1))
 		assert board.grid == [
@@ -55,7 +45,7 @@ class ColorBoardTest {
 	@Test
 	void place_walls() {
 		def piece = new Piece(PieceType.L)
-		def board = new ColorBoard(4, 4)
+		def board = new GameBoard(4, 4)
 
 		board.place(piece.moveTo(50, 50))
 		assert board.grid == [
@@ -101,7 +91,7 @@ class ColorBoardTest {
 	@Test
 	void canPlace() {
 		def piece = new Piece(PieceType.L)
-		def board = new ColorBoard(4, 4)
+		def board = new GameBoard(4, 4)
 
 		assert board.canPlace(piece.moveTo(0, 0))
 
@@ -122,23 +112,23 @@ class ColorBoardTest {
 
 	@Test
 	void canPlace_walls() {
-		def piece = PieceType.L.board
-		def board = new ColorBoard(4, 4)
+		def piece = new Piece(PieceType.L)
+		def board = new GameBoard(4, 4)
 
-		assert board.canPlace(piece, 0, 0)
-		assert !board.canPlace(piece, -1, 0)
-		assert !board.canPlace(piece, 0, -1)
+		assert board.canPlace(piece.moveTo(0, 0))
+		assert !board.canPlace(piece.moveTo(-1, 0))
+		assert !board.canPlace(piece.moveTo(0, -1))
 
-		assert board.canPlace(piece, 1, 0)
-		assert !board.canPlace(piece, 2, 0)
+		assert board.canPlace(piece.moveTo(1, 0))
+		assert !board.canPlace(piece.moveTo(2, 0))
 
-		assert board.canPlace(piece, 0, 2)
-		assert !board.canPlace(piece, 0, 3)
+		assert board.canPlace(piece.moveTo(0, 2))
+		assert !board.canPlace(piece.moveTo(0, 3))
 	}
 
 	@Test
 	void isColumnEmpty() {
-		def board = new ColorBoard([
+		def board = new GameBoard([
 			[0, 0, 0],
 			[0, 1, 0],
 			[1, 1, 0],
@@ -151,7 +141,7 @@ class ColorBoardTest {
 
 	@Test
 	void isLineEmpty() {
-		def board = new ColorBoard([
+		def board = new GameBoard([
 			[0, 0, 0, 0],
 			[0, 0, 1, 1],
 			[1, 1, 1, 1],
@@ -164,7 +154,7 @@ class ColorBoardTest {
 
 	@Test
 	void isLineComplete() {
-		def board = new ColorBoard([
+		def board = new GameBoard([
 			[0, 0, 0, 0],
 			[0, 0, 1, 1],
 			[1, 1, 1, 1],
@@ -177,7 +167,7 @@ class ColorBoardTest {
 
 	@Test
 	void removeLine() {
-		def board = new ColorBoard([
+		def board = new GameBoard([
 			[0, 0, 0, 1],
 			[0, 0, 1, 1],
 			[1, 1, 1, 1],

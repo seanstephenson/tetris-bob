@@ -97,7 +97,7 @@ class BoardTest {
 	
 	@Test
 	void rotateLeft_nonSquare() {
-		def board = new Board([
+		def board = new BitBoard([
 			[0, 0, 0, 0],
 			[1, 1, 1, 1],
 		] as int[][])
@@ -129,7 +129,7 @@ class BoardTest {
 
 	@Test
 	void rotateRight_nonSquare() {
-		def board = new Board([
+		def board = new BitBoard([
 			[0, 0, 0, 0],
 			[1, 1, 1, 1],
 		] as int[][])
@@ -162,7 +162,7 @@ class BoardTest {
 	@Test
 	void place() {
 		def piece = PieceType.L.board
-		def board = new Board(4, 7)
+		def board = new BitBoard(4, 7)
 
 		board.place(piece, 1, 1)
 		assert board.grid == [
@@ -201,7 +201,7 @@ class BoardTest {
 	@Test
 	void place_walls() {
 		def piece = PieceType.L.board
-		def board = new Board(4, 4)
+		def board = new BitBoard(4, 4)
 
 		board.place(piece, 50, 50)
 		assert board.grid == [
@@ -247,7 +247,7 @@ class BoardTest {
 	@Test
 	void canPlace() {
 		def piece = PieceType.L.board
-		def board = new Board(4, 4)
+		def board = new BitBoard(4, 4)
 
 		assert board.canPlace(piece, 0, 0)
 
@@ -269,7 +269,7 @@ class BoardTest {
 	@Test
 	void canPlace_walls() {
 		def piece = PieceType.L.board
-		def board = new Board(4, 4)
+		def board = new BitBoard(4, 4)
 
 		assert board.canPlace(piece, 0, 0)
 		assert !board.canPlace(piece, -1, 0)
@@ -284,7 +284,7 @@ class BoardTest {
 
 	@Test
 	void isColumnEmpty() {
-		def board = new Board([
+		def board = new BitBoard([
 			[0, 0, 0],
 			[0, 1, 0],
 			[1, 1, 0],
@@ -297,7 +297,7 @@ class BoardTest {
 
 	@Test
 	void isLineEmpty() {
-		def board = new Board([
+		def board = new BitBoard([
 			[0, 0, 0, 0],
 			[0, 0, 1, 1],
 			[1, 1, 1, 1],
@@ -310,7 +310,7 @@ class BoardTest {
 
 	@Test
 	void isLineComplete() {
-		def board = new Board([
+		def board = new BitBoard([
 			[0, 0, 0, 0],
 			[0, 0, 1, 1],
 			[1, 1, 1, 1],
@@ -323,7 +323,7 @@ class BoardTest {
 
 	@Test
 	void removeLine() {
-		def board = new Board([
+		def board = new BitBoard([
 			[0, 0, 0, 1],
 			[0, 0, 1, 1],
 			[1, 1, 1, 1],

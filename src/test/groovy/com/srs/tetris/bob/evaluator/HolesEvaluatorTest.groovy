@@ -1,6 +1,6 @@
 package com.srs.tetris.bob.evaluator
 
-import com.srs.tetris.game.Board
+import com.srs.tetris.game.BitBoard
 import org.junit.Test
 
 class HolesEvaluatorTest {
@@ -8,7 +8,7 @@ class HolesEvaluatorTest {
 	public void empty() {
 		def evaluator = new HolesEvaluator(10, 1)
 
-		def score = evaluator.evaluate(new Board([
+		def score = evaluator.evaluate(new BitBoard([
 		    [0, 0, 0],
 		    [0, 0, 0],
 		    [0, 0, 0],
@@ -24,7 +24,7 @@ class HolesEvaluatorTest {
 	public void zeroHoles() {
 		def evaluator = new HolesEvaluator(10, 1)
 
-		def score = evaluator.evaluate(new Board([
+		def score = evaluator.evaluate(new BitBoard([
 		    [0, 0, 0],
 		    [0, 0, 0],
 		    [1, 0, 0],
@@ -40,7 +40,7 @@ class HolesEvaluatorTest {
 	public void singleHole() {
 		def evaluator = new HolesEvaluator(10, 1)
 
-		def score = evaluator.evaluate(new Board([
+		def score = evaluator.evaluate(new BitBoard([
 		    [0, 0, 0],
 		    [1, 0, 0],
 		    [0, 1, 0],
@@ -56,7 +56,7 @@ class HolesEvaluatorTest {
 	public void twoHoles() {
 		def evaluator = new HolesEvaluator(10, 1)
 
-		def score = evaluator.evaluate(new Board([
+		def score = evaluator.evaluate(new BitBoard([
 		    [1, 0, 0],
 		    [1, 0, 0],
 		    [0, 1, 1],
@@ -73,7 +73,7 @@ class HolesEvaluatorTest {
 		def evaluator = new HolesEvaluator(10, 1)
 
 		// A hole only counts as 1 no matter how deep it is.
-		def score = evaluator.evaluate(new Board([
+		def score = evaluator.evaluate(new BitBoard([
 		    [1, 0, 0],
 		    [0, 1, 0],
 		    [0, 1, 1],
@@ -90,7 +90,7 @@ class HolesEvaluatorTest {
 		HolesEvaluator evaluator = new HolesEvaluator(10, 1)
 
 		// Completed lines shouldn't count.
-		def score = evaluator.evaluate(new Board([
+		def score = evaluator.evaluate(new BitBoard([
 		    [1, 1, 1],
 		    [1, 0, 0],
 		    [0, 1, 0],

@@ -1,6 +1,6 @@
 package com.srs.tetris.bob.evaluator;
 
-import com.srs.tetris.game.Board;
+import com.srs.tetris.game.BitBoard;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,7 +12,7 @@ public class CompositeEvaluator implements BoardEvaluator {
 	}
 
 	@Override
-	public Score evaluate(Board board) {
+	public Score evaluate(BitBoard board) {
 		return new CompositeScore(
 			evaluators.stream()
 			.map((evaluator) -> evaluator.evaluate(board))

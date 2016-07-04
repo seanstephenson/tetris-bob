@@ -1,6 +1,6 @@
 package com.srs.tetris.bob.evaluator;
 
-import com.srs.tetris.game.Board;
+import com.srs.tetris.game.BitBoard;
 
 /**
  * Wraps an existing evaluator, multiplying by a given weight.
@@ -15,7 +15,7 @@ public class WeightedEvaluator implements BoardEvaluator {
 	}
 
 	@Override
-	public Score evaluate(Board board) {
+	public Score evaluate(BitBoard board) {
 		return new WeightedScore(evaluator.evaluate(board), weight);
 	}
 }

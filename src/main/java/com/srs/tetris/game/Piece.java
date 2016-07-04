@@ -1,7 +1,5 @@
 package com.srs.tetris.game;
 
-import java.util.Random;
-
 public class Piece implements Cloneable {
 
 	private PieceType type;
@@ -27,7 +25,7 @@ public class Piece implements Cloneable {
 		return type;
 	}
 
-	public Board getBoard() {
+	public BitBoard getBoard() {
 		return getType().getBoard(getOrientation());
 	}
 
