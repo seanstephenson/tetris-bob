@@ -4,6 +4,8 @@ import com.srs.tetris.game.Game;
 import com.srs.tetris.game.GameSettings;
 import com.srs.tetris.player.Player;
 import java.util.Collections;
+import java.util.DoubleSummaryStatistics;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.OptionalDouble;
 import java.util.concurrent.Callable;
@@ -11,6 +13,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -28,42 +31,48 @@ public class PlayerEvaluator {
 	}
 
 	public void evaluate() throws InterruptedException, ExecutionException {
+		long start = System.currentTimeMillis();
 
 		ExecutorService executor = Executors.newFixedThreadPool(threads);
 
-		long start = System.currentTimeMillis();
-
-		futures = executor.invokeAll(IntStream.range(0, games)
-			.mapToObj(i -> new Callable<Game>() {
+		AtomicInteger count = new AtomicInteger(0);
+		futures = executor.invokeAll(Stream.generate(() -> new Callable<Game>() {
 				@Override
 				public Game call() throws Exception {
-					System.out.println("Starting game " + i);
+					System.out.print(".");
+					if (count.incrementAndGet() % 100 == 0) System.out.println();
+
 					return createAndPlayGame();
 				}
 			})
+			.limit(games)
 			.collect(toList())
 		);
 
-		double averageLines = futures.stream().map(this::unwrapFuture)
+		executor.shutdown();
+
+		IntSummaryStatistics lines = futures.stream().map(this::unwrapFuture)
 			.mapToInt(g -> g.getCompletedLines())
-			.average().orElse(0.0);
+			.summaryStatistics();
 
-		double averageScore = futures.stream().map(this::unwrapFuture)
+		IntSummaryStatistics score = futures.stream().map(this::unwrapFuture)
 			.mapToInt(g -> g.getScore())
-			.average().orElse(0.0);
+			.summaryStatistics();
 
-		double averageElapsedTime = futures.stream().map(this::unwrapFuture)
-			.mapToDouble(g -> g.getEndTime() - g.getStartTime())
-			.average().orElse(0.0);
+		DoubleSummaryStatistics elapsed = futures.stream().map(this::unwrapFuture)
+			.mapToDouble(g -> (g.getEndTime() - g.getStartTime()) / 1e3)
+			.summaryStatistics();
 
-		double elapsed = (System.currentTimeMillis() - start) / 1e3;
+		double totalElapsed = (System.currentTimeMillis() - start) / 1e3;
 
 		System.out.println();
-		System.out.printf("Average Lines: %.2f\n", averageLines);
-		System.out.printf("Average Score: %,.2f\n", averageScore);
-		System.out.printf("Average Elapsed Time (ms): %,.2f\n", averageElapsedTime);
 		System.out.println();
-		System.out.printf("Total Elapsed Time (s): %,.3f\n", elapsed);
+		System.out.println("Lines: " + lines);
+		System.out.println("Score: " + score);
+		System.out.println("Elapsed: " + elapsed);
+		System.out.println();
+		System.out.printf("Average Lines: %,.2f\n", lines.getAverage());
+		System.out.printf("Total Elapsed Time (s): %,.3f\n", totalElapsed);
 	}
 
 	private Game createAndPlayGame() {
