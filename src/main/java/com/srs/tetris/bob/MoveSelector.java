@@ -24,21 +24,24 @@ public class MoveSelector {
 	public Move getMove() {
 		BoardEvaluator evaluator = new SapientEvaluator();
 
-		Board board = this.board.clone();
+		Board originalBoard = this.board.clone();
+		Board board = originalBoard;
 
 		// Enumerate all the current moves.
 		List<Move> moves = findPossibleMoves(board);
 
 		Move best = null;
 		for (Move move : moves) {
-			// Draw the piece on the board so we can see what it would look like after.
 			Piece piece = this.piece.moveTo(move.getX(), move.getY(), move.getOrientation());
-			board.place(piece);
+
+			// Draw the piece on the board so we can see what it would look like after.
+			board = doMove(board, piece);
 
 			// Evaluate the position.
 			move.setScore(evaluator.evaluate(board));
 
-			// Now remove the piece from the board.
+			// Now undo the move.
+			board = originalBoard;
 			board.remove(piece);
 
 			// If this move is the best so far, remember it.
@@ -48,6 +51,28 @@ public class MoveSelector {
 		}
 
 		return best;
+	}
+
+	private Board doMove(Board board, Piece piece) {
+		// First, place the piece on the board.
+		board.place(piece);
+
+		// Now, remove completed lines, checking only the lines that were impacted by the piece.
+		Board result = board;
+
+		int top = Math.max(0, piece.getY());
+		int bottom = Math.min(board.getHeight(), top + piece.getBoard().getHeight());
+		for (int y = top; y < bottom; y++) {
+			if (result.isLineComplete(y)) {
+				// This line was complete.  Clone the board if it hasn't been cloned yet and remove it.
+				if (result == board) {
+					result = board.clone();
+				}
+				result.removeLine(y);
+			}
+		}
+
+		return result;
 	}
 
 	private ArrayList<Move> findPossibleMoves(Board board) {
