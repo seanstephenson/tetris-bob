@@ -17,6 +17,7 @@ public class NarrowGapEvaluator implements BoardEvaluator {
 	public NarrowGapScore evaluate(Board board) {
 		int width = board.getWidth();
 		int height = board.getHeight();
+		int top = board.findHighestBlock();
 
 		int twoGaps = 0;
 		int threeGaps = 0;
@@ -25,7 +26,7 @@ public class NarrowGapEvaluator implements BoardEvaluator {
 		for (int x = 0; x < width; x++) {
 			int gapHeight = 0;
 
-			for (int y = height - 1; y >= -1; y--) {
+			for (int y = height - 1; y >= top - 1; y--) {
 				// Determine if this block is part of a narrow gap (surrounded on both sides).
 				if (y >= 0 && board.isEmpty(x, y) && (x == 0 || !board.isEmpty(x - 1, y)) && (x == width - 1 || !board.isEmpty(x + 1, y))) {
 					// Currently in a gap, so increment the height.

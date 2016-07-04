@@ -11,13 +11,10 @@ public class AverageHeightEvaluator implements BoardEvaluator {
 		double totalHeight = 0;
 		int count = 0;
 
-		for (int x = 0; x < board.getWidth(); x++) {
-			for (int y = 0; y < board.getHeight(); y++) {
-				if (!board.isEmpty(x, y)) {
-					totalHeight += board.getHeight() - y;
-					count++;
-				}
-			}
+		for (int y = board.findHighestBlock(); y < board.getHeight(); y++) {
+			int lineCount = board.countBlocksInLine(y);
+			totalHeight += lineCount * (board.getHeight() - y);
+			count += lineCount;
 		}
 
 		return new ScalarScore(count > 0 ? totalHeight / count : 0);

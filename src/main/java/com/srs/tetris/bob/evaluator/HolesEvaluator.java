@@ -22,6 +22,7 @@ public class HolesEvaluator implements BoardEvaluator {
 		// Look for holes in the board, meaning blocks that have an empty block underneath them.
 		int holes = 0;
 		int covers = 0;
+		int top = board.findHighestBlock();
 
 		// Ignore the completed lines.
 		board = removeCompletedLines(board);
@@ -31,7 +32,7 @@ public class HolesEvaluator implements BoardEvaluator {
 
 			State state = State.Solid;
 
-			while (y >= 0) {
+			while (y >= top) {
 				boolean empty = board.isEmpty(x, y);
 
 				if (state == State.Solid && empty) {

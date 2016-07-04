@@ -57,9 +57,11 @@ public class MoveSelector {
 		for (int orientation = 0; orientation < 4; orientation++) {
 			Piece piece = this.piece.moveTo(0, 0, orientation);
 
+			int top = Math.max(0, board.findHighestBlock() - piece.getBoard().getHeight());
+
 			// For each possible horizontal position.
 			for (int x = -piece.getBoard().getWidth(); x < board.getWidth(); x++) {
-				piece = piece.moveTo(x, 0);
+				piece = piece.moveTo(x, top);
 				if (!board.canPlace(piece)) continue;
 
 				// Drop the piece until it lands.

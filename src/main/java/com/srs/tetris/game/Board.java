@@ -196,6 +196,19 @@ public class Board implements Cloneable {
 		grid[0] = 0;
 	}
 
+	public int countBlocksInLine(int y) {
+		return Integer.bitCount(grid[y]);
+	}
+
+	public int findHighestBlock() {
+		for (int y = 0; y < height; y++) {
+			if (grid[y] != 0) {
+				return y;
+			}
+		}
+		return height;
+	}
+
 	@Override
 	public Board clone() {
 		try {
