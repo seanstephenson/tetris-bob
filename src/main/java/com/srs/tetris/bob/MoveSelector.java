@@ -51,7 +51,7 @@ public class MoveSelector {
 	}
 
 	private ArrayList<Move> findPossibleMoves(Board board) {
-		ArrayList<Move> moves = new ArrayList<>();
+		ArrayList<Move> moves = new ArrayList<>(board.getWidth() * 4);
 
 		// For each possible orientation.
 		for (int orientation = 0; orientation < 4; orientation++) {
@@ -67,7 +67,7 @@ public class MoveSelector {
 					piece = piece.moveDown();
 				}
 
-				moves.add(new Move(piece.getX(), piece.getY(), piece.getOrientation()));
+				moves.add(new Move(piece));
 			}
 		}
 
