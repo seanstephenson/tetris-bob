@@ -41,8 +41,13 @@ public class Game {
 
 	private List<GameListener> listeners = new ArrayList<>();
 
-	private enum Status { New, InProgress, Complete }
+	private enum Status { New, InProgress, Complete, Error }
 	private Status status = Status.New;
+	private Throwable error;
+
+	private long startTime;
+	private long endTime;
+
 
 	public Game(GameSettings settings) {
 		this.settings = settings;
@@ -68,29 +73,39 @@ public class Game {
 		}
 
 		status = Status.InProgress;
+		startTime = System.currentTimeMillis();
 
-		notifyListeners((listener) -> listener.onGameStart());
+		try {
+			notifyListeners((listener) -> listener.onGameStart());
 
-		while (!isGameOver()) {
-			long frame = System.currentTimeMillis();
-			long interval = frame - lastFrame;
-			lastFrame = frame;
+			while (!isGameOver()) {
+				long frame = System.currentTimeMillis();
+				long interval = frame - lastFrame;
+				lastFrame = frame;
 
-			// Get the input state from the player.
-			updateInput();
+				// Get the input state from the player.
+				updateInput();
 
-			// Update the game state.
-			updateGame(interval);
+				// Update the game state.
+				updateGame(interval);
 
-			notifyListeners((listener) -> listener.onFrame());
+				notifyListeners((listener) -> listener.onFrame());
 
-			// Sleep until the next frame.
-			sleep(settings.getFrameInterval());
+				// Sleep until the next frame.
+				sleep(settings.getFrameInterval());
+			}
+
+			status = Status.Complete;
+			notifyListeners((listener) -> listener.onGameOver());
+
+		} catch (Throwable throwable) {
+			status = Status.Error;
+			error = throwable;
+			throw throwable;
+
+		} finally {
+			endTime = System.currentTimeMillis();
 		}
-
-		status = Status.Complete;
-
-		notifyListeners((listener) -> listener.onGameOver());
 	}
 
 	private void validate() {
@@ -474,5 +489,21 @@ public class Game {
 
 	public int getTotalPieces() {
 		return totalPieces;
+	}
+
+	public Status getStatus() {
+		return status;
+	}
+
+	public Throwable getError() {
+		return error;
+	}
+
+	public long getStartTime() {
+		return startTime;
+	}
+
+	public long getEndTime() {
+		return endTime;
 	}
 }
