@@ -31,6 +31,8 @@ public class PlayerEvaluator {
 
 		ExecutorService executor = Executors.newFixedThreadPool(threads);
 
+		long start = System.currentTimeMillis();
+
 		futures = executor.invokeAll(IntStream.range(0, games)
 			.mapToObj(i -> new Callable<Game>() {
 				@Override
@@ -54,10 +56,14 @@ public class PlayerEvaluator {
 			.mapToDouble(g -> g.getEndTime() - g.getStartTime())
 			.average().orElse(0.0);
 
+		double elapsed = (System.currentTimeMillis() - start) / 1e3;
+
 		System.out.println();
 		System.out.printf("Average Lines: %.2f\n", averageLines);
 		System.out.printf("Average Score: %,.2f\n", averageScore);
 		System.out.printf("Average Elapsed Time (ms): %,.2f\n", averageElapsedTime);
+		System.out.println();
+		System.out.printf("Total Elapsed Time (s): %,.3f\n", elapsed);
 	}
 
 	private Game createAndPlayGame() {
