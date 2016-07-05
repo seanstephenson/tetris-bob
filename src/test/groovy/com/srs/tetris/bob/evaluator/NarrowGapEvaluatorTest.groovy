@@ -1,6 +1,6 @@
 package com.srs.tetris.bob.evaluator
 
-import com.srs.tetris.game.Board
+import com.srs.tetris.game.BitBoard
 import org.junit.Test
 
 class NarrowGapEvaluatorTest {
@@ -8,7 +8,7 @@ class NarrowGapEvaluatorTest {
 	public void empty() {
 		def evaluator = new NarrowGapEvaluator()
 
-		def score = evaluator.evaluate(new Board([
+		def score = evaluator.evaluate(new BitBoard([
 		    [0, 0, 0],
 		    [0, 0, 0],
 		    [0, 0, 0],
@@ -25,7 +25,7 @@ class NarrowGapEvaluatorTest {
 	public void noGaps() {
 		def evaluator = new NarrowGapEvaluator()
 
-		def score = evaluator.evaluate(new Board([
+		def score = evaluator.evaluate(new BitBoard([
 		    [0, 0, 0],
 		    [1, 0, 0],
 		    [1, 1, 0],
@@ -42,7 +42,7 @@ class NarrowGapEvaluatorTest {
 	public void single_twoGap() {
 		def evaluator = new NarrowGapEvaluator()
 
-		def score = evaluator.evaluate(new Board([
+		def score = evaluator.evaluate(new BitBoard([
 		    [0, 0, 0],
 		    [0, 0, 0],
 		    [1, 0, 1],
@@ -59,7 +59,7 @@ class NarrowGapEvaluatorTest {
 	public void double_twoGaps() {
 		def evaluator = new NarrowGapEvaluator()
 
-		def score = evaluator.evaluate(new Board([
+		def score = evaluator.evaluate(new BitBoard([
 		    [0, 0, 0],
 		    [0, 0, 0],
 		    [0, 1, 0],
@@ -76,7 +76,7 @@ class NarrowGapEvaluatorTest {
 	public void single_threeGap() {
 		def evaluator = new NarrowGapEvaluator()
 
-		def score = evaluator.evaluate(new Board([
+		def score = evaluator.evaluate(new BitBoard([
 		    [0, 0, 0],
 		    [0, 1, 0],
 		    [0, 1, 1],
@@ -93,7 +93,7 @@ class NarrowGapEvaluatorTest {
 	public void double_threeGap() {
 		def evaluator = new NarrowGapEvaluator()
 
-		def score = evaluator.evaluate(new Board([
+		def score = evaluator.evaluate(new BitBoard([
 		    [0, 0, 0],
 		    [0, 1, 0],
 		    [0, 1, 0],
@@ -110,7 +110,7 @@ class NarrowGapEvaluatorTest {
 	public void single_fourGap() {
 		def evaluator = new NarrowGapEvaluator()
 
-		def score = evaluator.evaluate(new Board([
+		def score = evaluator.evaluate(new BitBoard([
 		    [0, 1, 0],
 		    [0, 1, 1],
 		    [0, 1, 1],
@@ -127,7 +127,7 @@ class NarrowGapEvaluatorTest {
 	public void double_fourGap() {
 		def evaluator = new NarrowGapEvaluator()
 
-		def score = evaluator.evaluate(new Board([
+		def score = evaluator.evaluate(new BitBoard([
 		    [0, 1, 0],
 		    [0, 1, 0],
 		    [0, 1, 0],
@@ -144,7 +144,7 @@ class NarrowGapEvaluatorTest {
 	public void coveredGap_wall() {
 		def evaluator = new NarrowGapEvaluator()
 
-		def score = evaluator.evaluate(new Board([
+		def score = evaluator.evaluate(new BitBoard([
 		    [0, 0, 0],
 		    [1, 1, 0],
 		    [0, 1, 1],
@@ -161,7 +161,7 @@ class NarrowGapEvaluatorTest {
 	public void coveredGap_middle() {
 		def evaluator = new NarrowGapEvaluator()
 
-		def score = evaluator.evaluate(new Board([
+		def score = evaluator.evaluate(new BitBoard([
 		    [0, 0, 0],
 		    [1, 1, 0],
 		    [1, 0, 1],

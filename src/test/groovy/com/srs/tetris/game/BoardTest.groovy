@@ -97,7 +97,7 @@ class BoardTest {
 	
 	@Test
 	void rotateLeft_nonSquare() {
-		def board = new Board([
+		def board = new BitBoard([
 			[0, 0, 0, 0],
 			[1, 1, 1, 1],
 		] as int[][])
@@ -129,7 +129,7 @@ class BoardTest {
 
 	@Test
 	void rotateRight_nonSquare() {
-		def board = new Board([
+		def board = new BitBoard([
 			[0, 0, 0, 0],
 			[1, 1, 1, 1],
 		] as int[][])
@@ -162,9 +162,9 @@ class BoardTest {
 	@Test
 	void place() {
 		def piece = PieceType.L.board
-		def board = new Board(4, 7)
+		def board = new BitBoard(4, 7)
 
-		board.place(piece, 1, 1, 1)
+		board.place(piece, 1, 1)
 		assert board.grid == [
 			[0, 0, 0, 0],
 			[0, 0, 0, 1],
@@ -175,25 +175,25 @@ class BoardTest {
 			[0, 0, 0, 0],
 		]
 
-		board.place(piece, 1, 4, 2)
+		board.place(piece, 1, 4)
 		assert board.grid == [
 			[0, 0, 0, 0],
 			[0, 0, 0, 1],
 			[0, 1, 1, 1],
 			[0, 0, 0, 0],
-			[0, 0, 0, 2],
-			[0, 2, 2, 2],
+			[0, 0, 0, 1],
+			[0, 1, 1, 1],
 			[0, 0, 0, 0],
 		]
 
-		board.place(piece, 0, 0, 3)
+		board.place(piece, 0, 0)
 		assert board.grid == [
-			[0, 0, 3, 0],
-			[3, 3, 3, 1],
+			[0, 0, 1, 0],
+			[1, 1, 1, 1],
 			[0, 1, 1, 1],
 			[0, 0, 0, 0],
-			[0, 0, 0, 2],
-			[0, 2, 2, 2],
+			[0, 0, 0, 1],
+			[0, 1, 1, 1],
 			[0, 0, 0, 0],
 		]
 	}
@@ -201,9 +201,9 @@ class BoardTest {
 	@Test
 	void place_walls() {
 		def piece = PieceType.L.board
-		def board = new Board(4, 4)
+		def board = new BitBoard(4, 4)
 
-		board.place(piece, 50, 50, 1)
+		board.place(piece, 50, 50)
 		assert board.grid == [
 			[0, 0, 0, 0],
 			[0, 0, 0, 0],
@@ -211,7 +211,7 @@ class BoardTest {
 			[0, 0, 0, 0],
 		]
 
-		board.place(piece, -50, -50, 1)
+		board.place(piece, -50, -50)
 		assert board.grid == [
 			[0, 0, 0, 0],
 			[0, 0, 0, 0],
@@ -219,7 +219,7 @@ class BoardTest {
 			[0, 0, 0, 0],
 		]
 
-		board.place(piece, -2, -1, 1)
+		board.place(piece, -2, -1)
 		assert board.grid == [
 			[1, 0, 0, 0],
 			[0, 0, 0, 0],
@@ -227,31 +227,31 @@ class BoardTest {
 			[0, 0, 0, 0],
 		]
 
-		board.place(piece, 2, -1, 2)
+		board.place(piece, 2, -1)
 		assert board.grid == [
-			[1, 0, 2, 2],
+			[1, 0, 1, 1],
 			[0, 0, 0, 0],
 			[0, 0, 0, 0],
 			[0, 0, 0, 0],
 		]
 
-		board.place(piece, 1, 3, 3)
+		board.place(piece, 1, 3)
 		assert board.grid == [
-			[1, 0, 2, 2],
+			[1, 0, 1, 1],
 			[0, 0, 0, 0],
 			[0, 0, 0, 0],
-			[0, 0, 0, 3],
+			[0, 0, 0, 1],
 		]
 	}
 
 	@Test
 	void canPlace() {
 		def piece = PieceType.L.board
-		def board = new Board(4, 4)
+		def board = new BitBoard(4, 4)
 
 		assert board.canPlace(piece, 0, 0)
 
-		board.place(piece, 0, 0, 1)
+		board.place(piece, 0, 0)
 		assert board.grid == [
 			[0, 0, 1, 0],
 			[1, 1, 1, 0],
@@ -269,7 +269,7 @@ class BoardTest {
 	@Test
 	void canPlace_walls() {
 		def piece = PieceType.L.board
-		def board = new Board(4, 4)
+		def board = new BitBoard(4, 4)
 
 		assert board.canPlace(piece, 0, 0)
 		assert !board.canPlace(piece, -1, 0)
@@ -284,7 +284,7 @@ class BoardTest {
 
 	@Test
 	void isColumnEmpty() {
-		def board = new Board([
+		def board = new BitBoard([
 			[0, 0, 0],
 			[0, 1, 0],
 			[1, 1, 0],
@@ -297,7 +297,7 @@ class BoardTest {
 
 	@Test
 	void isLineEmpty() {
-		def board = new Board([
+		def board = new BitBoard([
 			[0, 0, 0, 0],
 			[0, 0, 1, 1],
 			[1, 1, 1, 1],
@@ -310,7 +310,7 @@ class BoardTest {
 
 	@Test
 	void isLineComplete() {
-		def board = new Board([
+		def board = new BitBoard([
 			[0, 0, 0, 0],
 			[0, 0, 1, 1],
 			[1, 1, 1, 1],
@@ -322,55 +322,19 @@ class BoardTest {
 	}
 
 	@Test
-	void fillLine() {
-		def board = new Board([
-			[0, 0, 0, 0],
-			[0, 0, 1, 1],
-			[1, 1, 1, 1],
-		] as int[][])
-
-		assert board.grid == [
-			[0, 0, 0, 0],
-			[0, 0, 1, 1],
-			[1, 1, 1, 1],
-		]
-
-		board.fillLine(0, 2)
-		assert board.grid == [
-			[2, 2, 2, 2],
-			[0, 0, 1, 1],
-			[1, 1, 1, 1],
-		]
-
-		board.fillLine(1, 0)
-		assert board.grid == [
-			[2, 2, 2, 2],
-			[0, 0, 0, 0],
-			[1, 1, 1, 1],
-		]
-
-		board.fillLine(2, 3)
-		assert board.grid == [
-			[2, 2, 2, 2],
-			[0, 0, 0, 0],
-			[3, 3, 3, 3],
-		]
-	}
-
-	@Test
 	void removeLine() {
-		def board = new Board([
+		def board = new BitBoard([
 			[0, 0, 0, 1],
 			[0, 0, 1, 1],
 			[1, 1, 1, 1],
-			[2, 2, 2, 2],
+			[1, 1, 1, 1],
 		] as int[][])
 
 		assert board.grid == [
 			[0, 0, 0, 1],
 			[0, 0, 1, 1],
 			[1, 1, 1, 1],
-			[2, 2, 2, 2],
+			[1, 1, 1, 1],
 		]
 
 		board.removeLine(2)
@@ -378,7 +342,7 @@ class BoardTest {
 			[0, 0, 0, 0],
 			[0, 0, 0, 1],
 			[0, 0, 1, 1],
-			[2, 2, 2, 2],
+			[1, 1, 1, 1],
 		]
 
 		board.removeLine(0)
@@ -386,7 +350,7 @@ class BoardTest {
 			[0, 0, 0, 0],
 			[0, 0, 0, 1],
 			[0, 0, 1, 1],
-			[2, 2, 2, 2],
+			[1, 1, 1, 1],
 		]
 
 		board.removeLine(3)

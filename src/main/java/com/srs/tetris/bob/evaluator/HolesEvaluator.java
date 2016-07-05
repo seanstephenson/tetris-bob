@@ -1,5 +1,6 @@
 package com.srs.tetris.bob.evaluator;
 
+import com.srs.tetris.game.BitBoard;
 import com.srs.tetris.game.Board;
 
 /**
@@ -18,17 +19,18 @@ public class HolesEvaluator implements BoardEvaluator {
 	private enum State { Solid, Above, Cover }
 
 	@Override
-	public HolesScore evaluate(Board board) {
+	public HolesScore evaluate(BitBoard board) {
 		// Look for holes in the board, meaning blocks that have an empty block underneath them.
 		int holes = 0;
 		int covers = 0;
+		int top = board.findHighestBlock();
 
 		for (int x = 0; x < board.getWidth(); x++) {
 			int y = board.getHeight() - 1;
 
 			State state = State.Solid;
 
-			while (y >= 0) {
+			while (y >= top) {
 				boolean empty = board.isEmpty(x, y);
 
 				if (state == State.Solid && empty) {
