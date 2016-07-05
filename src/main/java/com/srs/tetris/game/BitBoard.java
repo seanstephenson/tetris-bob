@@ -47,7 +47,8 @@ public class BitBoard extends AbstractBoard<Boolean> {
 
 	@Override
 	public boolean isEmpty(int x, int y) {
-		return !get(x, y);
+		assertRange(x, y);
+		return (grid[y] & mask(x)) == 0;
 	}
 
 	@Override
@@ -58,7 +59,7 @@ public class BitBoard extends AbstractBoard<Boolean> {
 	@Override
 	public Boolean get(int x, int y) {
 		assertRange(x, y);
-		return (grid[y] & mask(x)) > 0;
+		return !isEmpty(x, y);
 	}
 
 	@Override
