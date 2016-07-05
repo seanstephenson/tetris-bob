@@ -17,6 +17,7 @@ public class SapientEvaluator extends CompositeEvaluator {
 
 	private static final double NARROW_GAP_WEIGHT = -3.0;
 
+	private static final double NEARLY_COMPLETE_LINES_WEIGHT = 3.0;
 
 	public SapientEvaluator() {
 		super(
@@ -24,7 +25,8 @@ public class SapientEvaluator extends CompositeEvaluator {
 			new WeightedEvaluator(new AverageHeightEvaluator(), AVERAGE_HEIGHT_WEIGHT),
 			new WeightedEvaluator(new DangerZoneEvaluator(DANGER_ZONE_SIZE, DANGER_ZONE_EXPONENT), DANGER_ZONE_WEIGHT),
 			new HolesEvaluator(HOLE_WEIGHT, HOLE_COVER_WEIGHT),
-			new WeightedEvaluator(new NarrowGapEvaluator(), NARROW_GAP_WEIGHT)
+			new WeightedEvaluator(new NarrowGapEvaluator(), NARROW_GAP_WEIGHT),
+			new WeightedEvaluator(new NearlyCompletedLinesEvaluator(), NEARLY_COMPLETE_LINES_WEIGHT)
 		);
 	}
 }
