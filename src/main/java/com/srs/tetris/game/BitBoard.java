@@ -169,6 +169,20 @@ public class BitBoard extends AbstractBoard<Boolean> {
 	}
 
 	/**
+	 * Returns the given line as a bitmap, with a 1 value in each filled position.
+	 */
+	public int getLine(int y) {
+		return grid[y];
+	}
+
+	/**
+	 * Returns a mask for a completely filled line, with a 1 value in each position.
+	 */
+	public int getLineMask() {
+		return lineMask;
+	}
+
+	/**
 	 * Returns the number of filled, non-empty blocks in the given line.
 	 */
 	public int countBlocksInLine(int y) {

@@ -12,8 +12,7 @@ public class SapientEvaluator extends CompositeEvaluator {
 	private static final double DANGER_ZONE_EXPONENT = 1.25;
 	private static final int DANGER_ZONE_SIZE = 10;
 
-	private static final double HOLE_WEIGHT = -15.0;
-	private static final double HOLE_COVER_WEIGHT = 0.0;
+	private static final double HOLES_WEIGHT = -15.0;
 
 	private static final double NARROW_GAP_WEIGHT = -3.0;
 
@@ -24,7 +23,7 @@ public class SapientEvaluator extends CompositeEvaluator {
 			new WeightedEvaluator(new HeightEvaluator(), HEIGHT_WEIGHT),
 			new WeightedEvaluator(new AverageHeightEvaluator(), AVERAGE_HEIGHT_WEIGHT),
 			new WeightedEvaluator(new DangerZoneEvaluator(DANGER_ZONE_SIZE, DANGER_ZONE_EXPONENT), DANGER_ZONE_WEIGHT),
-			new HolesEvaluator(HOLE_WEIGHT, HOLE_COVER_WEIGHT),
+			new WeightedEvaluator(new HolesEvaluator(), HOLES_WEIGHT),
 			new WeightedEvaluator(new NarrowGapEvaluator(), NARROW_GAP_WEIGHT),
 			new WeightedEvaluator(new NearlyCompletedLinesEvaluator(), NEARLY_COMPLETE_LINES_WEIGHT)
 		);

@@ -8,77 +8,32 @@ import com.srs.tetris.game.Board;
  */
 public class HolesEvaluator implements BoardEvaluator {
 
-	private double holeWeight;
-	private double coverWeight;
-
-	public HolesEvaluator(double holeWeight, double coverWeight) {
-		this.holeWeight = holeWeight;
-		this.coverWeight = coverWeight;
-	}
-
-	private enum State { Solid, Above, Cover }
-
 	@Override
-	public HolesScore evaluate(BitBoard board) {
-		// Look for holes in the board, meaning blocks that have an empty block underneath them.
-		int holes = 0;
-		int covers = 0;
+	public Score evaluate(BitBoard board) {
+		int width = board.getWidth();
+		int height = board.getHeight();
 		int top = board.findHighestBlock();
 
-		for (int x = 0; x < board.getWidth(); x++) {
-			int y = board.getHeight() - 1;
+		// Walk through the board and count transitions from a 1 to a 0 and back.
+		int transitions = 0;
 
-			State state = State.Solid;
+		// Start with a completely empty line at the top.
+		int previous = 0;
 
-			while (y >= top) {
-				boolean empty = board.isEmpty(x, y);
+		for (int y = top; y < height; y++) {
+			int line = board.getLine(y);
 
-				if (state == State.Solid && empty) {
-					// So far we haven't detected any holes and this space is empty.  We are now above the solid part.
-					state = State.Above;
-
-				} else if (state == State.Above && !empty) {
-					// We were already above the solid part but found another filled space.  This is the cover above a hole.
-					holes++;
-					covers++;
-					state = State.Cover;
-
-				} else if (state == State.Cover && !empty) {
-					// We are already in a cover and this is yet another cover.
-					covers++;
-
-				} else if (state == State.Cover && empty) {
-					// We were in a cover, but now we are above it again.
-					state = State.Above;
-				}
-
-				y--;
-			}
+			// Count the number of transitions.
+			transitions += Integer.bitCount(line ^ previous);
+			previous = line;
 		}
 
-		return new HolesScore(holes, covers);
-	}
+		// Now count the final transition to a full line.
+		transitions += Integer.bitCount(board.getLineMask() ^ previous);
 
-	public class HolesScore implements Score {
-		private int holes;
-		private int covers;
+		// There will always be one transition per column, and then two on top of that for each hole.
+		int holes = (transitions - width) / 2;
 
-		public HolesScore(int holes, int covers) {
-			this.holes = holes;
-			this.covers = covers;
-		}
-
-		public int getHoles() {
-			return holes;
-		}
-
-		public int getCovers() {
-			return covers;
-		}
-
-		@Override
-		public double getScore() {
-			return holes * holeWeight + covers * coverWeight;
-		}
+		return new ScalarScore(holes);
 	}
 }

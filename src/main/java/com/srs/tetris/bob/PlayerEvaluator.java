@@ -108,7 +108,7 @@ public class PlayerEvaluator {
 	}
 
 	public static void main(String[] args) throws ExecutionException, InterruptedException {
-		PlayerEvaluator evaluator = new PlayerEvaluator(1000);
+		PlayerEvaluator evaluator = new PlayerEvaluator(100);
 		evaluator.evaluate();
 	}
 }
