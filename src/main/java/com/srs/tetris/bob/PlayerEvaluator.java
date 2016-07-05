@@ -55,6 +55,10 @@ public class PlayerEvaluator {
 			.mapToInt(g -> g.getCompletedLines())
 			.summaryStatistics();
 
+		IntSummaryStatistics pieces = futures.stream().map(this::unwrapFuture)
+			.mapToInt(g -> g.getTotalPieces())
+			.summaryStatistics();
+
 		IntSummaryStatistics score = futures.stream().map(this::unwrapFuture)
 			.mapToInt(g -> g.getScore())
 			.summaryStatistics();
@@ -63,16 +67,19 @@ public class PlayerEvaluator {
 			.mapToDouble(g -> (g.getEndTime() - g.getStartTime()) / 1e3)
 			.summaryStatistics();
 
+
 		double totalElapsed = (System.currentTimeMillis() - start) / 1e3;
 
 		System.out.println();
 		System.out.println();
 		System.out.println("Lines: " + lines);
+		System.out.println("Pieces: " + pieces);
 		System.out.println("Score: " + score);
 		System.out.println("Elapsed: " + elapsed);
 		System.out.println();
 		System.out.printf("Average Lines: %,.2f\n", lines.getAverage());
 		System.out.printf("Total Elapsed Time (s): %,.3f\n", totalElapsed);
+		System.out.printf("Pieces per Second: %,.3f\n", pieces.getSum() / totalElapsed);
 	}
 
 	private Game createAndPlayGame() {
