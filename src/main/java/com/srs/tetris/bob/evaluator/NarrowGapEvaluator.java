@@ -11,7 +11,7 @@ public class NarrowGapEvaluator implements BoardEvaluator {
 	private static final double THREE_GAP_WEIGHT = 1.0;
 	private static final double FOUR_GAP_WEIGHT = 3.0;
 
-	private static final double GAP_COUNT_EXPONENT = 2.0;
+	private static final double GAP_COUNT_EXPONENT = 1.0;
 
 	@Override
 	public NarrowGapScore evaluate(BitBoard board) {
