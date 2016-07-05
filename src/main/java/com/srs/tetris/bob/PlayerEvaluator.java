@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.DoubleSummaryStatistics;
 import java.util.IntSummaryStatistics;
 import java.util.List;
+import java.util.LongSummaryStatistics;
 import java.util.OptionalDouble;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -59,8 +60,8 @@ public class PlayerEvaluator {
 			.mapToInt(g -> g.getTotalPieces())
 			.summaryStatistics();
 
-		IntSummaryStatistics score = futures.stream().map(this::unwrapFuture)
-			.mapToInt(g -> g.getScore())
+		LongSummaryStatistics score = futures.stream().map(this::unwrapFuture)
+			.mapToLong(g -> g.getScore())
 			.summaryStatistics();
 
 		DoubleSummaryStatistics elapsed = futures.stream().map(this::unwrapFuture)

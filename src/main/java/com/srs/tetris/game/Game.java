@@ -28,7 +28,7 @@ public class Game {
 	private int totalPieces;
 	private int completedLines;
 	private int level;
-	private int score;
+	private long score;
 
 	private long lastFrame;
 
@@ -416,12 +416,12 @@ public class Game {
 		}
 	}
 
-	private int computeScoreDeltaForPiece() {
+	private long computeScoreDeltaForPiece() {
 		// This is the original NES scoring system.
 		return (level + 1) * 5;
 	}
 
-	private int computeScoreDeltaForLines(int lines) {
+	private long computeScoreDeltaForLines(int lines) {
 		assert lines >= 1 && lines <= 4 : "Unexpected number of completed lines: " + lines;
 
 		// This is the original NES scoring system.
@@ -475,7 +475,7 @@ public class Game {
 		return swapPiece;
 	}
 
-	public int getScore() {
+	public long getScore() {
 		return score;
 	}
 
