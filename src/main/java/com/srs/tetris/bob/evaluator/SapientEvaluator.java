@@ -5,27 +5,33 @@ package com.srs.tetris.bob.evaluator;
  */
 public class SapientEvaluator extends CompositeEvaluator {
 
-	private static final double HEIGHT_WEIGHT = -1.5;
-	private static final double AVERAGE_HEIGHT_WEIGHT = -1.5;
+	public static class Weights {
+		public double height = -1.5;
+		public double averageHeight = -1.5;
 
-	private static final double DANGER_ZONE_WEIGHT = -4.0;
-	private static final double DANGER_ZONE_EXPONENT = 1.25;
-	private static final int DANGER_ZONE_SIZE = 10;
+		public double dangerZone = -4.0;
+		public double dangerZoneExponent = 1.25;
+		public double dangerZoneSize = 10;
 
-	private static final double HOLES_WEIGHT = -15.0;
+		public double holes = -15.0;
 
-	private static final double NARROW_GAP_WEIGHT = -1.5;
+		public double narrowGap = -1.5;
 
-	private static final double NEARLY_COMPLETE_LINES_WEIGHT = 3.0;
+		public double nearlyCompleteLines = 3.0;
+	}
 
 	public SapientEvaluator() {
+		this(new Weights());
+	}
+
+	public SapientEvaluator(Weights weights) {
 		super(
-			new WeightedEvaluator(new HeightEvaluator(), HEIGHT_WEIGHT),
-			new WeightedEvaluator(new AverageHeightEvaluator(), AVERAGE_HEIGHT_WEIGHT),
-			new WeightedEvaluator(new DangerZoneEvaluator(DANGER_ZONE_SIZE, DANGER_ZONE_EXPONENT), DANGER_ZONE_WEIGHT),
-			new WeightedEvaluator(new HolesEvaluator(), HOLES_WEIGHT),
-			new WeightedEvaluator(new NarrowGapEvaluator(), NARROW_GAP_WEIGHT),
-			new WeightedEvaluator(new NearlyCompletedLinesEvaluator(), NEARLY_COMPLETE_LINES_WEIGHT)
+			new WeightedEvaluator(new HeightEvaluator(), weights.height),
+			new WeightedEvaluator(new AverageHeightEvaluator(), weights.averageHeight),
+			new WeightedEvaluator(new DangerZoneEvaluator((int) weights.dangerZoneSize, weights.dangerZoneExponent), weights.dangerZone),
+			new WeightedEvaluator(new HolesEvaluator(), weights.holes),
+			new WeightedEvaluator(new NarrowGapEvaluator(), weights.narrowGap),
+			new WeightedEvaluator(new NearlyCompletedLinesEvaluator(), weights.nearlyCompleteLines)
 		);
 	}
 }
