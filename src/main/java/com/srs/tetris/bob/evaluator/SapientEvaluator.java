@@ -14,7 +14,7 @@ public class SapientEvaluator extends CompositeEvaluator {
 
 	private static final double HOLES_WEIGHT = -15.0;
 
-	private static final double NARROW_GAP_WEIGHT = -3.0;
+	private static final double NARROW_GAP_WEIGHT = -1.5;
 
 	private static final double NEARLY_COMPLETE_LINES_WEIGHT = 3.0;
 
