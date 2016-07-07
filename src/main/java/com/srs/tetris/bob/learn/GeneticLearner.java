@@ -102,8 +102,8 @@ public class GeneticLearner {
 		// Now write out the results for this generation.
 		writeGeneration(population);
 
-		SpecimenBreeder breeder = new SpecimenBreeder(random, generation);
-		SpecimenMutator mutator = new SpecimenMutator(random, generation, MUTATE_PROBABILITY, MUTATION_VARIANCE);
+		SpecimenBreeder breeder = new SpecimenBreeder(random, generation + 1);
+		SpecimenMutator mutator = new SpecimenMutator(random, generation + 1, MUTATE_PROBABILITY, MUTATION_VARIANCE);
 
 		// Find the successful specimens for this generation (and eliminate the rest).
 		List<Specimen> successfulSpecimens = population.stream()
@@ -117,7 +117,7 @@ public class GeneticLearner {
 			"\n",
 			generation,
 			successfulSpecimens.stream().filter(s -> s.getGeneration() != generation).count(),
-			successfulSpecimens.size(),
+			population.stream().filter(s -> s.getGeneration() != generation).count(),
 			population.get(0).getLines().getAverage()
 		);
 
@@ -174,21 +174,20 @@ public class GeneticLearner {
 	}
 
 	private List<Specimen> createInitialPopulation() {
-		SpecimenMutator mutator = new SpecimenMutator(random, generation, 1.0, INITIAL_POPULATION_VARIANCE);
-
 		return Stream.concat(
 			// Include one initial specimen, unchanged.
 			Stream.of(createInitialSpecimen()),
 
-			// Create the rest of the specimens and mutate them.
+			// Create the rest of the specimens for generation 1 as mutations from the original.
 			Stream.generate(this::createInitialSpecimen)
 				.limit(SPECIMENS_PER_GENERATION - 1)
-				.map(mutator::mutate)
+				.map(new SpecimenMutator(random, 1, 1.0, INITIAL_POPULATION_VARIANCE)::mutate)
 		).collect(toList());
 	}
 
 	private Specimen createInitialSpecimen() {
-		return new Specimen(UUID.randomUUID().toString(), 1, new SapientEvaluator.Weights());
+		// Create the initial specimen from generation 0.
+		return new Specimen(UUID.randomUUID().toString(), 0, new SapientEvaluator.Weights());
 	}
 
 	private void writeGeneration(List<Specimen> population) {
