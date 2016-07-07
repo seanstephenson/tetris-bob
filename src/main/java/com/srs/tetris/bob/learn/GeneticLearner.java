@@ -9,12 +9,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.FileAttribute;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
 import java.util.Collections;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -81,7 +81,7 @@ public class GeneticLearner {
 
 	private List<Specimen> runGenerations(List<Specimen> population) {
 		for (generation = 1; generation <= GENERATIONS; generation++) {
-			System.out.printf("Generation %d\n", generation);
+			System.out.printf("Generation %d of %d\n", generation, GENERATIONS);
 			population = evaluateAndReproduce(population);
 		}
 		return population;
@@ -99,19 +99,27 @@ public class GeneticLearner {
 		// Sort them by average lines to put the most successful first.
 		Collections.sort(population, comparing(s -> s.getLines().getAverage(), reverseOrder()));
 
-		System.out.printf("Finished generation %d\n, most successful learner avg lines: %,.2f\n\n",
-			generation, population.get(0).getLines().getAverage());
-
 		// Now write out the results for this generation.
 		writeGeneration(population);
 
-		SpecimenBreeder breeder = new SpecimenBreeder(random);
-		SpecimenMutator mutator = new SpecimenMutator(random, MUTATE_PROBABILITY, MUTATION_VARIANCE);
+		SpecimenBreeder breeder = new SpecimenBreeder(random, generation);
+		SpecimenMutator mutator = new SpecimenMutator(random, generation, MUTATE_PROBABILITY, MUTATION_VARIANCE);
 
 		// Find the successful specimens for this generation (and eliminate the rest).
 		List<Specimen> successfulSpecimens = population.stream()
 			.limit((int) (SUCCESS_THRESHOLD * SPECIMENS_PER_GENERATION))
 			.collect(toList());
+
+		System.out.printf(
+			"Finished generation: %d\n" +
+			"Previous generation survivors: %d of %d\n" +
+			"Most successful learner avg lines: %,.2f\n" +
+			"\n",
+			generation,
+			successfulSpecimens.stream().filter(s -> s.getGeneration() != generation).count(),
+			successfulSpecimens.size(),
+			population.get(0).getLines().getAverage()
+		);
 
 		// Breed the successful ones to get children.
 		List<Specimen> children = Stream.generate(() -> {
@@ -138,32 +146,35 @@ public class GeneticLearner {
 	}
 
 	private void evaluateSpecimen(Specimen specimen) {
+		PlayerEvaluator evaluator = new PlayerEvaluator(
+			() -> {
+				// Create a new player with the weights from this specimen.
+				BobPlayer player = new BobPlayer();
+				player.setBoardEvaluator(new SapientEvaluator(specimen.getWeights()));
+				return player;
+			},
+			executor,
+			GAMES_PER_SPECIMEN
+		);
+		evaluator.setOnGameEnd(new PrintDotConsumer<>());
+
+		// Evaluate the specimen.
+		PlayerEvaluator.Result result = evaluator.run();
+
+		// Record the number of lines achieved.
+		IntSummaryStatistics lines = result.getGames().stream()
+			.mapToInt(Game::getCompletedLines)
+			.summaryStatistics();
+
 		if (specimen.getLines() == null) {
-			PlayerEvaluator evaluator = new PlayerEvaluator(
-				() -> {
-					// Create a new player with the weights from this specimen.
-					BobPlayer player = new BobPlayer();
-					player.setBoardEvaluator(new SapientEvaluator(specimen.getWeights()));
-					return player;
-				},
-				executor,
-				GAMES_PER_SPECIMEN
-			);
-			evaluator.setOnGameEnd(new PrintDotConsumer<>());
-
-			// Evaluate the specimen.
-			PlayerEvaluator.Result result = evaluator.run();
-
-			// Record the number of lines achieved.
-			specimen.setLines(result.getGames().stream()
-				.mapToInt(Game::getCompletedLines)
-				.summaryStatistics()
-			);
+			specimen.setLines(lines);
+		} else {
+			specimen.getLines().combine(lines);
 		}
 	}
 
 	private List<Specimen> createInitialPopulation() {
-		SpecimenMutator mutator = new SpecimenMutator(random, 1.0, INITIAL_POPULATION_VARIANCE);
+		SpecimenMutator mutator = new SpecimenMutator(random, generation, 1.0, INITIAL_POPULATION_VARIANCE);
 
 		return Stream.concat(
 			// Include one initial specimen, unchanged.
@@ -177,10 +188,7 @@ public class GeneticLearner {
 	}
 
 	private Specimen createInitialSpecimen() {
-		return new Specimen(
-			UUID.randomUUID().toString(),
-			new SapientEvaluator.Weights()
-		);
+		return new Specimen(UUID.randomUUID().toString(), 1, new SapientEvaluator.Weights());
 	}
 
 	private void writeGeneration(List<Specimen> population) {

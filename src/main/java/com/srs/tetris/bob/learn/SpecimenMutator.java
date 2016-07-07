@@ -8,11 +8,13 @@ import java.util.Random;
  */
 public class SpecimenMutator {
 	private Random random;
+	private int generation;
 	private double mutateProbability;
 	private double mutationVariance;
 
-	public SpecimenMutator(Random random, double mutateProbability, double mutationVariance) {
+	public SpecimenMutator(Random random, int generation, double mutateProbability, double mutationVariance) {
 		this.random = random;
+		this.generation = generation;
 		this.mutateProbability = mutateProbability;
 		this.mutationVariance = mutationVariance;
 	}
@@ -29,7 +31,7 @@ public class SpecimenMutator {
 		}
 
 		// Create a new specimen.
-		return new Specimen(specimen.getName(), WeightUtil.createWeights(weights));
+		return new Specimen(specimen.getName(), generation, WeightUtil.createWeights(weights));
 	}
 
 	private double mutate(double value) {

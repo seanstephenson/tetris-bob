@@ -5,12 +5,14 @@ import java.util.IntSummaryStatistics;
 
 public class Specimen implements Cloneable {
 	private String name;
+	private int generation;
 	private SapientEvaluator.Weights weights;
 
 	private IntSummaryStatistics lines;
 
-	public Specimen(String name, SapientEvaluator.Weights weights) {
+	public Specimen(String name, int generation, SapientEvaluator.Weights weights) {
 		this.name = name;
+		this.generation = generation;
 		this.weights = weights;
 	}
 
@@ -20,6 +22,10 @@ public class Specimen implements Cloneable {
 
 	public SapientEvaluator.Weights getWeights() {
 		return weights;
+	}
+
+	public int getGeneration() {
+		return generation;
 	}
 
 	public IntSummaryStatistics getLines() {

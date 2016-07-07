@@ -14,9 +14,11 @@ public class SpecimenBreeder {
 	private static final double COMBINE_PROBABILITY = 0.2;
 
 	private Random random;
+	private int generation;
 
-	public SpecimenBreeder(Random random) {
+	public SpecimenBreeder(Random random, int generation) {
 		this.random = random;
+		this.generation = generation;
 	}
 
 	/**
@@ -46,6 +48,7 @@ public class SpecimenBreeder {
 
 		return new Specimen(
 			UUID.randomUUID().toString(),
+			generation,
 			WeightUtil.createWeights(weights)
 		);
 	}
