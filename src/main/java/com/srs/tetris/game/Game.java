@@ -2,6 +2,9 @@ package com.srs.tetris.game;
 
 import com.srs.tetris.player.DirectPlayer;
 import com.srs.tetris.player.Player;
+import com.srs.tetris.replay.Replay;
+import com.srs.tetris.replay.ReplayGenerator;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -45,9 +48,10 @@ public class Game {
 	private Status status = Status.New;
 	private Throwable error;
 
-	private long startTime;
-	private long endTime;
+	private Instant startTime;
+	private Instant endTime;
 
+	private ReplayGenerator replayGenerator;
 
 	public Game(GameSettings settings) {
 		this.settings = settings;
@@ -73,7 +77,7 @@ public class Game {
 		}
 
 		status = Status.InProgress;
-		startTime = System.currentTimeMillis();
+		startTime = Instant.now();
 
 		try {
 			notifyListeners((listener) -> listener.onGameStart());
@@ -96,7 +100,6 @@ public class Game {
 			}
 
 			status = Status.Complete;
-			notifyListeners((listener) -> listener.onGameOver());
 
 		} catch (Throwable throwable) {
 			status = Status.Error;
@@ -104,7 +107,8 @@ public class Game {
 			throw throwable;
 
 		} finally {
-			endTime = System.currentTimeMillis();
+			endTime = Instant.now();
+			notifyListeners((listener) -> listener.onGameOver());
 		}
 	}
 
@@ -131,6 +135,11 @@ public class Game {
 
 		// Calculate the starting level.
 		updateLevel();
+
+		// Create the replay generator.
+		if (settings.isGenerateReplay()) {
+			addListener(replayGenerator = new ReplayGenerator(this));
+		}
 	}
 
 	private void updateInput() {
@@ -338,6 +347,9 @@ public class Game {
 		// Place the piece on the board.
 		board.place(piece);
 
+		// Notify listeners that the piece just landed.
+		notifyListeners((listener) -> listener.onPieceLand());
+
 		// Update the score.
 		score += computeScoreDeltaForPiece();
 
@@ -499,11 +511,15 @@ public class Game {
 		return error;
 	}
 
-	public long getStartTime() {
+	public Instant getStartTime() {
 		return startTime;
 	}
 
-	public long getEndTime() {
+	public Instant getEndTime() {
 		return endTime;
+	}
+
+	public Replay getReplay() {
+		return replayGenerator != null ? replayGenerator.getReplay() : null;
 	}
 }

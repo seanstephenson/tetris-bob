@@ -202,7 +202,7 @@ public class GeneticLearner {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		// Create a new directory for output files
 		Path outputBase = createOutputBase();
 
@@ -213,24 +213,10 @@ public class GeneticLearner {
 		learner.run();
 	}
 
-	private static Path createOutputBase() {
-		String now = new DateTimeFormatterBuilder()
-			.append(DateTimeFormatter.ISO_LOCAL_DATE)
-			.appendLiteral('_')
-			.appendValue(ChronoField.HOUR_OF_DAY, 2)
-			.appendLiteral('.')
-			.appendValue(ChronoField.MINUTE_OF_HOUR, 2)
-			.appendLiteral('.')
-			.appendValue(ChronoField.SECOND_OF_MINUTE, 2)
-			.toFormatter().format(LocalDateTime.now());
-
-		Path outputBase = Paths.get("learning-data", now);
-
-		try {
-			Files.createDirectory(outputBase);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+	private static Path createOutputBase() throws IOException {
+		String now = FileUtil.createFilenameSafeTimestamp();
+		Path outputBase = FileUtil.getLearningDataBase().resolve(now);
+		Files.createDirectories(outputBase);
 
 		return outputBase;
 	}

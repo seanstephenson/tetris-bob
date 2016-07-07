@@ -24,4 +24,9 @@ public interface GameListener {
 	 * Called after each piece starts dropping.
 	 */
 	default void onPieceStart() {}
+
+	/**
+	 * Called after each piece lands.
+	 */
+	default void onPieceLand() {}
 }

@@ -8,7 +8,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class GameSettings {
+public class GameSettings implements Cloneable {
 
 	private static final Executor DEFAULT_LISTENER_EXECUTOR = Executors.newCachedThreadPool();
 	private static final Executor DIRECT_EXECUTOR = MoreExecutors.directExecutor();
@@ -33,6 +33,14 @@ public class GameSettings {
 		return settings;
 	}
 
+	public GameSettings clone() {
+		try {
+			return (GameSettings) super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
 	private Player player;
 
 	private int width = 10;
@@ -49,6 +57,8 @@ public class GameSettings {
 	private long pieceMoveInterval = 150;
 	private long pieceManualDownInterval = 100;
 
+	private boolean generateReplay = false;
+
 	private Executor listenerExecutor = DEFAULT_LISTENER_EXECUTOR;
 
 	private PieceGenerator pieceGenerator = new BagPieceGenerator();
@@ -62,6 +72,10 @@ public class GameSettings {
 
 	public Player getPlayer() {
 		return player;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 
 	public int getWidth() {
@@ -134,6 +148,14 @@ public class GameSettings {
 
 	public void setPieceManualDownInterval(long pieceManualDownInterval) {
 		this.pieceManualDownInterval = pieceManualDownInterval;
+	}
+
+	public boolean isGenerateReplay() {
+		return generateReplay;
+	}
+
+	public void setGenerateReplay(boolean generateReplay) {
+		this.generateReplay = generateReplay;
 	}
 
 	public Executor getListenerExecutor() {

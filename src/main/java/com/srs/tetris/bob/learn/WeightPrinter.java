@@ -20,7 +20,7 @@ import static java.util.Comparator.*;
 public class WeightPrinter {
 	public static void main(String[] args) throws IOException {
 		// Load the last weights from the last generation.
-		Path data = Paths.get("learning-data");
+		Path data = FileUtil.getLearningDataBase();
 
 		Path lastFolder = Files.list(data)
 			.sorted(comparing(Path::getFileName, reverseOrder()))

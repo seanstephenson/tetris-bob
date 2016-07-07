@@ -4,6 +4,13 @@ import com.srs.tetris.bob.BobPlayer;
 import com.srs.tetris.game.Game;
 import com.srs.tetris.game.GameSettings;
 import com.srs.tetris.player.DirectPlayer;
+import com.srs.tetris.replay.Replay;
+import com.srs.tetris.replay.ReplayUtil;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.DoubleSummaryStatistics;
 import java.util.IntSummaryStatistics;
 import java.util.List;
@@ -13,9 +20,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.*;
@@ -25,6 +32,7 @@ public class PlayerEvaluator {
 	private Supplier<DirectPlayer> playerSupplier;
 	private int games;
 	private Consumer<Game> onGameEnd = (game) -> {};
+	private boolean generateReplays;
 	private ExecutorService executor;
 
 	public PlayerEvaluator(Supplier<DirectPlayer> playerSupplier, ExecutorService executor, int games) {
@@ -54,8 +62,8 @@ public class PlayerEvaluator {
 				public Game call() throws Exception {
 					// Create and play the game.
 					Game game = createGame();
-					game.run();
 
+					game.run();
 					onGameEnd.accept(game);
 
 					return game;
@@ -72,6 +80,8 @@ public class PlayerEvaluator {
 		DirectPlayer player = playerSupplier.get();
 
 		GameSettings gameSettings = GameSettings.direct(player);
+		gameSettings.setGenerateReplay(generateReplays);
+
 		Game game = new Game(gameSettings);
 		game.init();
 
@@ -88,6 +98,10 @@ public class PlayerEvaluator {
 
 	public void setOnGameEnd(Consumer<Game> onGameEnd) {
 		this.onGameEnd = onGameEnd;
+	}
+
+	public void setGenerateReplays(boolean generateReplays) {
+		this.generateReplays = generateReplays;
 	}
 
 	public static class Result {
@@ -108,7 +122,7 @@ public class PlayerEvaluator {
 		}
 	}
 
-	public static void main(String[] args) throws ExecutionException, InterruptedException {
+	public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
 		int threads = Runtime.getRuntime().availableProcessors();
 		ExecutorService executor = Executors.newFixedThreadPool(threads);
 
@@ -119,6 +133,9 @@ public class PlayerEvaluator {
 			100
 		);
 
+		// Generate replays.
+		evaluator.setGenerateReplays(true);
+
 		// Print progress on each game start.
 		evaluator.setOnGameEnd(new PrintDotConsumer<Game>());
 
@@ -128,20 +145,37 @@ public class PlayerEvaluator {
 		executor.shutdown();
 
 		IntSummaryStatistics lines = result.getGames().stream()
-			.mapToInt(g -> g.getCompletedLines())
+			.mapToInt(Game::getCompletedLines)
 			.summaryStatistics();
 
 		IntSummaryStatistics pieces = result.getGames().stream()
-			.mapToInt(g -> g.getTotalPieces())
+			.mapToInt(Game::getTotalPieces)
 			.summaryStatistics();
 
 		LongSummaryStatistics score = result.getGames().stream()
-			.mapToLong(g -> g.getScore())
+			.mapToLong(Game::getScore)
 			.summaryStatistics();
 
 		DoubleSummaryStatistics elapsed = result.getGames().stream()
-			.mapToDouble(g -> (g.getEndTime() - g.getStartTime()) / 1e3)
+			.mapToDouble(g -> (g.getStartTime().until(g.getEndTime(), ChronoUnit.NANOS) / 1e9))
 			.summaryStatistics();
+
+		// If we were recording replays, store the replay for the worst 5 games.
+		if (evaluator.generateReplays) {
+			List<Replay> replays = result.getGames().stream()
+				.sorted(Comparator.comparing(Game::getCompletedLines))
+				.limit(5)
+				.map(Game::getReplay)
+				.collect(Collectors.toList());
+
+			Path outputBase = FileUtil.getReplayDataBase().resolve(FileUtil.createFilenameSafeTimestamp());
+			Files.createDirectories(outputBase);
+
+			for (int i = 0; i < replays.size(); i++) {
+				Replay replay = replays.get(i);
+				ReplayUtil.writeReplay(replay, outputBase.resolve(String.format("replay.%d", i + 1)));
+			}
+		}
 
 		System.out.println();
 		System.out.println();
