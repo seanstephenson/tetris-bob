@@ -1,6 +1,8 @@
 package com.srs.tetris.bob;
 
 import com.google.common.util.concurrent.MoreExecutors;
+import com.srs.tetris.bob.evaluator.BoardEvaluator;
+import com.srs.tetris.bob.evaluator.SapientEvaluator;
 import com.srs.tetris.game.Game;
 import com.srs.tetris.game.GameListener;
 import com.srs.tetris.game.GameSettings;
@@ -17,7 +19,9 @@ import java.util.concurrent.Future;
  */
 public class BobPlayer implements DirectPlayer, GameListener {
 	private ExecutorService moveSelectionExecutor;
+
 	private Game game;
+	private BoardEvaluator boardEvaluator;
 
 	private Future<Move> moveFuture;
 	private Input lastInput;
@@ -35,7 +39,13 @@ public class BobPlayer implements DirectPlayer, GameListener {
 			this.moveSelectionExecutor = Executors.newCachedThreadPool();
 		}
 
+		// Assume empty last input.
 		lastInput = new Input();
+
+		// Make sure we have a board evaluator.
+		if (boardEvaluator == null) {
+			boardEvaluator = new SapientEvaluator();
+		}
 
 		game.addListener(this);
 	}
@@ -142,5 +152,9 @@ public class BobPlayer implements DirectPlayer, GameListener {
 	private boolean shouldRotateRight(Move move) {
 		// Rotate right if it is only one step away.  Otherwise rotate left.
 		return Math.floorMod(game.getPiece().getOrientation() - 1, 4) == move.getOrientation();
+	}
+
+	public void setBoardEvaluator(BoardEvaluator boardEvaluator) {
+		this.boardEvaluator = boardEvaluator;
 	}
 }

@@ -24,8 +24,7 @@ public class PlayerEvaluator {
 
 	private Supplier<DirectPlayer> playerSupplier;
 	private int games;
-	private List<Future<Game>> futures;
-	private Consumer<Game> onGameStart;
+	private Consumer<Game> onGameEnd = (game) -> {};
 	private ExecutorService executor;
 
 	public PlayerEvaluator(Supplier<DirectPlayer> playerSupplier, ExecutorService executor, int games) {
@@ -34,18 +33,30 @@ public class PlayerEvaluator {
 		this.games = games;
 	}
 
-	public Result run() throws InterruptedException, ExecutionException {
-		long start = System.currentTimeMillis();
+	public Result run() {
+		try {
+			long start = System.currentTimeMillis();
 
-		futures = executor.invokeAll(Stream.generate(() -> new Callable<Game>() {
+			// Run the games.
+			List<Game> games = runGames();
+
+			double elapsedTime = (System.currentTimeMillis() - start) / 1e3;
+			return new Result(games, elapsedTime);
+
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private List<Game> runGames() throws InterruptedException {
+		List<Future<Game>> futures = executor.invokeAll(Stream.generate(() -> new Callable<Game>() {
 				@Override
 				public Game call() throws Exception {
-					// Create the game and notify the listener that a game is about to start.
+					// Create and play the game.
 					Game game = createGame();
-					onGameStart.accept(game);
-
-					// Play the game.
 					game.run();
+
+					onGameEnd.accept(game);
 
 					return game;
 				}
@@ -54,9 +65,7 @@ public class PlayerEvaluator {
 			.collect(toList())
 		);
 
-		double elapsedTime = (System.currentTimeMillis() - start) / 1e3;
-
-		return new Result(futures.stream().map(this::unwrapFuture).collect(toList()), elapsedTime);
+		return futures.stream().map(this::unwrapFuture).collect(toList());
 	}
 
 	private Game createGame() {
@@ -77,8 +86,8 @@ public class PlayerEvaluator {
 		}
 	}
 
-	public void setOnGameStart(Consumer<Game> onGameStart) {
-		this.onGameStart = onGameStart;
+	public void setOnGameEnd(Consumer<Game> onGameEnd) {
+		this.onGameEnd = onGameEnd;
 	}
 
 	public static class Result {
@@ -111,11 +120,7 @@ public class PlayerEvaluator {
 		);
 
 		// Print progress on each game start.
-		AtomicInteger count = new AtomicInteger(0);
-		evaluator.setOnGameStart(game -> {
-			System.out.print(".");
-			if (count.incrementAndGet() % 100 == 0) System.out.println();
-		});
+		evaluator.setOnGameEnd(new PrintDotConsumer<Game>());
 
 		// Run the evaluation and get the result.
 		Result result = evaluator.run();
