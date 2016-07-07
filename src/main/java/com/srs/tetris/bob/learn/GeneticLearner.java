@@ -112,13 +112,15 @@ public class GeneticLearner {
 
 		System.out.printf(
 			"Finished generation: %d\n" +
-			"Previous generation survivors: %d of %d\n" +
-			"Most successful learner avg lines: %,.2f\n" +
+			"\tPrevious generation survivors: %d of %d, oldest survivor from generation %d\n" +
+			"\tMost successful learner avg lines: %,.2f (%d games)\n" +
 			"\n",
 			generation,
 			successfulSpecimens.stream().filter(s -> s.getGeneration() != generation).count(),
 			population.stream().filter(s -> s.getGeneration() != generation).count(),
-			population.get(0).getLines().getAverage()
+			successfulSpecimens.stream().mapToInt(Specimen::getGeneration).min().orElse(0),
+			population.get(0).getLines().getAverage(),
+			population.get(0).getLines().getCount()
 		);
 
 		// Breed the successful ones to get children.
