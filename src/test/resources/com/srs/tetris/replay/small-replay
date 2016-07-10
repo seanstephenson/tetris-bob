@@ -1,0 +1,93 @@
+{
+  "settings": {
+    "width": 6,
+    "height": 8,
+    "frameInterval": 25,
+    "startingDropInterval": 1000,
+    "minDropInterval": 100,
+    "linesPerLevel": 10,
+    "levelAccelerator": 0.25,
+    "pieceMoveInterval": 150,
+    "pieceManualDownInterval": 100,
+    "generateReplay": true,
+    "inputMode": "Normal"
+  },
+  "playerType": "com.srs.tetris.player.LocalPlayer",
+  "pieceGeneratorType": "com.srs.tetris.game.BagPieceGenerator",
+  "totalPieces": 0,
+  "completedLines": 0,
+  "level": 0,
+  "score": 0,
+  "startTime": {
+    "seconds": 1468009728,
+    "nanos": 580000000
+  },
+  "moves": [
+    {
+      "type": "T",
+      "x": 2,
+      "y": 0,
+      "orientation": 0
+    },
+    {
+      "type": "J",
+      "x": 2,
+      "y": 0,
+      "orientation": 0
+    },
+    {
+      "type": "J",
+      "x": 4,
+      "y": 5,
+      "orientation": 1
+    },
+    {
+      "type": "I",
+      "x": 1,
+      "y": -1,
+      "orientation": 0
+    },
+    {
+      "type": "S",
+      "x": 2,
+      "y": 0,
+      "orientation": 0
+    },
+    {
+      "type": "O",
+      "x": 2,
+      "y": 0,
+      "orientation": 0
+    },
+    {
+      "type": "I",
+      "x": 1,
+      "y": -1,
+      "orientation": 0
+    },
+    {
+      "type": "I",
+      "x": -1,
+      "y": 3,
+      "orientation": 3
+    },
+    {
+      "type": "O",
+      "x": 2,
+      "y": 0,
+      "orientation": 0
+    },
+    {
+      "type": "J",
+      "x": 2,
+      "y": 0,
+      "orientation": 0
+    },
+    {
+      "type": "T",
+      "x": 2,
+      "y": 0,
+      "orientation": 0
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 package com.srs.tetris.game;
 
+import java.util.Arrays;
+
 /**
  * A grid of squares, each of which can be filled or empty.
  */
@@ -25,24 +27,25 @@ public class BitBoard extends AbstractBoard<Boolean> {
 		this.lineMask = (int) ((1L << width) - 1);
 	}
 
-	public BitBoard(int[][] grid) {
-		this(grid[0].length, grid.length);
+	public BitBoard(Board<?> other) {
+		this(other.getWidth(), other.getHeight());
 
 		for (int y = 0; y < getHeight(); y++) {
 			for (int x = 0; x < getWidth(); x++) {
-				set(x, y, grid[y][x] != 0);
+				set(x, y, !other.isEmpty(x, y));
 			}
 		}
 	}
 
-	public int[][] getGrid() {
-		int[][] output = new int[getHeight()][getWidth()];
-		for (int x = 0; x < getWidth(); x++) {
-			for (int y = 0; y < getHeight(); y++) {
-				output[y][x] = get(x, y) ? 1 : 0;
-			}
-		}
-		return output;
+	public static BitBoard from(String text) {
+		return from(text.split("\n"));
+	}
+
+	public static BitBoard from(String[] lines) {
+		char[][] values = tokenize(lines);
+		BitBoard board = new BitBoard(values[0].length, values.length);
+		board.fillFromChars(values);
+		return board;
 	}
 
 	@Override
@@ -81,7 +84,7 @@ public class BitBoard extends AbstractBoard<Boolean> {
 		place(piece.getBoard(), piece.getX(), piece.getY());
 	}
 
-	public void place(BitBoard piece, int x, int y) {
+	private void place(BitBoard piece, int x, int y) {
 		for (int pieceY = 0; pieceY < piece.getHeight(); pieceY++) {
 			int pieceLine = piece.grid[pieceY];
 			if (pieceLine != 0) {
@@ -99,7 +102,7 @@ public class BitBoard extends AbstractBoard<Boolean> {
 		return canPlace(piece.getBoard(), piece.getX(), piece.getY());
 	}
 
-	public boolean canPlace(BitBoard piece, int x, int y) {
+	private boolean canPlace(BitBoard piece, int x, int y) {
 		for (int pieceY = 0; pieceY < piece.getHeight(); pieceY++) {
 			int pieceLine = piece.grid[pieceY];
 			if (pieceLine != 0) {
@@ -220,9 +223,29 @@ public class BitBoard extends AbstractBoard<Boolean> {
 	}
 
 	@Override
+	protected char valueToChar(Boolean value) {
+		return value ? 'X' : '.';
+	}
+
+	@Override
+	protected Boolean charToValue(char c) {
+		return c != '.';
+	}
+
+	@Override
 	public BitBoard clone() {
 		BitBoard clone = (BitBoard) super.clone();
 		clone.grid = grid.clone();
 		return clone;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof BitBoard)) return false;
+		BitBoard other = (BitBoard) obj;
+
+		if (getWidth() != other.getWidth()) return false;
+		if (getHeight() != other.getHeight()) return false;
+		return Arrays.equals(grid, other.grid);
 	}
 }

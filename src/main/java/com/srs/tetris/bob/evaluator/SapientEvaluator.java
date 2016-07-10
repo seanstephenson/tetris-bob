@@ -16,7 +16,10 @@ public class SapientEvaluator extends CompositeEvaluator {
 
 		private double holes = -15.0;
 
-		private double narrowGap = -1.5;
+		private double narrowGaps = -1.5;
+		private double narrowTwoGap = 1.0;
+		private double narrowThreeGap = 2.0;
+		private double narrowFourGap = 6.0;
 
 		private double nearlyCompleteLines = 3.0;
 
@@ -68,12 +71,36 @@ public class SapientEvaluator extends CompositeEvaluator {
 			this.holes = holes;
 		}
 
-		public double getNarrowGap() {
-			return narrowGap;
+		public double getNarrowGaps() {
+			return narrowGaps;
 		}
 
-		public void setNarrowGap(double narrowGap) {
-			this.narrowGap = narrowGap;
+		public void setNarrowGaps(double narrowGaps) {
+			this.narrowGaps = narrowGaps;
+		}
+
+		public double getNarrowTwoGap() {
+			return narrowTwoGap;
+		}
+
+		public void setNarrowTwoGap(double narrowTwoGap) {
+			this.narrowTwoGap = narrowTwoGap;
+		}
+
+		public double getNarrowThreeGap() {
+			return narrowThreeGap;
+		}
+
+		public void setNarrowThreeGap(double narrowThreeGap) {
+			this.narrowThreeGap = narrowThreeGap;
+		}
+
+		public double getNarrowFourGap() {
+			return narrowFourGap;
+		}
+
+		public void setNarrowFourGap(double narrowFourGap) {
+			this.narrowFourGap = narrowFourGap;
 		}
 
 		public double getNearlyCompleteLines() {
@@ -104,7 +131,7 @@ public class SapientEvaluator extends CompositeEvaluator {
 			new WeightedEvaluator(new AverageHeightEvaluator(), weights.getAverageHeight()),
 			new WeightedEvaluator(new DangerZoneEvaluator((int) weights.getDangerZoneSize(), weights.getDangerZoneExponent()), weights.getDangerZone()),
 			new WeightedEvaluator(new HolesEvaluator(), weights.getHoles()),
-			new WeightedEvaluator(new NarrowGapEvaluator(), weights.getNarrowGap()),
+			new WeightedEvaluator(new NarrowGapEvaluator(weights.getNarrowTwoGap(), weights.getNarrowThreeGap(), weights.getNarrowFourGap()), weights.getNarrowGaps()),
 			new WeightedEvaluator(new NearlyCompletedLinesEvaluator(), weights.getNearlyCompleteLines())
 		);
 	}

@@ -3,46 +3,46 @@ package com.srs.tetris.game;
 import java.util.Random;
 
 public enum PieceType {
-	I(new BitBoard(new int[][]{
-		{0, 0, 0, 0},
-		{1, 1, 1, 1},
-		{0, 0, 0, 0},
-		{0, 0, 0, 0},
+	I(BitBoard.from(new String[]{
+		". . . .",
+		"X X X X",
+		". . . .",
+		". . . .",
 	}), Color.Cyan),
 
-	O(new BitBoard(new int[][]{
-		{1, 1},
-		{1, 1},
+	O(BitBoard.from(new String[]{
+		"X X",
+		"X X",
 	}), Color.Yellow),
 
-	T(new BitBoard(new int[][]{
-		{0, 1, 0},
-		{1, 1, 1},
-		{0, 0, 0},
+	T(BitBoard.from(new String[]{
+		". X .",
+		"X X X",
+		". . .",
 	}), Color.Purple),
 
-	S(new BitBoard(new int[][]{
-		{0, 1, 1},
-		{1, 1, 0},
-		{0, 0, 0},
+	S(BitBoard.from(new String[]{
+		". X X",
+		"X X .",
+		". . .",
 	}), Color.Green),
 
-	Z(new BitBoard(new int[][]{
-		{1, 1, 0},
-		{0, 1, 1},
-		{0, 0, 0},
+	Z(BitBoard.from(new String[]{
+		"X X .",
+		". X X",
+		". . .",
 	}), Color.Red),
 
-	J(new BitBoard(new int[][]{
-		{1, 0, 0},
-		{1, 1, 1},
-		{0, 0, 0},
+	J(BitBoard.from(new String[]{
+		"X . .",
+		"X X X",
+		". . .",
 	}), Color.Blue),
 
-	L(new BitBoard(new int[][]{
-		{0, 0, 1},
-		{1, 1, 1},
-		{0, 0, 0},
+	L(BitBoard.from(new String[]{
+		". . X",
+		"X X X",
+		". . .",
 	}), Color.Orange);
 
 	private static Random random = new Random();
@@ -73,10 +73,20 @@ public enum PieceType {
 	}
 
 	public BitBoard getBoard(int orientation) {
-		return boards[Math.floorMod(orientation, 4)];
+		assert orientation >= 0 && orientation < 4 : String.format("illegal orientation: %d", orientation);
+		return boards[orientation];
 	}
 
 	public static PieceType random() {
 		return values()[random.nextInt(values().length)];
+	}
+
+	public static PieceType forColor(Color color) {
+		for (PieceType pieceType : values()) {
+			if (pieceType.getColor() == color) {
+				return pieceType;
+			}
+		}
+		return null;
 	}
 }

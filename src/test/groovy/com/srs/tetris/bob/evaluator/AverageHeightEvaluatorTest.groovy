@@ -8,46 +8,46 @@ class AverageHeightEvaluatorTest {
 	public void evaluate() {
 		def evaluator = new AverageHeightEvaluator()
 
-		assert evaluator.evaluate(new BitBoard([
-		    [0, 0, 0],
-		    [0, 0, 0],
-		    [0, 0, 0],
-		    [0, 0, 0],
-		] as int[][])).score == 0.0
+		assert evaluator.evaluate(BitBoard.from("""
+		    . . .
+		    . . .
+		    . . .
+		    . . .
+		""")).score == 0.0
 
-		assert evaluator.evaluate(new BitBoard([
-		    [0, 0, 0],
-		    [0, 0, 0],
-		    [0, 0, 0],
-		    [0, 0, 1],
-		] as int[][])).score == 1.0
+		assert evaluator.evaluate(BitBoard.from("""
+		    . . .
+		    . . .
+		    . . .
+		    . . X
+		""")).score == 1.0
 
-		assert evaluator.evaluate(new BitBoard([
-		    [0, 0, 0],
-		    [0, 0, 0],
-		    [0, 1, 0],
-		    [1, 0, 0],
-		] as int[][])).score == 1.5
+		assert evaluator.evaluate(BitBoard.from("""
+		    . . .
+		    . . .
+		    . X .
+		    X . .
+		""")).score == 1.5
 
-		assert evaluator.evaluate(new BitBoard([
-		    [0, 0, 0],
-		    [0, 0, 0],
-		    [0, 1, 0],
-		    [1, 1, 1],
-		] as int[][])).score == 1.25
+		assert evaluator.evaluate(BitBoard.from("""
+		    . . .
+		    . . .
+		    . X .
+		    X X X
+		""")).score == 1.25
 
-		assert evaluator.evaluate(new BitBoard([
-		    [0, 0, 0],
-		    [1, 1, 1],
-		    [0, 1, 0],
-		    [1, 1, 1],
-		] as int[][])).score == 2.0
+		assert evaluator.evaluate(BitBoard.from("""
+		    . . .
+		    X X X
+		    . X .
+		    X X X
+		""")).score == 2.0
 
-		assert evaluator.evaluate(new BitBoard([
-		    [1, 1, 1],
-		    [1, 1, 1],
-		    [1, 1, 1],
-		    [1, 1, 1],
-		] as int[][])).score == 2.5
+		assert evaluator.evaluate(BitBoard.from("""
+		    X X X
+		    X X X
+		    X X X
+		    X X X
+		""")).score == 2.5
 	}
 }

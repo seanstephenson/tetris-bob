@@ -8,46 +8,46 @@ class NearlyCompletedLinesEvaluatorTest {
 	public void evaluate() {
 		def evaluator = new NearlyCompletedLinesEvaluator()
 
-		assert evaluator.evaluate(new BitBoard([
-		    [0, 0, 0],
-		    [0, 0, 0],
-		    [0, 0, 0],
-		    [0, 0, 0],
-		] as int[][])).score == 0.0
+		assert evaluator.evaluate(BitBoard.from("""
+		    . . .
+		    . . .
+		    . . .
+		    . . .
+		""")).score == 0.0
 
-		assert evaluator.evaluate(new BitBoard([
-		    [0, 0, 0],
-		    [0, 0, 0],
-		    [0, 0, 0],
-		    [1, 0, 0],
-		] as int[][])).score == 0.0
+		assert evaluator.evaluate(BitBoard.from("""
+		    . . .
+		    . . .
+		    . . .
+		    X . .
+		""")).score == 0.0
 
-		assert evaluator.evaluate(new BitBoard([
-		    [0, 0, 0],
-		    [0, 0, 0],
-		    [0, 1, 0],
-		    [1, 1, 0],
-		] as int[][])).score == 1.0
+		assert evaluator.evaluate(BitBoard.from("""
+		    . . .
+		    . . .
+		    . X .
+		    X X .
+		""")).score == 1.0
 
-		assert evaluator.evaluate(new BitBoard([
-		    [0, 0, 0],
-		    [0, 0, 0],
-		    [0, 1, 0],
-		    [1, 1, 1],
-		] as int[][])).score == 0.0
+		assert evaluator.evaluate(BitBoard.from("""
+		    . . .
+		    . . .
+		    . X .
+		    X X X
+		""")).score == 0.0
 
-		assert evaluator.evaluate(new BitBoard([
-		    [0, 0, 0],
-			[1, 1, 0],
-		    [0, 1, 1],
-		    [1, 1, 1],
-		] as int[][])).score == 2.0
+		assert evaluator.evaluate(BitBoard.from("""
+		    . . .
+			X X .
+		    . X X
+		    X X X
+		""")).score == 2.0
 
-		assert evaluator.evaluate(new BitBoard([
-			[1, 0, 1],
-			[0, 1, 1],
-			[1, 0, 1],
-		    [1, 1, 0],
-		] as int[][])).score == 4.0
+		assert evaluator.evaluate(BitBoard.from("""
+			X . X
+			. X X
+			X . X
+		    X X .
+		""")).score == 4.0
 	}
 }

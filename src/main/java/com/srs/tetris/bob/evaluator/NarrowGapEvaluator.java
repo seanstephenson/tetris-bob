@@ -7,9 +7,15 @@ import com.srs.tetris.game.BitBoard;
  */
 public class NarrowGapEvaluator implements BoardEvaluator {
 
-	private static final double TWO_GAP_WEIGHT = 1.0;
-	private static final double THREE_GAP_WEIGHT = 2.0;
-	private static final double FOUR_GAP_WEIGHT = 6.0;
+	private double twoGapWeight;
+	private double threeGapWeight;
+	private double fourGapWeight;
+
+	public NarrowGapEvaluator(double twoGapWeight, double threeGapWeight, double fourGapWeight) {
+		this.twoGapWeight = twoGapWeight;
+		this.threeGapWeight = threeGapWeight;
+		this.fourGapWeight = fourGapWeight;
+	}
 
 	@Override
 	public Score evaluate(BitBoard board) {
@@ -48,9 +54,9 @@ public class NarrowGapEvaluator implements BoardEvaluator {
 		}
 
 		return new ScalarScore(
-			twoGaps * TWO_GAP_WEIGHT +
-			threeGaps * THREE_GAP_WEIGHT +
-			fourGaps * FOUR_GAP_WEIGHT
+			twoGaps * twoGapWeight +
+			threeGaps * threeGapWeight +
+			fourGaps * fourGapWeight
 		);
 	}
 }
