@@ -80,6 +80,21 @@ public interface Board<T> extends Cloneable {
 	}
 
 	/**
+	 * Removes any completed lines, moving other lines that were above them down.
+	 * @return the number of completed lines removed.
+	 */
+	default int removeCompleteLines() {
+		int complete = 0;
+		for (int y = 0; y < getHeight(); y++) {
+			if (isLineComplete(y)) {
+				removeLine(y);
+				complete++;
+			}
+		}
+		return complete;
+	}
+
+	/**
 	 * Indicates if the given column is entirely empty.
 	 */
 	default boolean isColumnEmpty(int x) {

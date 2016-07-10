@@ -19,73 +19,49 @@
   "level": 0,
   "score": 0,
   "startTime": {
-    "seconds": 1468009728,
-    "nanos": 580000000
+    "seconds": 1468132744,
+    "nanos": 148000000
   },
   "moves": [
     {
-      "type": "T",
-      "x": 2,
-      "y": 0,
-      "orientation": 0
-    },
-    {
-      "type": "J",
-      "x": 2,
-      "y": 0,
-      "orientation": 0
-    },
-    {
-      "type": "J",
+      "type": "O",
       "x": 4,
-      "y": 5,
-      "orientation": 1
-    },
-    {
-      "type": "I",
-      "x": 1,
-      "y": -1,
+      "y": 6,
       "orientation": 0
     },
     {
       "type": "S",
-      "x": 2,
-      "y": 0,
-      "orientation": 0
-    },
-    {
-      "type": "O",
-      "x": 2,
-      "y": 0,
-      "orientation": 0
-    },
-    {
-      "type": "I",
-      "x": 1,
-      "y": -1,
-      "orientation": 0
-    },
-    {
-      "type": "I",
-      "x": -1,
-      "y": 3,
-      "orientation": 3
-    },
-    {
-      "type": "O",
-      "x": 2,
-      "y": 0,
+      "x": 0,
+      "y": 6,
       "orientation": 0
     },
     {
       "type": "J",
       "x": 2,
-      "y": 0,
-      "orientation": 0
+      "y": 5,
+      "orientation": 3
     },
     {
       "type": "T",
+      "x": -1,
+      "y": 4,
+      "orientation": 3
+    },
+    {
+      "type": "Z",
+      "x": 1,
+      "y": 4,
+      "orientation": 0
+    },
+    {
+      "type": "L",
       "x": 2,
+      "y": 2,
+      "orientation": 0
+    },
+    {
+      "type": "I",
+      "x": 1,
       "y": 0,
       "orientation": 0
     }

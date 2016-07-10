@@ -198,4 +198,22 @@ class GameBoardTest {
 			. . S Z
 		""")
 	}
+
+	@Test
+	void removeCompleteLines() {
+		def board = BitBoard.from("""
+			. . . L
+			. . L L
+			L L L L
+			L L L L
+		""")
+
+		assert 2 == board.removeCompleteLines()
+		assert board == BitBoard.from("""
+			. . . .
+			. . . .
+			. . . L
+			. . L L
+		""")
+	}
 }

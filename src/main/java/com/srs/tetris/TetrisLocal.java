@@ -1,6 +1,7 @@
 package com.srs.tetris;
 
 import com.srs.tetris.bob.BobPlayer;
+import com.srs.tetris.bob.learn.FileUtil;
 import com.srs.tetris.game.GameBoard;
 import com.srs.tetris.game.Game;
 import com.srs.tetris.game.GameListener;
@@ -8,6 +9,8 @@ import com.srs.tetris.game.GameSettings;
 import com.srs.tetris.game.Piece;
 import com.srs.tetris.player.DirectPlayer;
 import com.srs.tetris.player.LocalPlayer;
+import com.srs.tetris.player.Player;
+import com.srs.tetris.replay.ReplayUtil;
 import java.io.IOException;
 import java.text.NumberFormat;
 import javafx.application.Application;
@@ -68,16 +71,28 @@ public class TetrisLocal extends Application implements GameListener {
 	@Override
 	public void init() throws Exception {
 		// Create the player.
-		//Player player = new LocalPlayer();
-		DirectPlayer player = new BobPlayer();
+		Player player = new LocalPlayer();
+		//DirectPlayer player = new BobPlayer();
 
 		// Create the game.
 		GameSettings gameSettings = GameSettings.standard(player);
 		//GameSettings gameSettings = GameSettings.direct(player);
-		game = new Game(gameSettings);
 
+		//gameSettings.setWidth(6);
+		//gameSettings.setHeight(8);
+		gameSettings.setGenerateReplay(true);
+
+		game = new Game(gameSettings);
 		game.addListener(this);
 		game.init();
+
+		// Write out the replay to disk on game over.
+		game.addListener(new GameListener() {
+			@Override
+			public void onGameOver() {
+				ReplayUtil.writeReplay(game.getReplay(), FileUtil.getReplayDataBase().resolve("local-" + FileUtil.createFilenameSafeTimestamp()));
+			}
+		});
 
 		// Create the scene.
 		scene = new Scene(createUI());

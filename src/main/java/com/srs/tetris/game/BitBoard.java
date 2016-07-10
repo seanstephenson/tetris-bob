@@ -14,7 +14,7 @@ public class BitBoard extends AbstractBoard<Boolean> {
 	private int[] grid;
 
 	// The mask for a full line.
-	private int lineMask;
+	private int completeLineMask;
 
 	public BitBoard(int width, int height) {
 		super(width, height);
@@ -24,7 +24,7 @@ public class BitBoard extends AbstractBoard<Boolean> {
 			throw new IllegalArgumentException(String.format("width=%d, must be %d or less", getWidth(), MAX_WIDTH));
 		}
 
-		this.lineMask = (int) ((1L << width) - 1);
+		this.completeLineMask = (int) ((1L << width) - 1);
 	}
 
 	public BitBoard(Board<?> other) {
@@ -90,7 +90,7 @@ public class BitBoard extends AbstractBoard<Boolean> {
 			if (pieceLine != 0) {
 				int placeY = y + pieceY;
 				if (placeY >= 0 && placeY < getHeight()) {
-					int mask = (x > 0 ? pieceLine << x : pieceLine >> -x) & lineMask;
+					int mask = (x > 0 ? pieceLine << x : pieceLine >> -x) & completeLineMask;
 					grid[placeY] |= mask;
 				}
 			}
@@ -124,7 +124,7 @@ public class BitBoard extends AbstractBoard<Boolean> {
 					int mask = pieceLine << placeX;
 
 					// If it has any bits set that are outside of the line then it won't fit.
-					if (mask > lineMask) {
+					if (mask > completeLineMask) {
 						return false;
 					}
 
@@ -153,7 +153,7 @@ public class BitBoard extends AbstractBoard<Boolean> {
 	@Override
 	public boolean isLineComplete(int y) {
 		// More efficient implementation, check if all bits are set at once.
-		return grid[y] == lineMask;
+		return grid[y] == completeLineMask;
 	}
 
 	@Override
@@ -181,8 +181,8 @@ public class BitBoard extends AbstractBoard<Boolean> {
 	/**
 	 * Returns a mask for a completely filled line, with a 1 value in each position.
 	 */
-	public int getLineMask() {
-		return lineMask;
+	public int getCompleteLineMask() {
+		return completeLineMask;
 	}
 
 	/**

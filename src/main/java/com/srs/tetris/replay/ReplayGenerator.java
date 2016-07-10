@@ -2,6 +2,7 @@ package com.srs.tetris.replay;
 
 import com.srs.tetris.game.Game;
 import com.srs.tetris.game.GameListener;
+import com.srs.tetris.game.Piece;
 import java.time.Instant;
 import java.util.ArrayList;
 
@@ -25,11 +26,15 @@ public class ReplayGenerator implements GameListener {
 	public void onGameStart() {
 		replay = new Replay();
 
+		// Remember the settings.
 		replay.setSettings(game.getSettings().clone());
+
+		// Don't make these complex, stateful objects part of the replay.
 		replay.getSettings().setPlayer(null);
 		replay.getSettings().setListenerExecutor(null);
 		replay.getSettings().setPieceGenerator(null);
 
+		// Record game info,
 		replay.setPlayerType(game.getSettings().getPlayer().getClass().getName());
 		replay.setPieceGeneratorType(game.getSettings().getPieceGenerator().getClass().getName());
 
@@ -39,12 +44,17 @@ public class ReplayGenerator implements GameListener {
 	}
 
 	@Override
-	public void onPieceLand() {
-		replay.getMoves().add(game.getPiece());
+	public void onPieceLand(Piece piece) {
+		// Record each piece as it lands.
+		replay.getMoves().add(piece);
 	}
 
 	@Override
 	public void onGameOver() {
+		// Record the last piece that couldn't be started.
+		replay.getMoves().add(game.getPiece());
+
+		// Store final game information,
 		replay.setEndTime(game.getEndTime());
 
 		replay.setTotalPieces(game.getTotalPieces());

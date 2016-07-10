@@ -51,7 +51,7 @@ public class BobPlayer implements DirectPlayer, GameListener {
 	}
 
 	@Override
-	public synchronized void onPieceStart() {
+	public synchronized void onPieceStart(Piece piece) {
 		// If there is a move still being selected from the previous position, cancel it now.
 		if (moveFuture != null && !moveFuture.isDone()) {
 			moveFuture.cancel(true);

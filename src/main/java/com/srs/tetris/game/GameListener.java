@@ -23,10 +23,10 @@ public interface GameListener {
 	/**
 	 * Called after each piece starts dropping.
 	 */
-	default void onPieceStart() {}
+	default void onPieceStart(Piece piece) {}
 
 	/**
 	 * Called after each piece lands.
 	 */
-	default void onPieceLand() {}
+	default void onPieceLand(Piece piece) {}
 }

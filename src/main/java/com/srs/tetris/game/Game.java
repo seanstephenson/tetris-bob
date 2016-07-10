@@ -340,15 +340,17 @@ public class Game {
 		totalPieces++;
 
 		// Notify listeners that the piece is starting.
-		notifyListeners((listener) -> listener.onPieceStart());
+		Piece started = piece;
+		notifyListeners((listener) -> listener.onPieceStart(started));
 	}
 
 	private void placePiece() {
-		// Place the piece on the board.
+		// Place the piece on the board and remove completed lines.
 		board.place(piece);
 
 		// Notify listeners that the piece just landed.
-		notifyListeners((listener) -> listener.onPieceLand());
+		Piece landed = piece;
+		notifyListeners((listener) -> listener.onPieceLand(landed));
 
 		// Update the score.
 		score += computeScoreDeltaForPiece();
@@ -399,16 +401,11 @@ public class Game {
 	}
 
 	private void checkCompleteLines() {
-		// Loop over each line and check if it is complete.
-		int lines = 0;
-		for (int y = 0; y < board.getHeight(); y++) {
-			if (board.isLineComplete(y)) {
-				board.removeLine(y);
-				lines++;
-			}
-		}
+		// Remove the completed lines from the board.
+		int lines = board.removeCompleteLines();
 
 		if (lines > 0) {
+			// If lines were complete, update the score.
 			completedLines += lines;
 			score += computeScoreDeltaForLines(lines);
 

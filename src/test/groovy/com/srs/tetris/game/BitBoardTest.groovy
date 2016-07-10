@@ -376,4 +376,22 @@ class BitBoardTest {
 			. . X X
 		""")
 	}
+
+	@Test
+	void removeCompleteLines() {
+		def board = BitBoard.from("""
+			. . . X
+			. . X X
+			X X X X
+			X X X X
+		""")
+
+		assert 2 == board.removeCompleteLines()
+		assert board == BitBoard.from("""
+			. . . .
+			. . . .
+			. . . X
+			. . X X
+		""")
+	}
 }

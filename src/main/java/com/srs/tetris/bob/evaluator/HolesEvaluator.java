@@ -1,7 +1,6 @@
 package com.srs.tetris.bob.evaluator;
 
 import com.srs.tetris.game.BitBoard;
-import com.srs.tetris.game.Board;
 
 /**
  * Counts any holes in the position, meaning any empty squares that have filled blocks on top of them.
@@ -29,7 +28,7 @@ public class HolesEvaluator implements BoardEvaluator {
 		}
 
 		// Now count the final transition to a full line.
-		transitions += Integer.bitCount(board.getLineMask() ^ previous);
+		transitions += Integer.bitCount(board.getCompleteLineMask() ^ previous);
 
 		// There will always be one transition per column, and then two on top of that for each hole.
 		int holes = (transitions - width) / 2;
