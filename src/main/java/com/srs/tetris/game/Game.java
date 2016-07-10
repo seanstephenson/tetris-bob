@@ -67,6 +67,11 @@ public class Game {
 		// Initialize the player.
 		player.init(this);
 
+		// Create the replay generator.
+		if (settings.isGenerateReplay()) {
+			addListener(replayGenerator = new ReplayGenerator(this));
+		}
+
 		// Set up the game.
 		setupGame();
 	}
@@ -81,6 +86,9 @@ public class Game {
 
 		try {
 			notifyListeners((listener) -> listener.onGameStart());
+
+			// Drop the first piece.
+			dropNextPiece();
 
 			while (!isGameOver()) {
 				long frame = System.currentTimeMillis();
@@ -124,7 +132,6 @@ public class Game {
 
 		// Create a random next piece, and drop it.
 		nextPiece = pieceGenerator.generate();
-		dropNextPiece();
 
 		// Set the time for the last frame.
 		lastFrame = System.currentTimeMillis();
@@ -135,11 +142,6 @@ public class Game {
 
 		// Calculate the starting level.
 		updateLevel();
-
-		// Create the replay generator.
-		if (settings.isGenerateReplay()) {
-			addListener(replayGenerator = new ReplayGenerator(this));
-		}
 	}
 
 	private void updateInput() {
