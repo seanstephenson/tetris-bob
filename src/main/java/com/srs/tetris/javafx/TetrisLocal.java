@@ -38,18 +38,14 @@ public class TetrisLocal extends Application implements GameListener {
 
 	private static final Color ROOT_BACKGROUND = Color.web("0x262626");
 
-	private static final double INFO_BOX_BORDER = 1.0;
-	private static final Color INFO_BOX_BORDER_COLOR = Color.web("0x202020");
-	private static final Color INFO_BOX_BACKGROUND = Color.web("0x303030");
-
 	private Game game;
 
 	private Scene scene;
 	private BoardPane boardPane;
 
-	private Text scoreText;
-	private Text linesText;
-	private Text levelText;
+	private InfoBox score;
+	private InfoBox lines;
+	private InfoBox level;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -97,9 +93,9 @@ public class TetrisLocal extends Application implements GameListener {
 
 		// Create the info pane.
 		VBox infoPane = new VBox(15,
-			createInfoBox("Score", scoreText = new Text()),
-			createInfoBox("Level", levelText = new Text()),
-			createInfoBox("Lines", linesText = new Text())
+			score = new InfoBox("Score"),
+			level = new InfoBox("Level"),
+			lines = new InfoBox("Lines")
 		);
 		infoPane.setPadding(new Insets(0, 0, 0, 25));
 
@@ -110,26 +106,6 @@ public class TetrisLocal extends Application implements GameListener {
 		root.setRight(infoPane);
 
 		return root;
-	}
-
-	private VBox createInfoBox(String label, Text infoText) {
-		infoText.setFont(new Font(20));
-		infoText.setFill(Color.LIGHTGRAY);
-
-		Text infoLabel = new Text(label);
-		infoLabel.setFill(Color.LIGHTGRAY);
-
-		VBox infoBox = new VBox(5,
-			infoLabel,
-			infoText
-		);
-		infoBox.setAlignment(Pos.CENTER);
-		infoBox.setPrefWidth(150);
-		infoBox.setPadding(new Insets(5));
-		infoBox.setBackground(new Background(new BackgroundFill(INFO_BOX_BACKGROUND, null, null)));
-		infoBox.setBorder(new Border(new BorderStroke(INFO_BOX_BORDER_COLOR, BorderStrokeStyle.SOLID, null, new BorderWidths(INFO_BOX_BORDER))));
-
-		return infoBox;
 	}
 
 	@Override
@@ -160,9 +136,9 @@ public class TetrisLocal extends Application implements GameListener {
 		Platform.runLater(() -> {
 			// Update the info pane.
 			NumberFormat formatter = NumberFormat.getIntegerInstance();
-			scoreText.setText(formatter.format(game.getScore()));
-			levelText.setText(formatter.format(game.getLevel()));
-			linesText.setText(formatter.format(game.getCompletedLines()));
+			score.setValueText(formatter.format(game.getScore()));
+			level.setValueText(formatter.format(game.getLevel()));
+			lines.setValueText(formatter.format(game.getCompletedLines()));
 
 			// Update the game board.
 			GameBoard board = game.getBoard();
