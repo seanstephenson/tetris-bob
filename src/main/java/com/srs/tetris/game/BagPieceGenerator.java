@@ -57,7 +57,7 @@ public class BagPieceGenerator implements PieceGenerator {
 				.collect(toList()));
 		}
 
-		Collections.shuffle(pieces);
+		Collections.shuffle(pieces, random);
 
 		bag.addAll(pieces.subList(0, bagSize));
 	}
