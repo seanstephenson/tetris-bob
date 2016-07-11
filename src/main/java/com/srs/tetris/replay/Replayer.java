@@ -8,6 +8,8 @@ public class Replayer {
 	private GameBoard board;
 	private int index;
 
+	private int completedLines;
+
 	public Replayer(Replay replay) {
 		this.replay = replay;
 		start();
@@ -21,6 +23,10 @@ public class Replayer {
 		return replay.getMoves().size();
 	}
 
+	public boolean hasPrevious() {
+		return getIndex() > 0;
+	}
+
 	public boolean hasNext() {
 		return getIndex() < getEnd();
 	}
@@ -29,7 +35,7 @@ public class Replayer {
 		if (!hasNext()) throw new IllegalStateException();
 
 		board.place(replay.getMoves().get(index++));
-		board.removeCompleteLines();
+		completedLines += board.removeCompleteLines();
 	}
 
 	public void forward(int count) {
@@ -68,5 +74,9 @@ public class Replayer {
 
 	public GameBoard getBoard() {
 		return board;
+	}
+
+	public int getCompletedLines() {
+		return completedLines;
 	}
 }

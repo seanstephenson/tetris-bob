@@ -32,9 +32,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
- * For testing, starts a tetris game with a local UI view.
+ * Starts and views a Tetris game with a local javafx UI.
  */
-public class TetrisLocal extends Application implements GameListener {
+public class TetrisFX extends Application implements GameListener {
 
 	private static final Color ROOT_BACKGROUND = Color.web("0x262626");
 
