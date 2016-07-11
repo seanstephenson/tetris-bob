@@ -64,6 +64,12 @@
       "x": 1,
       "y": 0,
       "orientation": 0
-    }
+    },
+	{
+	  "type": "S",
+	  "x": 2,
+	  "y": 0,
+	  "orientation": 0
+	}
   ]
 }

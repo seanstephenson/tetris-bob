@@ -20,6 +20,8 @@ class ReplayerTest {
 			. . . . . .
 		""")
 
+		assert replayer.completedLines == 0
+		assert !replayer.hasPrevious()
 		assert replayer.hasNext()
 		replayer.forward()
 		assert replayer.board == GameBoard.from("""
@@ -33,6 +35,7 @@ class ReplayerTest {
 			. . . . O O
 		""")
 
+		assert replayer.hasPrevious()
 		assert replayer.hasNext()
 		replayer.forward()
 		assert replayer.board == GameBoard.from("""
@@ -60,7 +63,11 @@ class ReplayerTest {
 		""")
 
 		assert replayer.hasNext()
+		assert replayer.completedLines == 0
+
 		replayer.forward()
+
+		assert replayer.completedLines == 1
 		assert replayer.board == GameBoard.from("""
 			. . . . . .
 			. . . . . .
@@ -111,6 +118,19 @@ class ReplayerTest {
 			S S . J O O
 		""")
 
+		assert replayer.hasNext()
+		replayer.forward()
+		assert replayer.board == GameBoard.from("""
+			. . . S S .
+			. I S S I .
+			. . . . L .
+			. . L L L .
+			. Z Z . . .
+			T . Z Z . .
+			T T . J J .
+			S S . J O O
+		""")
+
 		assert !replayer.hasNext()
 	}
 
@@ -122,8 +142,8 @@ class ReplayerTest {
 		replayer.end()
 		assert !replayer.hasNext()
 		assert replayer.board == GameBoard.from("""
-			. . . . . .
-			. I I I I .
+			. . . S S .
+			. I S S I .
 			. . . . L .
 			. . L L L .
 			. Z Z . . .
@@ -136,7 +156,7 @@ class ReplayerTest {
 		assert replayer.hasNext()
 		assert replayer.board == GameBoard.from("""
 			. . . . . .
-			. . . . . .
+			. I I I I .
 			. . . . L .
 			. . L L L .
 			. Z Z . . .
@@ -145,7 +165,7 @@ class ReplayerTest {
 			S S . J O O
 		""")
 
-		replayer.back(2)
+		replayer.back(3)
 		assert replayer.board == GameBoard.from("""
 			. . . . . .
 			. . . . . .
@@ -175,11 +195,12 @@ class ReplayerTest {
 		def replay = ReplayUtil.readReplay(new InputStreamReader(getClass().getResourceAsStream("small-replay")))
 		def replayer = new Replayer(replay)
 
-		replayer.forward(7)
+		replayer.forward(8)
+		assert replayer.completedLines == 1
 		assert !replayer.hasNext()
 		assert replayer.board == GameBoard.from("""
-			. . . . . .
-			. I I I I .
+			. . . S S .
+			. I S S I .
 			. . . . L .
 			. . L L L .
 			. Z Z . . .
@@ -189,6 +210,8 @@ class ReplayerTest {
 		""")
 
 		replayer.start()
+		assert !replayer.hasPrevious()
+		assert replayer.completedLines == 0
 		assert replayer.hasNext()
 		assert replayer.board == GameBoard.from("""
 			. . . . . .

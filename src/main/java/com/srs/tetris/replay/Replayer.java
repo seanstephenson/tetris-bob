@@ -64,6 +64,7 @@ public class Replayer {
 
 		// Start at the beginning.
 		index = 0;
+		completedLines = 0;
 	}
 
 	public void end() {
