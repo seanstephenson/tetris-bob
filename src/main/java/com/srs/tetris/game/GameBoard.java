@@ -29,6 +29,18 @@ public class GameBoard extends AbstractBoard<Color> {
 		return board;
 	}
 
+	public GameBoard(BitBoard other, Color color) {
+		this(other.getWidth(), other.getHeight());
+
+		for (int y = 0; y < getHeight(); y++) {
+			for (int x = 0; x < getWidth(); x++) {
+				if (!other.isEmpty(x, y)) {
+					set(x, y, color);
+				}
+			}
+		}
+	}
+
 	public BitBoard toBitBoard() {
 		return new BitBoard(this);
 	}

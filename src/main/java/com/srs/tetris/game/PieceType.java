@@ -68,7 +68,7 @@ public enum PieceType {
 		return color;
 	}
 
-	public Board getBoard() {
+	public BitBoard getBoard() {
 		return getBoard(0);
 	}
 

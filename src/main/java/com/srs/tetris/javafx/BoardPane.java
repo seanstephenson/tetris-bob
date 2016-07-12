@@ -61,6 +61,7 @@ public class BoardPane extends Pane {
 
 				Rectangle square = new Rectangle(left, top, SQUARE_SIZE, SQUARE_SIZE);
 				getChildren().add(square);
+				setSquare(square, com.srs.tetris.game.Color.Empty);
 				boardGrid[x][y] = square;
 			}
 		}

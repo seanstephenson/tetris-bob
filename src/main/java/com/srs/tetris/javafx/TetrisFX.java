@@ -51,6 +51,8 @@ public class TetrisFX extends Application implements GameListener {
 	private InfoBox score;
 	private InfoBox lines;
 	private InfoBox level;
+	private PieceBox nextPiece;
+	private PieceBox swapPiece;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -103,15 +105,23 @@ public class TetrisFX extends Application implements GameListener {
 		VBox infoPane = new VBox(15,
 			score = new InfoBox("Score"),
 			level = new InfoBox("Level"),
-			lines = new InfoBox("Lines")
+			lines = new InfoBox("Lines"),
+			nextPiece = new PieceBox("Next")
 		);
 		infoPane.setPadding(new Insets(0, 0, 0, 25));
+
+		// Create the left pane.
+		VBox leftPane = new VBox(15,
+			swapPiece = new PieceBox("Hold")
+		);
+		leftPane.setPadding(new Insets(0, 25, 0, 0));
 
 		// Create the root pane.
 		BorderPane root = new BorderPane(boardPane);
 		root.setBackground(new Background(new BackgroundFill(ROOT_BACKGROUND, null, null)));
 		root.setPadding(new Insets(25));
 		root.setRight(infoPane);
+		root.setLeft(leftPane);
 
 		return root;
 	}
@@ -150,6 +160,18 @@ public class TetrisFX extends Application implements GameListener {
 		if (game.getSettings().getInputMode() != GameSettings.InputMode.Direct) {
 			updateUI();
 		}
+	}
+
+	@Override
+	public void onPieceStart(Piece piece) {
+		Platform.runLater(() -> {
+			// Update the next and swap piece boxes.
+			nextPiece.setPieceType(game.getNextPiece().getType());
+
+			if (game.getSwapPiece() != null) {
+				swapPiece.setPieceType(game.getSwapPiece().getType());
+			}
+		});
 	}
 
 	@Override

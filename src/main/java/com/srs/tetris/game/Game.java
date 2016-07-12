@@ -203,6 +203,9 @@ public class Game {
 			} else {
 				// Otherwise, move the piece up to the top of the board.
 				movePieceToTopCenter();
+
+				Piece started = this.piece;
+				notifyListeners((listener) -> listener.onPieceStart(started));
 			}
 
 			// Don't allow it to be swapped again until they place this one.

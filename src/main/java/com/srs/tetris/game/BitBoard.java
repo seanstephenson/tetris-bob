@@ -205,6 +205,31 @@ public class BitBoard extends AbstractBoard<Boolean> {
 		return getHeight();
 	}
 
+	/**
+	 * Returns a new board that has the same state as the current one, but with all empty rows and columns trimmed from the edges.
+	 * If the board is completely empty, returns a board with a single empty square.
+	 */
+	public BitBoard crop() {
+		// Check for a completely empty board.
+		if (findHighestBlock() == getHeight()) {
+			return new BitBoard(1, 1);
+		}
+
+		// Otherwise, find the bounds of the board content without empty space.
+		int minX = 0, maxX = getWidth() - 1, minY = 0, maxY = getHeight() - 1;
+
+		while (isColumnEmpty(minX)) minX++;
+		while (isColumnEmpty(maxX)) maxX--;
+		while (isLineEmpty(minY)) minY++;
+		while (isLineEmpty(maxY)) maxY--;
+
+		// Create a new cropped version of the board, and place our contents in the correct location.
+		BitBoard cropped = new BitBoard(maxX - minX + 1, maxY - minY + 1);
+		cropped.place(this, -minX, -minY);
+
+		return cropped;
+	}
+
 	public BitBoard rotateLeft() {
 		BitBoard rotated = new BitBoard(getHeight(), getWidth());
 

@@ -394,4 +394,42 @@ class BitBoardTest {
 			. . X X
 		''')
 	}
+
+	@Test
+	void crop() {
+		def board = BitBoard.from('''
+			. . . .
+			. . . .
+			. . . .
+			. . . .
+		''')
+
+		assert board.crop() == BitBoard.from('.')
+
+		board = BitBoard.from('''
+			. . . .
+			. X . .
+			. X . .
+			. . . .
+		''')
+
+		assert board.crop() == BitBoard.from('''
+			X
+			X
+		''')
+
+		board = BitBoard.from('''
+			. . . .
+			. X . .
+			. X . .
+			. . . X
+		''')
+
+		assert board.crop() == BitBoard.from('''
+			X . .
+			X . .
+			. . X
+		''')
+
+	}
 }
