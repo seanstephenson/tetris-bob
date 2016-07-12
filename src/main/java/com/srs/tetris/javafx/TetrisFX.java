@@ -9,6 +9,7 @@ import com.srs.tetris.game.GameSettings;
 import com.srs.tetris.game.Piece;
 import com.srs.tetris.player.DirectPlayer;
 import com.srs.tetris.player.LocalPlayer;
+import com.srs.tetris.player.Player;
 import com.srs.tetris.replay.ReplayUtil;
 import java.io.IOException;
 import java.text.NumberFormat;
@@ -54,8 +55,8 @@ public class TetrisFX extends Application implements GameListener {
 	@Override
 	public void init() throws Exception {
 		// Create the player.
-		//Player player = new LocalPlayer();
-		DirectPlayer player = new BobPlayer();
+		Player player = new LocalPlayer();
+		//DirectPlayer player = new BobPlayer();
 
 		// Create the game.
 		GameSettings gameSettings = GameSettings.standard(player);
