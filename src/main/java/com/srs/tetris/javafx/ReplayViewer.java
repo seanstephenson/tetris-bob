@@ -27,6 +27,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import static java.util.Comparator.*;
@@ -108,6 +109,9 @@ public class ReplayViewer extends Application {
 
 		} else if (event.getCode() == KeyCode.RIGHT && replayer.hasNext()) {
 			replayer.forward();
+
+		} else if (event.getCode() == KeyCode.O) {
+			loadFile(chooseReplayFile());
 		}
 
 		updateUI();
@@ -149,6 +153,14 @@ public class ReplayViewer extends Application {
 				}
 			}
 		});
+	}
+
+	private Path chooseReplayFile() {
+		FileChooser chooser = new FileChooser();
+		chooser.setTitle("Choose Replay File");
+		chooser.setInitialDirectory(FileUtil.getReplayDataBase().toFile());
+		File file = chooser.showOpenDialog(primaryStage);
+		return file != null ? file.toPath() : null;
 	}
 
 	private Path findLatestReplayFile() throws IOException {
