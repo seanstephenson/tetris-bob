@@ -12,7 +12,11 @@ import com.srs.tetris.player.LocalPlayer;
 import com.srs.tetris.player.Player;
 import com.srs.tetris.replay.ReplayUtil;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.text.NumberFormat;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -55,8 +59,8 @@ public class TetrisFX extends Application implements GameListener {
 	@Override
 	public void init() throws Exception {
 		// Create the player.
-		Player player = new LocalPlayer();
-		//DirectPlayer player = new BobPlayer();
+		//Player player = new LocalPlayer();
+		DirectPlayer player = new BobPlayer();
 
 		// Create the game.
 		GameSettings gameSettings = GameSettings.standard(player);
@@ -74,7 +78,8 @@ public class TetrisFX extends Application implements GameListener {
 		game.addListener(new GameListener() {
 			@Override
 			public void onGameOver() {
-				ReplayUtil.writeReplay(game.getReplay(), FileUtil.getReplayDataBase().resolve("local-" + FileUtil.createFilenameSafeTimestamp()));
+				Path replayFile = FileUtil.getReplayDataBase().resolve("local-" + FileUtil.createFilenameSafeTimestamp());
+				ReplayUtil.writeReplay(game.getReplay(), replayFile);
 			}
 		});
 
@@ -114,7 +119,24 @@ public class TetrisFX extends Application implements GameListener {
 		// Configure the stage.
 		primaryStage.setTitle("Tetris Bob");
 		primaryStage.setScene(scene);
-		primaryStage.setOnHidden((event) -> System.exit(0));
+
+		primaryStage.setOnHidden((event) -> {
+			// Attempt to shut down the game gracefully, then exit.
+			if (!game.isGameOver()) {
+				ExecutorService executor = Executors.newSingleThreadExecutor();
+				executor.submit(() -> game.cancel());
+
+				try {
+					executor.awaitTermination(1, TimeUnit.SECONDS);
+				} catch (InterruptedException e) {
+					// Thread was interrupted while waiting for the game to end.
+					// Nothing we can really do since the app is about to exit.
+				}
+			}
+
+			System.exit(0);
+		});
+
 		primaryStage.show();
 
 		// Run the game in a separate thread.

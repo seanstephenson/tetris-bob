@@ -57,6 +57,9 @@ public class ReplayGenerator implements GameListener {
 		// Store final game information,
 		replay.setEndTime(game.getEndTime());
 
+		replay.setStatus(game.getStatus());
+		replay.setError(game.getError());
+
 		replay.setTotalPieces(game.getTotalPieces());
 		replay.setCompletedLines(game.getCompletedLines());
 		replay.setLevel(game.getLevel());

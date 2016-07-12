@@ -44,8 +44,8 @@ public class Game {
 
 	private List<GameListener> listeners = new ArrayList<>();
 
-	private enum Status { New, InProgress, Complete, Error }
-	private Status status = Status.New;
+	public enum Status { New, InProgress, Complete, Cancelled, Error }
+	private volatile Status status = Status.New;
 	private Throwable error;
 
 	private Instant startTime;
@@ -106,8 +106,6 @@ public class Game {
 				// Sleep until the next frame.
 				sleep(settings.getFrameInterval());
 			}
-
-			status = Status.Complete;
 
 		} catch (Throwable throwable) {
 			status = Status.Error;
@@ -440,8 +438,8 @@ public class Game {
 		return multipliers[lines - 1] * (level + 1);
 	}
 
-	private boolean isGameOver() {
-		return status == Status.Complete;
+	public boolean isGameOver() {
+		return status != Status.New && status != Status.InProgress;
 	}
 
 	private void sleep(long interval) {
@@ -449,9 +447,18 @@ public class Game {
 			if (interval > 0) {
 				TimeUnit.MILLISECONDS.sleep(interval);
 			}
+
+			if (Thread.interrupted()) {
+				cancel();
+			}
+
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public void cancel() {
+		status = Status.Cancelled;
 	}
 
 	private void notifyListeners(Consumer<? super GameListener> consumer) {

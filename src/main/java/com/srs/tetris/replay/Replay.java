@@ -1,5 +1,6 @@
 package com.srs.tetris.replay;
 
+import com.srs.tetris.game.Game;
 import com.srs.tetris.game.GameSettings;
 import com.srs.tetris.game.Piece;
 import java.time.Instant;
@@ -21,6 +22,9 @@ public class Replay {
 
 	private Instant startTime;
 	private Instant endTime;
+
+	private Game.Status status;
+	private Throwable error;
 
 	private List<Piece> moves;
 
@@ -94,6 +98,22 @@ public class Replay {
 
 	public void setEndTime(Instant endTime) {
 		this.endTime = endTime;
+	}
+
+	public Game.Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Game.Status status) {
+		this.status = status;
+	}
+
+	public Throwable getError() {
+		return error;
+	}
+
+	public void setError(Throwable error) {
+		this.error = error;
 	}
 
 	public List<Piece> getMoves() {
