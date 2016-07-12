@@ -8,46 +8,46 @@ class AverageHeightEvaluatorTest {
 	public void evaluate() {
 		def evaluator = new AverageHeightEvaluator()
 
-		assert evaluator.evaluate(BitBoard.from("""
+		assert evaluator.evaluate(BitBoard.from('''
 		    . . .
 		    . . .
 		    . . .
 		    . . .
-		""")).score == 0.0
+		''')).score == 0.0
 
-		assert evaluator.evaluate(BitBoard.from("""
+		assert evaluator.evaluate(BitBoard.from('''
 		    . . .
 		    . . .
 		    . . .
 		    . . X
-		""")).score == 1.0
+		''')).score == 1.0
 
-		assert evaluator.evaluate(BitBoard.from("""
+		assert evaluator.evaluate(BitBoard.from('''
 		    . . .
 		    . . .
 		    . X .
 		    X . .
-		""")).score == 1.5
+		''')).score == 1.5
 
-		assert evaluator.evaluate(BitBoard.from("""
+		assert evaluator.evaluate(BitBoard.from('''
 		    . . .
 		    . . .
 		    . X .
 		    X X X
-		""")).score == 1.25
+		''')).score == 1.25
 
-		assert evaluator.evaluate(BitBoard.from("""
+		assert evaluator.evaluate(BitBoard.from('''
 		    . . .
 		    X X X
 		    . X .
 		    X X X
-		""")).score == 2.0
+		''')).score == 2.0
 
-		assert evaluator.evaluate(BitBoard.from("""
+		assert evaluator.evaluate(BitBoard.from('''
 		    X X X
 		    X X X
 		    X X X
 		    X X X
-		""")).score == 2.5
+		''')).score == 2.5
 	}
 }

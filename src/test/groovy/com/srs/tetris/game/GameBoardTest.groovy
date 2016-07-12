@@ -9,7 +9,7 @@ class GameBoardTest {
 		def board = new GameBoard(4, 7)
 		
 		board.place(piece.moveTo(1, 1))
-		assert board == GameBoard.from("""
+		assert board == GameBoard.from('''
 			. . . .
 			. . . L
 			. L L L
@@ -17,10 +17,10 @@ class GameBoardTest {
 			. . . .
 			. . . .
 			. . . .
-		""")
+		''')
 
 		board.place(piece.moveTo(1, 4))
-		assert board == GameBoard.from("""
+		assert board == GameBoard.from('''
 			. . . .
 			. . . L
 			. L L L
@@ -28,10 +28,10 @@ class GameBoardTest {
 			. . . L
 			. L L L
 			. . . .
-		""")
+		''')
 
 		board.place(piece.moveTo(0, 0))
-		assert board == GameBoard.from("""
+		assert board == GameBoard.from('''
 			. . L .
 			L L L L
 			. L L L
@@ -39,7 +39,7 @@ class GameBoardTest {
 			. . . L
 			. L L L
 			. . . .
-		""")
+		''')
 	}
 
 	@Test
@@ -48,44 +48,44 @@ class GameBoardTest {
 		def board = new GameBoard(4, 4)
 
 		board.place(piece.moveTo(50, 50))
-		assert board == GameBoard.from("""
+		assert board == GameBoard.from('''
 			. . . .
 			. . . .
 			. . . .
 			. . . .
-		""")
+		''')
 
 		board.place(piece.moveTo(-50, -50))
-		assert board == GameBoard.from("""
+		assert board == GameBoard.from('''
 			. . . .
 			. . . .
 			. . . .
 			. . . .
-		""")
+		''')
 
 		board.place(piece.moveTo(-2, -1))
-		assert board == GameBoard.from("""
+		assert board == GameBoard.from('''
 			L . . .
 			. . . .
 			. . . .
 			. . . .
-		""")
+		''')
 
 		board.place(piece.moveTo(2, -1))
-		assert board == GameBoard.from("""
+		assert board == GameBoard.from('''
 			L . L L
 			. . . .
 			. . . .
 			. . . .
-		""")
+		''')
 
 		board.place(piece.moveTo(1, 3))
-		assert board == GameBoard.from("""
+		assert board == GameBoard.from('''
 			L . L L
 			. . . .
 			. . . .
 			. . . L
-		""")
+		''')
 	}
 
 	@Test
@@ -96,12 +96,12 @@ class GameBoardTest {
 		assert board.canPlace(piece.moveTo(0, 0))
 
 		board.place(piece.moveTo(0, 0))
-		assert board == GameBoard.from("""
+		assert board == GameBoard.from('''
 			. . L .
 			L L L .
 			. . . .
 			. . . .
-		""")
+		''')
 
 		assert !board.canPlace(piece.moveTo(0, 0))
 		assert !board.canPlace(piece.moveTo(0, 1))
@@ -128,11 +128,11 @@ class GameBoardTest {
 
 	@Test
 	void isColumnEmpty() {
-		def board = GameBoard.from("""
+		def board = GameBoard.from('''
 			. . .
 			. S .
 			S S .
-		""")
+		''')
 
 		assert !board.isColumnEmpty(0)
 		assert !board.isColumnEmpty(1)
@@ -141,11 +141,11 @@ class GameBoardTest {
 
 	@Test
 	void isLineEmpty() {
-		def board = GameBoard.from("""
+		def board = GameBoard.from('''
 			. . . .
 			. . S S
 			S S S S
-		""")
+		''')
 
 		assert board.isLineEmpty(0)
 		assert !board.isLineEmpty(1)
@@ -154,11 +154,11 @@ class GameBoardTest {
 
 	@Test
 	void isLineComplete() {
-		def board = GameBoard.from("""
+		def board = GameBoard.from('''
 			. . . .
 			. . S S
 			S S S S
-		""")
+		''')
 
 		assert !board.isLineComplete(0)
 		assert !board.isLineComplete(1)
@@ -167,53 +167,53 @@ class GameBoardTest {
 
 	@Test
 	void removeLine() {
-		def board = GameBoard.from("""
+		def board = GameBoard.from('''
 			. . . S
 			. . S Z
 			S S S S
 			I I I I
-		""")
+		''')
 
 		board.removeLine(2)
-		assert board == GameBoard.from("""
+		assert board == GameBoard.from('''
 			. . . .
 			. . . S
 			. . S Z
 			I I I I
-		""")
+		''')
 
 		board.removeLine(0)
-		assert board == GameBoard.from("""
+		assert board == GameBoard.from('''
 			. . . .
 			. . . S
 			. . S Z
 			I I I I
-		""")
+		''')
 
 		board.removeLine(3)
-		assert board == GameBoard.from("""
+		assert board == GameBoard.from('''
 			. . . .
 			. . . .
 			. . . S
 			. . S Z
-		""")
+		''')
 	}
 
 	@Test
 	void removeCompleteLines() {
-		def board = BitBoard.from("""
+		def board = BitBoard.from('''
 			. . . L
 			. . L L
 			L L L L
 			L L L L
-		""")
+		''')
 
 		assert 2 == board.removeCompleteLines()
-		assert board == BitBoard.from("""
+		assert board == BitBoard.from('''
 			. . . .
 			. . . .
 			. . . L
 			. . L L
-		""")
+		''')
 	}
 }

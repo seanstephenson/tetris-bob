@@ -8,25 +8,25 @@ class HeightEvaluatorTest {
 	public void evaluate() {
 		def evaluator = new HeightEvaluator()
 
-		assert evaluator.evaluate(BitBoard.from("""
+		assert evaluator.evaluate(BitBoard.from('''
 		    . . .
 		    . . .
 		    . . .
 		    . . .
-		""")).score == 0.0
+		''')).score == 0.0
 
-		assert evaluator.evaluate(BitBoard.from("""
+		assert evaluator.evaluate(BitBoard.from('''
 		    . . .
 		    . . .
 		    . . .
 		    . . X
-		""")).score == 1.0
+		''')).score == 1.0
 
-		assert evaluator.evaluate(BitBoard.from("""
+		assert evaluator.evaluate(BitBoard.from('''
 		    X . .
 		    . X .
 		    . X .
 		    X X X
-		""")).score == 4.0
+		''')).score == 4.0
 	}
 }
