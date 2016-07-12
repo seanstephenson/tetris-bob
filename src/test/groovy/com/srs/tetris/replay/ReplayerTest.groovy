@@ -20,6 +20,8 @@ class ReplayerTest {
 			. . . . . .
 		""")
 
+		assert replayer.piece == replay.moves[0]
+
 		assert replayer.completedLines == 0
 		assert !replayer.hasPrevious()
 		assert replayer.hasNext()
@@ -132,6 +134,7 @@ class ReplayerTest {
 		""")
 
 		assert !replayer.hasNext()
+		assert replayer.piece == null
 	}
 
 	@Test

@@ -2,6 +2,7 @@ package com.srs.tetris.replay;
 
 import com.srs.tetris.game.Board;
 import com.srs.tetris.game.GameBoard;
+import com.srs.tetris.game.Piece;
 
 public class Replayer {
 	private Replay replay;
@@ -75,6 +76,14 @@ public class Replayer {
 
 	public GameBoard getBoard() {
 		return board;
+	}
+
+	public Piece getPiece() {
+		if (hasNext()) {
+			return replay.getMoves().get(index);
+		} else {
+			return null;
+		}
 	}
 
 	public int getCompletedLines() {

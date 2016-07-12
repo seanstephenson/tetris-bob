@@ -143,9 +143,14 @@ public class ReplayViewer extends Application {
 
 				// Update the game board.
 				boardPane.update(replayer.getBoard());
+
+				if (replayer.getPiece() != null) {
+					boardPane.drawTransparentPiece(replayer.getPiece());
+				}
 			}
 		});
 	}
+
 	private Path findLatestReplayFile() throws IOException {
 		return Files.list(FileUtil.getReplayDataBase())
 			.filter(Files::isRegularFile)
