@@ -59,8 +59,8 @@ public class TetrisFX extends Application implements GameListener {
 	@Override
 	public void init() throws Exception {
 		// Create the player.
-		//Player player = new LocalPlayer();
-		DirectPlayer player = new BobPlayer();
+		Player player = new LocalPlayer();
+		//DirectPlayer player = new BobPlayer();
 
 		// Create the game.
 		GameSettings gameSettings = GameSettings.standard(player);
@@ -68,16 +68,18 @@ public class TetrisFX extends Application implements GameListener {
 
 		//gameSettings.setWidth(6);
 		//gameSettings.setHeight(8);
-		gameSettings.setGenerateReplay(true);
 
 		game = new Game(gameSettings);
 		game.addListener(this);
 		game.init();
 
-		// Write out the replay to disk on game over.
+		// Generate a replay.
+		gameSettings.setGenerateReplay(true);
+
 		game.addListener(new GameListener() {
 			@Override
 			public void onGameOver() {
+				// Write out the replay to disk on game over.
 				Path replayFile = FileUtil.getReplayDataBase().resolve("local-" + FileUtil.createFilenameSafeTimestamp());
 				ReplayUtil.writeReplay(game.getReplay(), replayFile);
 			}

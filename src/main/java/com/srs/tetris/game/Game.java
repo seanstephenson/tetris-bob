@@ -67,11 +67,6 @@ public class Game {
 		// Initialize the player.
 		player.init(this);
 
-		// Create the replay generator.
-		if (settings.isGenerateReplay()) {
-			addListener(replayGenerator = new ReplayGenerator(this));
-		}
-
 		// Set up the game.
 		setupGame();
 	}
@@ -83,6 +78,9 @@ public class Game {
 
 		status = Status.InProgress;
 		startTime = Instant.now();
+
+		// Start the replay if necessary.
+		startReplay();
 
 		try {
 			notifyListeners((listener) -> listener.onGameStart());
@@ -115,6 +113,16 @@ public class Game {
 		} finally {
 			endTime = Instant.now();
 			notifyListeners((listener) -> listener.onGameOver());
+		}
+	}
+
+	private void startReplay() {
+		// Create the replay generator.
+		if (settings.isGenerateReplay()) {
+			// Add the replay generator in first position so it always receives events first.
+			// Otherwise other listeners that try to do something with the replay on game over
+			// won't be dealing with the finished product.
+			listeners.add(0, replayGenerator = new ReplayGenerator(this));
 		}
 	}
 
