@@ -35,11 +35,11 @@ public class GeneticLearner {
 
 	private static final double INITIAL_POPULATION_VARIANCE = 2.0;
 
-	private static final int GENERATIONS = 20;
-	private static final int SPECIMENS_PER_GENERATION = 20;
-	private static final double SUCCESS_THRESHOLD = 0.25;
+	private static final int GENERATIONS = 250;
+	private static final int SPECIMENS_PER_GENERATION = 50;
+	private static final double SUCCESS_THRESHOLD = 0.2;
 
-	private static final int GAMES_PER_SPECIMEN = 8;
+	private static final int GAMES_PER_SPECIMEN = 40;
 
 	private static final double MUTATE_PROBABILITY = 0.15;
 	private static final double MUTATION_VARIANCE = 2.0;
