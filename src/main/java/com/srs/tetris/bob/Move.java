@@ -5,6 +5,7 @@ import com.srs.tetris.game.Piece;
 
 public class Move {
 	private int x, y, orientation;
+	private boolean isSwap;
 	private Score score;
 
 	public Move(Piece piece) {

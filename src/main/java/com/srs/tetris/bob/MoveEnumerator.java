@@ -14,6 +14,10 @@ public class MoveEnumerator {
 	private Piece piece;
 	private Piece swapPiece;
 
+	public MoveEnumerator(BitBoard board, Piece piece) {
+		this(board, piece, null);
+	}
+
 	public MoveEnumerator(BitBoard board, Piece piece, Piece swapPiece) {
 		this.board = board;
 		this.piece = piece;
