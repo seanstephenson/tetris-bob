@@ -194,7 +194,7 @@ public class Game {
 			// Swap out the current piece
 			Piece current = piece;
 			piece = swapPiece;
-			swapPiece = current;
+			swapPiece = current.moveTo(0, 0, 0);
 
 			if (piece == null) {
 				// If there was no piece already in the swap position, just drop the next piece.

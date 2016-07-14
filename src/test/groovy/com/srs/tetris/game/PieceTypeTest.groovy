@@ -50,4 +50,15 @@ class PieceTypeTest {
 	void board_invalid_large() {
 		PieceType.I.getBoard(4);
 	}
+
+	@Test
+	void uniqueOrientations() {
+		assert [0] == PieceType.O.uniqueOrientations
+		assert [0, 1] == PieceType.I.uniqueOrientations
+		assert [0, 1] == PieceType.S.uniqueOrientations
+		assert [0, 1] == PieceType.Z.uniqueOrientations
+		assert [0, 1, 2, 3] == PieceType.L.uniqueOrientations
+		assert [0, 1, 2, 3] == PieceType.J.uniqueOrientations
+		assert [0, 1, 2, 3] == PieceType.T.uniqueOrientations
+	}
 }

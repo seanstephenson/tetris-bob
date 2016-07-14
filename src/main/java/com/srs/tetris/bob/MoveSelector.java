@@ -68,7 +68,7 @@ public class MoveSelector {
 		ArrayList<Move> moves = new ArrayList<>(board.getWidth() * 4);
 
 		// For each possible orientation.
-		for (int orientation = 0; orientation < 4; orientation++) {
+		for (int orientation : piece.getType().getUniqueOrientations()) {
 			Piece piece = this.piece.moveTo(0, 0, orientation);
 
 			int top = Math.max(0, board.findHighestBlock() - piece.getBoard().getHeight());
