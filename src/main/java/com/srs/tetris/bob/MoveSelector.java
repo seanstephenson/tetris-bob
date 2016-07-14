@@ -11,21 +11,27 @@ import java.util.List;
 public class MoveSelector {
 	private BitBoard board;
 	private Piece piece;
+	private boolean allowSwap = true;
 
-	//private Piece nextPiece, swapPiece;
+	private Piece nextPiece;
+	private Piece swapPiece;
 
 	public MoveSelector(Game game) {
 		this.board = game.getBoard().toBitBoard();
 		this.piece = game.getPiece();
-		//this.nextPiece = game.getNextPiece();
-		//this.swapPiece = game.getSwapPiece();
+		this.nextPiece = game.getNextPiece();
+		this.swapPiece = game.getSwapPiece();
 	}
 
 	public Move getMove() {
 		BoardEvaluator evaluator = new SapientEvaluator();
 
 		// Enumerate all the current moves.
-		List<Move> moves = findPossibleMoves(board);
+		List<Move> moves = new MoveEnumerator(
+			board,
+			piece,
+			allowSwap ? swapPiece : null
+		).findPossibleMoves();
 
 		Move best = null;
 		for (Move move : moves) {
@@ -64,29 +70,11 @@ public class MoveSelector {
 		}
 	}
 
-	private ArrayList<Move> findPossibleMoves(BitBoard board) {
-		ArrayList<Move> moves = new ArrayList<>(board.getWidth() * 4);
+	public boolean isAllowSwap() {
+		return allowSwap;
+	}
 
-		// For each possible orientation.
-		for (int orientation : piece.getType().getUniqueOrientations()) {
-			Piece piece = this.piece.moveTo(0, 0, orientation);
-
-			int top = Math.max(0, board.findHighestBlock() - piece.getBoard().getHeight());
-
-			// For each possible horizontal position.
-			for (int x = -piece.getBoard().getWidth() + 1; x < board.getWidth() - 1; x++) {
-				piece = piece.moveTo(x, top);
-				if (!board.canPlace(piece)) continue;
-
-				// Drop the piece until it lands.
-				while (board.canPlace(piece.moveDown())) {
-					piece = piece.moveDown();
-				}
-
-				moves.add(new Move(piece));
-			}
-		}
-
-		return moves;
+	public void setAllowSwap(boolean allowSwap) {
+		this.allowSwap = allowSwap;
 	}
 }
