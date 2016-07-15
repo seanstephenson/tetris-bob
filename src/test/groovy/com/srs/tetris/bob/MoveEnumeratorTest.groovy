@@ -16,7 +16,7 @@ class MoveEnumeratorTest {
 			T . T T
 		""")
 
-		def moves = new MoveEnumerator(board.toBitBoard(), piece).findPossibleMoves()
+		def moves = new MoveEnumerator().findPossibleMoves(new Position(board.toBitBoard(), piece))
 
 		assert boardsForMoves(board, piece, moves) == [
 			GameBoard.from("""
@@ -50,7 +50,7 @@ class MoveEnumeratorTest {
 			T . T T
 		""")
 
-		def moves = new MoveEnumerator(board.toBitBoard(), piece).findPossibleMoves()
+		def moves = new MoveEnumerator().findPossibleMoves(new Position(board.toBitBoard(), piece))
 
 		assert boardsForMoves(board, piece, moves) == [
 			GameBoard.from("""
@@ -78,7 +78,7 @@ class MoveEnumeratorTest {
 			T . T T
 		""")
 
-		def moves = new MoveEnumerator(board.toBitBoard(), piece).findPossibleMoves()
+		def moves = new MoveEnumerator().findPossibleMoves(new Position(board.toBitBoard(), piece))
 
 		assert boardsForMoves(board, piece, moves) == [
 			GameBoard.from("""
@@ -129,7 +129,7 @@ class MoveEnumeratorTest {
 	List<GameBoard> boardsForMoves(GameBoard board, Piece piece, List<Move> moves) {
 		return moves.collect {
 			def placed = board.clone()
-			placed.place(new Piece(piece.type, it.orientation, it.x, it.y))
+			placed.place(it.piece)
 			return placed
 		}
 	}

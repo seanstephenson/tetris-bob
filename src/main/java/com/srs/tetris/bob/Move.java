@@ -4,30 +4,15 @@ import com.srs.tetris.bob.evaluator.Score;
 import com.srs.tetris.game.Piece;
 
 public class Move {
-	private int x, y, orientation;
-	private boolean isSwap;
+	private Piece piece;
 	private Score score;
 
 	public Move(Piece piece) {
-		this(piece.getX(), piece.getY(), piece.getOrientation());
+		this.piece = piece;
 	}
 
-	public Move(int x, int y, int orientation) {
-		this.x = x;
-		this.y = y;
-		this.orientation = orientation;
-	}
-
-	public int getX() {
-		return x;
-	}
-
-	public int getY() {
-		return y;
-	}
-
-	public int getOrientation() {
-		return orientation;
+	public Piece getPiece() {
+		return piece;
 	}
 
 	public Score getScore() {

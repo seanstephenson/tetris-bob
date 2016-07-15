@@ -59,7 +59,7 @@ public class BobPlayer implements DirectPlayer, GameListener {
 		}
 
 		// Select a move for the new piece.
-		moveFuture = moveSelectionExecutor.submit(() -> new MoveSelector(game).getMove());
+		moveFuture = moveSelectionExecutor.submit(() -> new MoveSelector(new Position(game)).getMove());
 	}
 
 	private Move getCurrentMove() {
@@ -81,8 +81,8 @@ public class BobPlayer implements DirectPlayer, GameListener {
 		Move move = getCurrentMove();
 
 		if (move != null) {
-			// If ew have a move already, pass back the coordinates directly.
-			return game.getPiece().moveTo(move.getX(), move.getY(), move.getOrientation());
+			// If we have a move already, pass it back directly.
+			return move.getPiece();
 
 		} else {
 			// Otherwise we aren't ready yet, so make no move yet.
@@ -112,18 +112,18 @@ public class BobPlayer implements DirectPlayer, GameListener {
 	private Input createInputForMove(Move move) {
 		Input input = new Input();
 
-		if (move.getOrientation() != game.getPiece().getOrientation()) {
+		if (move.getPiece().getOrientation() != game.getPiece().getOrientation()) {
 			if (shouldRotateRight(move)) {
 				input.setRotateRight(true);
 			} else {
 				input.setRotateLeft(true);
 			}
 
-		} else if (move.getX() < game.getPiece().getX()) {
+		} else if (move.getPiece().getX() < game.getPiece().getX()) {
 			// Move left
 			input.setLeft(true);
 
-		} else if (move.getX() > game.getPiece().getX()) {
+		} else if (move.getPiece().getX() > game.getPiece().getX()) {
 			// Move right
 			input.setRight(true);
 
@@ -151,7 +151,7 @@ public class BobPlayer implements DirectPlayer, GameListener {
 
 	private boolean shouldRotateRight(Move move) {
 		// Rotate right if it is only one step away.  Otherwise rotate left.
-		return Math.floorMod(game.getPiece().getOrientation() - 1, 4) == move.getOrientation();
+		return Math.floorMod(game.getPiece().getOrientation() - 1, 4) == move.getPiece().getOrientation();
 	}
 
 	public void setBoardEvaluator(BoardEvaluator boardEvaluator) {

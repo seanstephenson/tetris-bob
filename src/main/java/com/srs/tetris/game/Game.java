@@ -504,6 +504,10 @@ public class Game {
 		return swapPiece;
 	}
 
+	public boolean isPieceSwapped() {
+		return pieceSwapped;
+	}
+
 	public long getScore() {
 		return score;
 	}

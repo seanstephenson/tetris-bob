@@ -10,26 +10,18 @@ import java.util.List;
  * Generates all possible moves for a position.
  */
 public class MoveEnumerator {
-	private BitBoard board;
-	private Piece piece;
-	private Piece swapPiece;
+	/**
+	 * Find all possible moves that can be played from the given position.
+	 */
+	public List<Move> findPossibleMoves(Position position) {
+		BitBoard board = position.getBoard();
+		Piece piece = position.getPiece();
 
-	public MoveEnumerator(BitBoard board, Piece piece) {
-		this(board, piece, null);
-	}
-
-	public MoveEnumerator(BitBoard board, Piece piece, Piece swapPiece) {
-		this.board = board;
-		this.piece = piece;
-		this.swapPiece = swapPiece;
-	}
-
-	public List<Move> findPossibleMoves() {
 		ArrayList<Move> moves = new ArrayList<>(board.getWidth() * 4);
 
 		// For each possible orientation.
 		for (int orientation : piece.getType().getUniqueOrientations()) {
-			Piece piece = this.piece.moveTo(0, 0, orientation);
+			piece = piece.moveTo(0, 0, orientation);
 
 			int top = Math.max(0, board.findHighestBlock() - piece.getBoard().getHeight());
 

@@ -9,39 +9,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MoveSelector {
-	private BitBoard board;
-	private Piece piece;
-	private boolean allowSwap = true;
 
-	private Piece nextPiece;
-	private Piece swapPiece;
+	private Position position;
 
-	public MoveSelector(Game game) {
-		this.board = game.getBoard().toBitBoard();
-		this.piece = game.getPiece();
-		this.nextPiece = game.getNextPiece();
-		this.swapPiece = game.getSwapPiece();
+	public MoveSelector(Position position) {
+		this.position = position;
 	}
 
 	public Move getMove() {
 		BoardEvaluator evaluator = new SapientEvaluator();
 
 		// Enumerate all the current moves.
-		List<Move> moves = new MoveEnumerator(
-			board,
-			piece,
-			allowSwap ? swapPiece : null
-		).findPossibleMoves();
+		List<Move> moves = new MoveEnumerator().findPossibleMoves(position);
 
 		Move best = null;
 		for (Move move : moves) {
-			BitBoard board = this.board.clone();
+			BitBoard board = position.getBoard().clone();
 
 			// Draw the piece on the board so we can see what it would look like after.
-			Piece piece = this.piece.moveTo(move.getX(), move.getY(), move.getOrientation());
-
-			// Draw the piece on the board so we can see what it would look like after.
-			doMove(board, piece);
+			doMove(board, move.getPiece());
 
 			// Evaluate the position.
 			move.setScore(evaluator.evaluate(board));
@@ -68,13 +54,5 @@ public class MoveSelector {
 				board.removeLine(y);
 			}
 		}
-	}
-
-	public boolean isAllowSwap() {
-		return allowSwap;
-	}
-
-	public void setAllowSwap(boolean allowSwap) {
-		this.allowSwap = allowSwap;
 	}
 }
