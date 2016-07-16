@@ -1,5 +1,8 @@
 package com.srs.tetris.game;
 
+/**
+ * The state for the game's input.
+ */
 public class Input implements Cloneable {
 	private boolean rotateLeft, rotateRight;
 

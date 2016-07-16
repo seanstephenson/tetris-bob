@@ -155,17 +155,23 @@ public class Game {
 
 		if (player instanceof DirectPlayer && settings.getInputMode() == GameSettings.InputMode.Direct) {
 			// This is a direct player and we are in direct input mode, so get it directly.
-			Piece move = ((DirectPlayer) player).directInput();
+			DirectInput move = ((DirectPlayer) player).directInput();
 
 			lastInput = new Input();
 			input = new Input();
 
-			if (move != null && board.canPlace(move)) {
-				assert move.getType() == piece.getType() : "Invalid piece type for direct input";
-				assert board.canPlace(move) : "Invalid move, could not place on board";
+			if (move != null) {
+				if (!move.isSwap()) {
+					// The move is for the current piece.  Move it to the correct location and drop it.
+					piece = piece.moveTo(move.getX(), move.getY(), move.getOrientation());
+					input.setDrop(true);
 
-				piece = piece.moveTo(move.getX(), move.getY(), move.getOrientation());
-				input.setDrop(true);
+					assert board.canPlace(piece) : "Invalid move, could not place on board";
+
+				} else {
+					// The move is a swap.
+					input.setSwap(true);
+				}
 			}
 
 		} else {

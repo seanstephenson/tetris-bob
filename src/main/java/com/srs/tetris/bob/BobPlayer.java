@@ -3,6 +3,7 @@ package com.srs.tetris.bob;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.srs.tetris.bob.evaluator.BoardEvaluator;
 import com.srs.tetris.bob.evaluator.SapientEvaluator;
+import com.srs.tetris.game.DirectInput;
 import com.srs.tetris.game.Game;
 import com.srs.tetris.game.GameListener;
 import com.srs.tetris.game.GameSettings;
@@ -76,13 +77,20 @@ public class BobPlayer implements DirectPlayer, GameListener {
 	}
 
 	@Override
-	public Piece directInput() {
+	public DirectInput directInput() {
 		// Get the current move that we are trying to execute.
 		Move move = getCurrentMove();
 
 		if (move != null) {
-			// If we have a move already, pass it back directly.
-			return move.getPiece();
+			// If we have a move already, pass it back.
+			if (move.getPiece().getType() == game.getPiece().getType()) {
+				// The move is for the current piece, so pass back its coordinates.
+				return new DirectInput(move.getPiece().getX(), move.getPiece().getY(), move.getPiece().getOrientation());
+
+			} else {
+				// The piece type isn't the same as the current piece, so it must be a swap move.
+				return DirectInput.swap();
+			}
 
 		} else {
 			// Otherwise we aren't ready yet, so make no move yet.
@@ -112,7 +120,11 @@ public class BobPlayer implements DirectPlayer, GameListener {
 	private Input createInputForMove(Move move) {
 		Input input = new Input();
 
-		if (move.getPiece().getOrientation() != game.getPiece().getOrientation()) {
+		if (move.getPiece().getType() != game.getPiece().getType()) {
+			// The piece type isn't the same as the current piece, so it must be a swap move.
+			input.setSwap(true);
+
+		} else if (move.getPiece().getOrientation() != game.getPiece().getOrientation()) {
 			if (shouldRotateRight(move)) {
 				input.setRotateRight(true);
 			} else {

@@ -5,11 +5,18 @@ import com.srs.tetris.game.Piece;
 import com.srs.tetris.game.PieceType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Generates all possible moves for a position.
  */
 public class MoveEnumerator {
+
+	/**
+	 * Indicates if piece swapping is allowed.
+	 */
+	private boolean allowSwap = true;
+
 	/**
 	 * Find all possible moves that can be played from the given position.
 	 */
@@ -19,6 +26,23 @@ public class MoveEnumerator {
 
 		ArrayList<Move> moves = new ArrayList<>(board.getWidth() * 4);
 
+		findPossibleMoves(board, piece, moves);
+
+		Piece swapPiece = position.getSwapPiece();
+
+		// If the swap piece is null, use the next piece as the swap piece (since that is what will appear if we swap).
+		if (swapPiece == null) {
+			swapPiece = position.getNextPiece();
+		}
+
+		if (allowSwap && !position.isPieceSwapped() && swapPiece != null && piece.getType() != swapPiece.getType()) {
+			findPossibleMoves(board, swapPiece, moves);
+		}
+
+		return moves;
+	}
+
+	private void findPossibleMoves(BitBoard board, Piece piece, ArrayList<Move> moves) {
 		// For each possible orientation.
 		for (int orientation : piece.getType().getUniqueOrientations()) {
 			piece = piece.moveTo(0, 0, orientation);
@@ -38,7 +62,9 @@ public class MoveEnumerator {
 				moves.add(new Move(piece));
 			}
 		}
+	}
 
-		return moves;
+	public void setAllowSwap(boolean allowSwap) {
+		this.allowSwap = allowSwap;
 	}
 }
