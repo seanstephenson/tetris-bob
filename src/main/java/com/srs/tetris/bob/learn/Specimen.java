@@ -29,6 +29,10 @@ public class Specimen implements Cloneable {
 		return generation;
 	}
 
+	public double getAverageLines() {
+		return getLines().getAverage();
+	}
+
 	public LongSummaryStatistics getLines() {
 		return lines;
 	}
