@@ -21,7 +21,7 @@ public class BobSettings {
 	}
 
 	public static BobSettings simple(BoardEvaluator boardEvaluator) {
-		return noSwap()
+		return noSwap(boardEvaluator)
 			.setMaxDepth(1);
 	}
 
