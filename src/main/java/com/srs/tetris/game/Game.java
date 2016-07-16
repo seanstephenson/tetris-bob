@@ -28,9 +28,9 @@ public class Game {
 	private Input lastInput;
 	private Input input;
 
-	private int totalPieces;
-	private int completedLines;
-	private int level;
+	private long totalPieces;
+	private long completedLines;
+	private long level;
 	private long score;
 
 	private long lastFrame;
@@ -518,15 +518,15 @@ public class Game {
 		return score;
 	}
 
-	public int getLevel() {
+	public long getLevel() {
 		return level;
 	}
 
-	public int getCompletedLines() {
+	public long getCompletedLines() {
 		return completedLines;
 	}
 
-	public int getTotalPieces() {
+	public long getTotalPieces() {
 		return totalPieces;
 	}
 

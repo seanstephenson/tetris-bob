@@ -1,6 +1,7 @@
 package com.srs.tetris.javafx;
 
 import com.srs.tetris.bob.BobPlayer;
+import com.srs.tetris.bob.BobSettings;
 import com.srs.tetris.bob.learn.FileUtil;
 import com.srs.tetris.game.GameBoard;
 import com.srs.tetris.game.Game;
@@ -62,7 +63,7 @@ public class TetrisFX extends Application implements GameListener {
 	public void init() throws Exception {
 		// Create the player.
 		//Player player = new LocalPlayer();
-		DirectPlayer player = new BobPlayer();
+		DirectPlayer player = new BobPlayer(BobSettings.standard());
 
 		// Create the game.
 		GameSettings gameSettings = GameSettings.standard(player);

@@ -1,26 +1,23 @@
 package com.srs.tetris.bob;
 
 import com.srs.tetris.bob.evaluator.BoardEvaluator;
-import com.srs.tetris.bob.evaluator.SapientEvaluator;
 import com.srs.tetris.game.BitBoard;
-import com.srs.tetris.game.Game;
 import com.srs.tetris.game.Piece;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MoveSelector {
 
-	private Position position;
+	private MoveEnumerator moveEnumerator;
+	private BoardEvaluator evaluator;
 
-	public MoveSelector(Position position) {
-		this.position = position;
+	public MoveSelector(MoveEnumerator moveEnumerator, BoardEvaluator evaluator) {
+		this.moveEnumerator = moveEnumerator;
+		this.evaluator = evaluator;
 	}
 
-	public Move getMove() {
-		BoardEvaluator evaluator = new SapientEvaluator();
-
+	public Move getMove(Position position) {
 		// Enumerate all the current moves.
-		List<Move> moves = new MoveEnumerator().findPossibleMoves(position);
+		List<Move> moves = moveEnumerator.findPossibleMoves(position);
 
 		Move best = null;
 		for (Move move : moves) {

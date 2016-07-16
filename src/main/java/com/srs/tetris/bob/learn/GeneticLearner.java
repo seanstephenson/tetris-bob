@@ -3,6 +3,7 @@ package com.srs.tetris.bob.learn;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.srs.tetris.bob.BobPlayer;
+import com.srs.tetris.bob.BobSettings;
 import com.srs.tetris.bob.evaluator.SapientEvaluator;
 import com.srs.tetris.game.Game;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.time.temporal.ChronoField;
 import java.util.Collections;
 import java.util.IntSummaryStatistics;
 import java.util.List;
+import java.util.LongSummaryStatistics;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -151,8 +153,9 @@ public class GeneticLearner {
 		PlayerEvaluator evaluator = new PlayerEvaluator(
 			() -> {
 				// Create a new player with the weights from this specimen.
-				BobPlayer player = new BobPlayer();
-				player.setBoardEvaluator(new SapientEvaluator(specimen.getWeights()));
+				BobPlayer player = new BobPlayer(BobSettings.simple(
+					new SapientEvaluator(specimen.getWeights())
+				));
 				return player;
 			},
 			executor,
@@ -164,8 +167,8 @@ public class GeneticLearner {
 		PlayerEvaluator.Result result = evaluator.run();
 
 		// Record the number of lines achieved.
-		IntSummaryStatistics lines = result.getGames().stream()
-			.mapToInt(Game::getCompletedLines)
+		LongSummaryStatistics lines = result.getGames().stream()
+			.mapToLong(Game::getCompletedLines)
 			.summaryStatistics();
 
 		if (specimen.getLines() == null) {

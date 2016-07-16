@@ -15,9 +15,9 @@ public class Replay {
 	private String playerType;
 	private String pieceGeneratorType;
 
-	private int totalPieces;
-	private int completedLines;
-	private int level;
+	private long totalPieces;
+	private long completedLines;
+	private long level;
 	private long score;
 
 	private Instant startTime;
@@ -52,27 +52,27 @@ public class Replay {
 		this.pieceGeneratorType = pieceGeneratorType;
 	}
 
-	public int getTotalPieces() {
+	public long getTotalPieces() {
 		return totalPieces;
 	}
 
-	public void setTotalPieces(int totalPieces) {
+	public void setTotalPieces(long totalPieces) {
 		this.totalPieces = totalPieces;
 	}
 
-	public int getCompletedLines() {
+	public long getCompletedLines() {
 		return completedLines;
 	}
 
-	public void setCompletedLines(int completedLines) {
+	public void setCompletedLines(long completedLines) {
 		this.completedLines = completedLines;
 	}
 
-	public int getLevel() {
+	public long getLevel() {
 		return level;
 	}
 
-	public void setLevel(int level) {
+	public void setLevel(long level) {
 		this.level = level;
 	}
 

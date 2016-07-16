@@ -1,8 +1,6 @@
 package com.srs.tetris.bob;
 
 import com.google.common.util.concurrent.MoreExecutors;
-import com.srs.tetris.bob.evaluator.BoardEvaluator;
-import com.srs.tetris.bob.evaluator.SapientEvaluator;
 import com.srs.tetris.game.DirectInput;
 import com.srs.tetris.game.Game;
 import com.srs.tetris.game.GameListener;
@@ -21,11 +19,17 @@ import java.util.concurrent.Future;
 public class BobPlayer implements DirectPlayer, GameListener {
 	private ExecutorService moveSelectionExecutor;
 
+	private BobSettings settings;
+
 	private Game game;
-	private BoardEvaluator boardEvaluator;
+	private MoveSelector moveSelector;
 
 	private Future<Move> moveFuture;
 	private Input lastInput;
+
+	public BobPlayer(BobSettings settings) {
+		this.settings = settings;
+	}
 
 	@Override
 	public void init(Game game) {
@@ -43,10 +47,11 @@ public class BobPlayer implements DirectPlayer, GameListener {
 		// Assume empty last input.
 		lastInput = new Input();
 
-		// Make sure we have a board evaluator.
-		if (boardEvaluator == null) {
-			boardEvaluator = new SapientEvaluator();
-		}
+		// Create the move selector.
+		MoveEnumerator moveEnumerator = new MoveEnumerator();
+		moveEnumerator.setAllowSwap(settings.isAllowSwap());
+
+		moveSelector = new MoveSelector(moveEnumerator, settings.getBoardEvaluator());
 
 		game.addListener(this);
 	}
@@ -60,7 +65,7 @@ public class BobPlayer implements DirectPlayer, GameListener {
 		}
 
 		// Select a move for the new piece.
-		moveFuture = moveSelectionExecutor.submit(() -> new MoveSelector(new Position(game)).getMove());
+		moveFuture = moveSelectionExecutor.submit(() -> moveSelector.getMove(new Position(game)));
 	}
 
 	private Move getCurrentMove() {
@@ -164,9 +169,5 @@ public class BobPlayer implements DirectPlayer, GameListener {
 	private boolean shouldRotateRight(Move move) {
 		// Rotate right if it is only one step away.  Otherwise rotate left.
 		return Math.floorMod(game.getPiece().getOrientation() - 1, 4) == move.getPiece().getOrientation();
-	}
-
-	public void setBoardEvaluator(BoardEvaluator boardEvaluator) {
-		this.boardEvaluator = boardEvaluator;
 	}
 }

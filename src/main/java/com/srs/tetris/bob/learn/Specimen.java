@@ -2,13 +2,14 @@ package com.srs.tetris.bob.learn;
 
 import com.srs.tetris.bob.evaluator.SapientEvaluator;
 import java.util.IntSummaryStatistics;
+import java.util.LongSummaryStatistics;
 
 public class Specimen implements Cloneable {
 	private String name;
 	private int generation;
 	private SapientEvaluator.Weights weights;
 
-	private IntSummaryStatistics lines;
+	private LongSummaryStatistics lines;
 
 	public Specimen(String name, int generation, SapientEvaluator.Weights weights) {
 		this.name = name;
@@ -28,11 +29,11 @@ public class Specimen implements Cloneable {
 		return generation;
 	}
 
-	public IntSummaryStatistics getLines() {
+	public LongSummaryStatistics getLines() {
 		return lines;
 	}
 
-	public void setLines(IntSummaryStatistics lines) {
+	public void setLines(LongSummaryStatistics lines) {
 		this.lines = lines;
 	}
 

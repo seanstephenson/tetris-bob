@@ -1,6 +1,7 @@
 package com.srs.tetris.bob.learn;
 
 import com.srs.tetris.bob.BobPlayer;
+import com.srs.tetris.bob.BobSettings;
 import com.srs.tetris.game.Game;
 import com.srs.tetris.game.GameSettings;
 import com.srs.tetris.player.DirectPlayer;
@@ -128,13 +129,14 @@ public class PlayerEvaluator {
 
 		// Create an evaluator that runs a number of games.
 		PlayerEvaluator evaluator = new PlayerEvaluator(
-			() -> new BobPlayer(),
+			() -> new BobPlayer(BobSettings.simple()),
 			executor,
 			100
 		);
 
 		// Generate replays.
-		evaluator.setGenerateReplays(true);
+		evaluator.setGenerateReplays(false);
+		//evaluator.setGenerateReplays(true);
 
 		// Print progress on each game start.
 		evaluator.setOnGameEnd(new PrintDotConsumer<Game>());
@@ -144,12 +146,12 @@ public class PlayerEvaluator {
 
 		executor.shutdown();
 
-		IntSummaryStatistics lines = result.getGames().stream()
-			.mapToInt(Game::getCompletedLines)
+		LongSummaryStatistics lines = result.getGames().stream()
+			.mapToLong(Game::getCompletedLines)
 			.summaryStatistics();
 
-		IntSummaryStatistics pieces = result.getGames().stream()
-			.mapToInt(Game::getTotalPieces)
+		LongSummaryStatistics pieces = result.getGames().stream()
+			.mapToLong(Game::getTotalPieces)
 			.summaryStatistics();
 
 		LongSummaryStatistics score = result.getGames().stream()
