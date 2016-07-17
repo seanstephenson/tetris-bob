@@ -1,14 +1,16 @@
 package com.srs.tetris.bob.evaluator;
 
+import com.srs.tetris.bob.Position;
 import com.srs.tetris.game.BitBoard;
 
 /**
  * Counts any holes in the position, meaning any empty squares that have filled blocks on top of them.
  */
-public class HolesEvaluator implements BoardEvaluator {
+public class HolesEvaluator implements PositionEvaluator {
 
 	@Override
-	public Score evaluate(BitBoard board) {
+	public Score evaluate(Position position) {
+		BitBoard board = position.getBoard();
 		int width = board.getWidth();
 		int height = board.getHeight();
 		int top = board.findHighestBlock();

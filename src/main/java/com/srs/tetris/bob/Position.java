@@ -25,6 +25,10 @@ public class Position {
 		);
 	}
 
+	public Position(BitBoard board) {
+		this(board, null);
+	}
+
 	public Position(BitBoard board, Piece piece) {
 		this(board, piece, null, null, false);
 	}

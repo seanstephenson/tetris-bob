@@ -1,11 +1,12 @@
 package com.srs.tetris.bob.evaluator;
 
+import com.srs.tetris.bob.Position;
 import com.srs.tetris.game.BitBoard;
 
 /**
  * Evaluates the position, incurring penalities for tall, narrow gaps which are hard to fill.
  */
-public class NarrowGapEvaluator implements BoardEvaluator {
+public class NarrowGapEvaluator implements PositionEvaluator {
 
 	private double twoGapWeight;
 	private double threeGapWeight;
@@ -18,7 +19,8 @@ public class NarrowGapEvaluator implements BoardEvaluator {
 	}
 
 	@Override
-	public Score evaluate(BitBoard board) {
+	public Score evaluate(Position position) {
+		BitBoard board = position.getBoard();
 		int width = board.getWidth();
 		int height = board.getHeight();
 		int top = board.findHighestBlock();

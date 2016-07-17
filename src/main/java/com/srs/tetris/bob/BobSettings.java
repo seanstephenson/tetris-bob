@@ -1,6 +1,6 @@
 package com.srs.tetris.bob;
 
-import com.srs.tetris.bob.evaluator.BoardEvaluator;
+import com.srs.tetris.bob.evaluator.PositionEvaluator;
 import com.srs.tetris.bob.evaluator.SapientEvaluator;
 
 public class BobSettings {
@@ -20,8 +20,8 @@ public class BobSettings {
 			.setMaxDepth(1);
 	}
 
-	public static BobSettings simple(BoardEvaluator boardEvaluator) {
-		return noSwap(boardEvaluator)
+	public static BobSettings simple(PositionEvaluator positionEvaluator) {
+		return noSwap(positionEvaluator)
 			.setMaxDepth(1);
 	}
 
@@ -33,13 +33,13 @@ public class BobSettings {
 			.setAllowSwap(false);
 	}
 
-	public static BobSettings noSwap(BoardEvaluator boardEvaluator) {
+	public static BobSettings noSwap(PositionEvaluator positionEvaluator) {
 		return standard()
-			.setBoardEvaluator(boardEvaluator)
+			.setPositionEvaluator(positionEvaluator)
 			.setAllowSwap(false);
 	}
 
-	private BoardEvaluator boardEvaluator;
+	private PositionEvaluator positionEvaluator;
 
 	private boolean allowSwap = true;
 	private int maxDepth = Integer.MAX_VALUE;
@@ -48,8 +48,8 @@ public class BobSettings {
 		this(new SapientEvaluator());
 	}
 
-	public BobSettings(BoardEvaluator boardEvaluator) {
-		this.boardEvaluator = boardEvaluator;
+	public BobSettings(PositionEvaluator positionEvaluator) {
+		this.positionEvaluator = positionEvaluator;
 	}
 
 	public boolean isAllowSwap() {
@@ -70,12 +70,12 @@ public class BobSettings {
 		return this;
 	}
 
-	public BoardEvaluator getBoardEvaluator() {
-		return boardEvaluator;
+	public PositionEvaluator getPositionEvaluator() {
+		return positionEvaluator;
 	}
 
-	public BobSettings setBoardEvaluator(BoardEvaluator boardEvaluator) {
-		this.boardEvaluator = boardEvaluator;
+	public BobSettings setPositionEvaluator(PositionEvaluator positionEvaluator) {
+		this.positionEvaluator = positionEvaluator;
 		return this;
 	}
 }

@@ -1,6 +1,6 @@
 package com.srs.tetris.bob;
 
-import com.srs.tetris.bob.evaluator.BoardEvaluator;
+import com.srs.tetris.bob.evaluator.PositionEvaluator;
 import com.srs.tetris.game.BitBoard;
 import com.srs.tetris.game.Piece;
 import java.util.List;
@@ -8,9 +8,9 @@ import java.util.List;
 public class MoveSelector {
 
 	private MoveEnumerator moveEnumerator;
-	private BoardEvaluator evaluator;
+	private PositionEvaluator evaluator;
 
-	public MoveSelector(MoveEnumerator moveEnumerator, BoardEvaluator evaluator) {
+	public MoveSelector(MoveEnumerator moveEnumerator, PositionEvaluator evaluator) {
 		this.moveEnumerator = moveEnumerator;
 		this.evaluator = evaluator;
 	}
@@ -21,13 +21,11 @@ public class MoveSelector {
 
 		Move best = null;
 		for (Move move : moves) {
-			BitBoard board = position.getBoard().clone();
-
 			// Draw the piece on the board so we can see what it would look like after.
-			doMove(board, move.getPiece());
+			Position after = doMove(position, move);
 
 			// Evaluate the position.
-			move.setScore(evaluator.evaluate(board));
+			move.setScore(evaluator.evaluate(after));
 
 			// If this move is the best so far, remember it.
 			if (best == null || move.getScore().getScore() > best.getScore().getScore()) {
@@ -38,8 +36,10 @@ public class MoveSelector {
 		return best;
 	}
 
-	private void doMove(BitBoard board, Piece piece) {
+	private Position doMove(Position position, Move move) {
 		// First, place the piece on the board.
+		BitBoard board = position.getBoard().clone();
+		Piece piece = move.getPiece();
 		board.place(piece);
 
 		// Now, remove completed lines, checking only the lines that were impacted by the piece.
@@ -50,6 +50,24 @@ public class MoveSelector {
 			if (board.isLineComplete(y)) {
 				board.removeLine(y);
 			}
+		}
+
+		if (position.getPiece().getType() == move.getPiece().getType()) {
+			// This was a normal move (not a swap).
+			return new Position(board, position.getNextPiece(), null, position.getSwapPiece(), position.isPieceSwapped());
+
+		} else {
+			// This was a swap move.
+			Piece nextPiece = position.getNextPiece();
+			piece = position.getSwapPiece();
+
+			if (piece == null) {
+				// There was no swap piece, so use the next piece.
+				piece = nextPiece;
+				nextPiece = null;
+			}
+
+			return new Position(board, piece, nextPiece, position.getPiece(), true);
 		}
 	}
 }

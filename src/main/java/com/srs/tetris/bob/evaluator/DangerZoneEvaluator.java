@@ -1,11 +1,12 @@
 package com.srs.tetris.bob.evaluator;
 
+import com.srs.tetris.bob.Position;
 import com.srs.tetris.game.BitBoard;
 
 /**
  * Gives a high
  */
-public class DangerZoneEvaluator implements BoardEvaluator {
+public class DangerZoneEvaluator implements PositionEvaluator {
 	private int dangerZoneSize;
 	private double exponent;
 
@@ -15,7 +16,8 @@ public class DangerZoneEvaluator implements BoardEvaluator {
 	}
 
 	@Override
-	public Score evaluate(BitBoard board) {
+	public Score evaluate(Position position) {
+		BitBoard board = position.getBoard();
 		int height = 0;
 
 		for (int y = 0; y < dangerZoneSize; y++) {

@@ -1,13 +1,15 @@
 package com.srs.tetris.bob.evaluator;
 
+import com.srs.tetris.bob.Position;
 import com.srs.tetris.game.BitBoard;
 
 /**
  * Calculates the average height (center of mass on the y axis) of the board in lines.
  */
-public class AverageHeightEvaluator implements BoardEvaluator {
+public class AverageHeightEvaluator implements PositionEvaluator {
 	@Override
-	public Score evaluate(BitBoard board) {
+	public Score evaluate(Position position) {
+		BitBoard board = position.getBoard();
 		double totalHeight = 0;
 		int count = 0;
 

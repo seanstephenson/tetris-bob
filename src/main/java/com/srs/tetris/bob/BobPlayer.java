@@ -51,7 +51,7 @@ public class BobPlayer implements DirectPlayer, GameListener {
 		MoveEnumerator moveEnumerator = new MoveEnumerator();
 		moveEnumerator.setAllowSwap(settings.isAllowSwap());
 
-		moveSelector = new MoveSelector(moveEnumerator, settings.getBoardEvaluator());
+		moveSelector = new MoveSelector(moveEnumerator, settings.getPositionEvaluator());
 
 		game.addListener(this);
 	}

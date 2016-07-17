@@ -1,21 +1,21 @@
 package com.srs.tetris.bob.evaluator;
 
-import com.srs.tetris.game.BitBoard;
+import com.srs.tetris.bob.Position;
 import java.util.Arrays;
 import java.util.List;
 
-public class CompositeEvaluator implements BoardEvaluator {
-	private List<BoardEvaluator> evaluators;
+public class CompositeEvaluator implements PositionEvaluator {
+	private List<PositionEvaluator> evaluators;
 
-	public CompositeEvaluator(BoardEvaluator... evaluators) {
+	public CompositeEvaluator(PositionEvaluator... evaluators) {
 		this.evaluators = Arrays.asList(evaluators);
 	}
 
 	@Override
-	public Score evaluate(BitBoard board) {
+	public Score evaluate(Position position) {
 		return new CompositeScore(
 			evaluators.stream()
-			.map((evaluator) -> evaluator.evaluate(board))
+			.map((evaluator) -> evaluator.evaluate(position))
 			.toArray(Score[]::new)
 		);
 	}
