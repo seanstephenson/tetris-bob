@@ -46,6 +46,8 @@ public class GameSettings implements Cloneable {
 	private int width = 10;
 	private int height = 20;
 
+	private int nextPieceCount = 3;
+
 	private long frameInterval = 25;
 
 	private long startingDropInterval = 1000;
@@ -92,6 +94,14 @@ public class GameSettings implements Cloneable {
 
 	public void setHeight(int height) {
 		this.height = height;
+	}
+
+	public int getNextPieceCount() {
+		return nextPieceCount;
+	}
+
+	public void setNextPieceCount(int nextPieceCount) {
+		this.nextPieceCount = nextPieceCount;
 	}
 
 	public long getFrameInterval() {

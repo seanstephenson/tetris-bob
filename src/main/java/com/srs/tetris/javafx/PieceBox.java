@@ -30,12 +30,9 @@ public class PieceBox extends VBox {
 	public PieceBox(String labelText) {
 		super(5);
 
-		label = new Text(labelText);
-		label.setFill(Color.LIGHTGRAY);
-
 		boardContainer = new Pane();
 		boardContainer.setPrefWidth(getPrefWidth());
-		boardContainer.setPrefHeight(90);
+		boardContainer.setPrefHeight(70);
 
 		setAlignment(Pos.CENTER);
 		setPrefWidth(130);
@@ -43,7 +40,12 @@ public class PieceBox extends VBox {
 		setBackground(new Background(new BackgroundFill(PIECE_BOX_BACKGROUND, null, null)));
 		setBorder(new Border(new BorderStroke(PIECE_BOX_BORDER_COLOR, BorderStrokeStyle.SOLID, null, new BorderWidths(PIECE_BOX_BORDER))));
 
-		getChildren().add(label);
+		if (labelText != null) {
+			label = new Text(labelText);
+			label.setFill(Color.LIGHTGRAY);
+			getChildren().add(label);
+		}
+
 		getChildren().add(boardContainer);
 
 		setPieceType(null);
@@ -59,6 +61,9 @@ public class PieceBox extends VBox {
 			// Use a transparent background and border.
 			boardPane.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, null, null)));
 			boardPane.setBorder(null);
+
+			boardPane.setScaleX(0.75);
+			boardPane.setScaleY(0.75);
 
 			boardContainer.getChildren().add(boardPane);
 

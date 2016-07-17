@@ -5,8 +5,11 @@ import com.srs.tetris.player.Player;
 import com.srs.tetris.replay.Replay;
 import com.srs.tetris.replay.ReplayGenerator;
 import java.time.Instant;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -22,7 +25,7 @@ public class Game {
 
 	private Piece piece;
 
-	private Piece nextPiece;
+	private Queue<Piece> nextPieces;
 	private Piece swapPiece;
 
 	private Input lastInput;
@@ -137,7 +140,8 @@ public class Game {
 		board = new GameBoard(settings.getWidth(), settings.getHeight());
 
 		// Create a random next piece, and drop it.
-		nextPiece = pieceGenerator.generate();
+		nextPieces = new ArrayDeque<>();
+		fillNextPieces();
 
 		// Set the time for the last frame.
 		lastFrame = System.currentTimeMillis();
@@ -339,7 +343,7 @@ public class Game {
 
 	private void dropNextPiece() {
 		// Place the next piece at the top of the game board.
-		piece = nextPiece;
+		piece = nextPieces.remove();
 		movePieceToTopCenter();
 
 		// If the new piece is blocked, the game is over.
@@ -348,7 +352,7 @@ public class Game {
 		}
 
 		// Create the next next piece.
-		nextPiece = pieceGenerator.generate();
+		fillNextPieces();
 
 		// Reset the drop delay
 		dropDelay = dropInterval;
@@ -359,6 +363,13 @@ public class Game {
 		// Notify listeners that the piece is starting.
 		Piece started = piece;
 		notifyListeners((listener) -> listener.onPieceStart(started));
+	}
+
+	private void fillNextPieces() {
+		// Fill up the next pieces queue.
+		while (nextPieces.size() < settings.getNextPieceCount()) {
+			nextPieces.add(pieceGenerator.generate());
+		}
 	}
 
 	private void placePiece() {
@@ -503,7 +514,11 @@ public class Game {
 	}
 
 	public Piece getNextPiece() {
-		return nextPiece;
+		return nextPieces.peek();
+	}
+
+	public Collection<Piece> getNextPieces() {
+		return nextPieces;
 	}
 
 	public Piece getSwapPiece() {

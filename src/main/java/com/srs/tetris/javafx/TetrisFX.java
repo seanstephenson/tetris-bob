@@ -15,13 +15,17 @@ import com.srs.tetris.replay.ReplayUtil;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -52,7 +56,7 @@ public class TetrisFX extends Application implements GameListener {
 	private InfoBox score;
 	private InfoBox lines;
 	private InfoBox level;
-	private PieceBox nextPiece;
+	private List<PieceBox> nextPieces;
 	private PieceBox swapPiece;
 
 	public static void main(String[] args) {
@@ -62,8 +66,8 @@ public class TetrisFX extends Application implements GameListener {
 	@Override
 	public void init() throws Exception {
 		// Create the player.
-		//Player player = new LocalPlayer();
-		DirectPlayer player = new BobPlayer(BobSettings.standard());
+		Player player = new LocalPlayer();
+		//DirectPlayer player = new BobPlayer(BobSettings.standard());
 
 		// Create the game.
 		GameSettings gameSettings = GameSettings.standard(player);
@@ -102,12 +106,27 @@ public class TetrisFX extends Application implements GameListener {
 		// Create the board.
 		boardPane = new BoardPane(game.getBoard());
 
+		// Create the next piece boxes.
+		nextPieces = new ArrayList<>();
+		nextPieces.add(new PieceBox("Next"));
+		while (nextPieces.size() < game.getSettings().getNextPieceCount()) {
+			nextPieces.add(new PieceBox(null));
+		}
+
+		BorderStroke stroke = nextPieces.get(0).getBorder().getStrokes().get(0);
+		double width = stroke.getWidths().getTop();
+		nextPieces.get(0).setBorder(new Border(new BorderStroke(stroke.getTopStroke(), stroke.getTopStyle(), null, new BorderWidths(width, width, 0, width))));
+		for (int i = 1; i < nextPieces.size() - 1; i++) {
+			nextPieces.get(i).setBorder(new Border(new BorderStroke(stroke.getTopStroke(), stroke.getTopStyle(), null, new BorderWidths(0, width, 0, width))));
+		}
+		nextPieces.get(nextPieces.size() - 1).setBorder(new Border(new BorderStroke(stroke.getTopStroke(), stroke.getTopStyle(), null, new BorderWidths(0, width, width, width))));
+
 		// Create the info pane.
 		VBox infoPane = new VBox(15,
 			score = new InfoBox("Score"),
 			level = new InfoBox("Level"),
 			lines = new InfoBox("Lines"),
-			nextPiece = new PieceBox("Next")
+			new VBox(0, nextPieces.stream().toArray(PieceBox[]::new))
 		);
 		infoPane.setPadding(new Insets(0, 0, 0, 25));
 
@@ -167,7 +186,10 @@ public class TetrisFX extends Application implements GameListener {
 	public void onPieceStart(Piece piece) {
 		Platform.runLater(() -> {
 			// Update the next and swap piece boxes.
-			nextPiece.setPieceType(game.getNextPiece().getType());
+			int i = 0;
+			for (Piece nextPiece : game.getNextPieces()) {
+				this.nextPieces.get(i++).setPieceType(nextPiece.getType());
+			}
 
 			if (game.getSwapPiece() != null) {
 				swapPiece.setPieceType(game.getSwapPiece().getType());
