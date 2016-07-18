@@ -15,14 +15,22 @@ public class MoveSelector {
 		this.evaluator = evaluator;
 	}
 
-	public Move getMove(Position position) {
+	/**
+	 * Selects the best move to make in the given position.
+	 *
+	 * @param position the position for which to find a move.
+	 * @param depth the maximum depth to search for next pieces.
+	 *
+	 * @return the best move.
+	 */
+	public Move getMove(Position position, int depth) {
 		// Enumerate all the current moves.
 		List<Move> moves = moveEnumerator.findPossibleMoves(position);
 
 		Move best = null;
 		for (Move move : moves) {
-			// Draw the piece on the board so we can see what it would look like after.
-			Position after = doMove(position, move);
+			// Calculate the position after this move.
+			Position after = position.doMove(move);
 
 			// Evaluate the position.
 			move.setScore(evaluator.evaluate(after));
@@ -34,40 +42,5 @@ public class MoveSelector {
 		}
 
 		return best;
-	}
-
-	private Position doMove(Position position, Move move) {
-		// First, place the piece on the board.
-		BitBoard board = position.getBoard().clone();
-		Piece piece = move.getPiece();
-		board.place(piece);
-
-		// Now, remove completed lines, checking only the lines that were impacted by the piece.
-		int top = Math.max(0, piece.getY());
-		int bottom = Math.min(board.getHeight(), top + piece.getBoard().getHeight());
-
-		for (int y = top; y < bottom; y++) {
-			if (board.isLineComplete(y)) {
-				board.removeLine(y);
-			}
-		}
-
-		if (position.getPiece().getType() == move.getPiece().getType()) {
-			// This was a normal move (not a swap).
-			return new Position(board, position.getNextPiece(), null, position.getSwapPiece(), position.isPieceSwapped());
-
-		} else {
-			// This was a swap move.
-			Piece nextPiece = position.getNextPiece();
-			piece = position.getSwapPiece();
-
-			if (piece == null) {
-				// There was no swap piece, so use the next piece.
-				piece = nextPiece;
-				nextPiece = null;
-			}
-
-			return new Position(board, piece, nextPiece, position.getPiece(), true);
-		}
 	}
 }

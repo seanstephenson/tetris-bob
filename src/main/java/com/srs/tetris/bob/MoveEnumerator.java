@@ -22,30 +22,30 @@ public class MoveEnumerator {
 	 */
 	public List<Move> findPossibleMoves(Position position) {
 		BitBoard board = position.getBoard();
-		Piece piece = position.getPiece();
+		PieceType piece = position.getPiece();
 
 		ArrayList<Move> moves = new ArrayList<>(board.getWidth() * 4);
 
 		findPossibleMoves(board, piece, moves);
 
-		Piece swapPiece = position.getSwapPiece();
+		PieceType swapPiece = position.getSwapPiece();
 
 		// If the swap piece is null, use the next piece as the swap piece (since that is what will appear if we swap).
 		if (swapPiece == null) {
 			swapPiece = position.getNextPiece();
 		}
 
-		if (allowSwap && !position.isPieceSwapped() && swapPiece != null && piece.getType() != swapPiece.getType()) {
+		if (allowSwap && !position.isPieceSwapped() && swapPiece != null && piece != swapPiece) {
 			findPossibleMoves(board, swapPiece, moves);
 		}
 
 		return moves;
 	}
 
-	private void findPossibleMoves(BitBoard board, Piece piece, ArrayList<Move> moves) {
+	private void findPossibleMoves(BitBoard board, PieceType pieceType, ArrayList<Move> moves) {
 		// For each possible orientation.
-		for (int orientation : piece.getType().getUniqueOrientations()) {
-			piece = piece.moveTo(0, 0, orientation);
+		for (int orientation : pieceType.getUniqueOrientations()) {
+			Piece piece = new Piece(pieceType, orientation, 0, 0);
 
 			int top = Math.max(0, board.findHighestBlock() - piece.getBoard().getHeight());
 

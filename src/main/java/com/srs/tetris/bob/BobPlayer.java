@@ -65,7 +65,7 @@ public class BobPlayer implements DirectPlayer, GameListener {
 		}
 
 		// Select a move for the new piece.
-		moveFuture = moveSelectionExecutor.submit(() -> moveSelector.getMove(new Position(game)));
+		moveFuture = moveSelectionExecutor.submit(() -> moveSelector.getMove(new Position(game), settings.getMaxDepth()));
 	}
 
 	private Move getCurrentMove() {
