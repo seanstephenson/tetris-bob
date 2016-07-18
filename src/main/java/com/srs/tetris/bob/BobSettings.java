@@ -42,7 +42,7 @@ public class BobSettings {
 	private PositionEvaluator positionEvaluator;
 
 	private boolean allowSwap = true;
-	private int maxDepth = Integer.MAX_VALUE;
+	private int maxDepth = 2;
 
 	public BobSettings() {
 		this(new SapientEvaluator());

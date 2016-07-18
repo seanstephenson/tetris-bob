@@ -32,8 +32,16 @@ public class MoveSelector {
 			// Calculate the position after this move.
 			Position after = position.doMove(move);
 
-			// Evaluate the position.
-			move.setScore(evaluator.evaluate(after));
+			if (depth == 1 || after.getPiece() == null) {
+				// This is the bottom of the move tree, so evaluate the position.
+				move.setScore(evaluator.evaluate(after));
+
+			} else {
+				// We can still go deeper, so find the best move from this position.
+				int nextDepth = move.isSwap() ? depth : depth - 1;
+				Move nextMove = getMove(after, nextDepth);
+				move.setScore(nextMove.getScore());
+			}
 
 			// If this move is the best so far, remember it.
 			if (best == null || move.getScore().getScore() > best.getScore().getScore()) {
