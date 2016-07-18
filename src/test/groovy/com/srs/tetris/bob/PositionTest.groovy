@@ -82,16 +82,17 @@ class PositionTest {
 			X X .
 		'''), PieceType.O, [PieceType.I, PieceType.S], PieceType.L, false);
 
-		position = position.doMove(new Move(new Piece(PieceType.L, 1, 1, 0)))
+		position = position.doMove(Move.swap())
 
+		// The board should be unchanged.
 		assert position.board == BitBoard.from('''
 			. . .
-			. X X
-			X . X
+			X . .
+			X X .
 		''')
 
-		assert position.piece == PieceType.I
-		assert position.nextPieces == [PieceType.S]
+		assert position.piece == PieceType.L
+		assert position.nextPieces == [PieceType.I, PieceType.S]
 		assert position.swapPiece == PieceType.O
 		assert position.pieceSwapped
 	}

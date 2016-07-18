@@ -24,25 +24,25 @@ public class MoveEnumerator {
 		BitBoard board = position.getBoard();
 		PieceType piece = position.getPiece();
 
-		ArrayList<Move> moves = new ArrayList<>(board.getWidth() * 4);
-
+		List<Move> moves = new ArrayList<>(board.getWidth() * 4);
 		findPossibleMoves(board, piece, moves);
 
-		PieceType swapPiece = position.getSwapPiece();
+		if (allowSwap && position.canSwap()) {
+			PieceType swapPiece = position.getSwapPiece();
+			if (swapPiece == null) {
+				swapPiece = position.getNextPiece();
+			}
 
-		// If the swap piece is null, use the next piece as the swap piece (since that is what will appear if we swap).
-		if (swapPiece == null) {
-			swapPiece = position.getNextPiece();
-		}
-
-		if (allowSwap && !position.isPieceSwapped() && swapPiece != null && piece != swapPiece) {
-			findPossibleMoves(board, swapPiece, moves);
+			// If we have a swap piece or a next piece, and it isn't the same as the current piece, then generate a swap move as well.
+			if (piece != swapPiece) {
+				moves.add(Move.swap());
+			}
 		}
 
 		return moves;
 	}
 
-	private void findPossibleMoves(BitBoard board, PieceType pieceType, ArrayList<Move> moves) {
+	private void findPossibleMoves(BitBoard board, PieceType pieceType, List<Move> moves) {
 		// For each possible orientation.
 		for (int orientation : pieceType.getUniqueOrientations()) {
 			Piece piece = new Piece(pieceType, orientation, 0, 0);

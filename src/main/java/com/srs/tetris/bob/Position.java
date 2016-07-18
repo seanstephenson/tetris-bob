@@ -59,12 +59,16 @@ public class Position {
 	 * Does the given move and then returns the resulting position.
 	 */
 	public Position doMove(Move move) {
-		// First, place the piece on the board.
-		BitBoard board = place(move.getPiece());
+		assert piece != null : "No current piece";
 
-		//
-		if (getPiece() == move.getPiece().getType()) {
-			// This was a normal move (not a swap).
+		if (!move.isSwap()) {
+			// This was a normal move.
+			assert piece == move.getPiece().getType() : "Invalid piece type";
+
+			// First, place the piece on the board.
+			BitBoard board = place(move.getPiece());
+
+			// The next piece becomes the current piece.
 			PieceType piece = getNextPiece();
 			List<PieceType> nextPieces = removeFirst(getNextPieces());
 
@@ -72,26 +76,19 @@ public class Position {
 
 		} else {
 			// This was a swap move.
+			assert canSwap() : "Cannot swap";
+
 			List<PieceType> nextPieces = getNextPieces();
 			PieceType swapPiece = getPiece();
 
-			PieceType swapped = getSwapPiece();
-			if (swapped == null) {
-				swapped = getNextPiece();
+			PieceType piece = getSwapPiece();
+			if (piece == null) {
+				piece = getNextPiece();
 				nextPieces = removeFirst(nextPieces);
 			}
 
-			assert move.getPiece().getType() == swapped : "invalid piece type for move: " + move.getPiece().getType();
-
-			PieceType piece = first(nextPieces);
-			nextPieces = removeFirst(nextPieces);
-
-			return new Position(board, piece, nextPieces, swapPiece, true);
+			return new Position(getBoard(), piece, nextPieces, swapPiece, true);
 		}
-	}
-
-	private <T> T first(List<T> list) {
-		return list.isEmpty() ? null : list.get(0);
 	}
 
 	private <T> List<T> removeFirst(List<T> list) {
@@ -113,6 +110,13 @@ public class Position {
 		}
 
 		return board;
+	}
+
+	/**
+	 * Indicates if the position can support a swap move.
+	 */
+	public boolean canSwap() {
+		return !isPieceSwapped() && (getSwapPiece() != null || getNextPiece() != null);
 	}
 
 	/**

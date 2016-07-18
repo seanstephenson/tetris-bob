@@ -88,12 +88,12 @@ public class BobPlayer implements DirectPlayer, GameListener {
 
 		if (move != null) {
 			// If we have a move already, pass it back.
-			if (move.getPiece().getType() == game.getPiece().getType()) {
+			if (!move.isSwap()) {
 				// The move is for the current piece, so pass back its coordinates.
 				return new DirectInput(move.getPiece().getX(), move.getPiece().getY(), move.getPiece().getOrientation());
 
 			} else {
-				// The piece type isn't the same as the current piece, so it must be a swap move.
+				// The move is a swap.
 				return DirectInput.swap();
 			}
 
@@ -125,8 +125,8 @@ public class BobPlayer implements DirectPlayer, GameListener {
 	private Input createInputForMove(Move move) {
 		Input input = new Input();
 
-		if (move.getPiece().getType() != game.getPiece().getType()) {
-			// The piece type isn't the same as the current piece, so it must be a swap move.
+		if (move.isSwap()) {
+			// Swap out the current piece.
 			input.setSwap(true);
 
 		} else if (move.getPiece().getOrientation() != game.getPiece().getOrientation()) {

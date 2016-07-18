@@ -92,7 +92,7 @@ public enum PieceType {
 	}
 
 	public BitBoard getBoard(int orientation) {
-		assert orientation >= 0 && orientation < 4 : String.format("illegal orientation: %d", orientation);
+		assert orientation >= 0 && orientation < 4 : String.format("Illegal orientation: %d", orientation);
 		return boards[orientation];
 	}
 

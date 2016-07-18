@@ -129,7 +129,8 @@ public class PlayerEvaluator {
 
 		// Create an evaluator that runs a number of games.
 		PlayerEvaluator evaluator = new PlayerEvaluator(
-			() -> new BobPlayer(BobSettings.simple()),
+			//() -> new BobPlayer(BobSettings.simple()),
+			() -> new BobPlayer(BobSettings.standard()),
 			executor,
 			100
 		);

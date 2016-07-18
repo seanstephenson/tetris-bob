@@ -1,6 +1,6 @@
 package com.srs.tetris.bob
 
-import com.srs.tetris.game.GameBoard
+import com.srs.tetris.game.BitBoard
 import com.srs.tetris.game.Piece
 import com.srs.tetris.game.PieceType
 import org.junit.Test
@@ -8,316 +8,217 @@ import org.junit.Test
 class MoveEnumeratorTest {
 	@Test
 	void findPossibleMoves_O() {
-		def piece = new Piece(PieceType.O)
-		def board = GameBoard.from("""
+		def position = new Position(BitBoard.from('''
 			. . . .
 			. . . .
-			. . T .
-			T . T T
-		""")
+			. . X .
+			X . X X
+		'''), PieceType.O)
+		
+		def moves = new MoveEnumerator().findPossibleMoves(position)
 
-		def moves = new MoveEnumerator().findPossibleMoves(new Position(board.toBitBoard(), piece))
-
-		assert boardsForMoves(board, piece, moves) == [
-			GameBoard.from("""
+		assert boardsForMoves(position, moves) == [
+			BitBoard.from('''
 				. . . .
 				O O . .
-				O O T .
-				T . T T
-			"""),
-			GameBoard.from("""
+				O O X .
+				X . X X
+			'''),
+			BitBoard.from('''
 				. O O .
 				. O O .
-				. . T .
-				T . T T
-			"""),
-			GameBoard.from("""
+				. . X .
+				X . X X
+			'''),
+			BitBoard.from('''
 				. . O O
 				. . O O
-				. . T .
-				T . T T
-			"""),
+				. . X .
+				X . X X
+			'''),
 		]
 	}
 
 	@Test
 	void findPossibleMoves_I() {
-		def piece = new Piece(PieceType.I)
-		def board = GameBoard.from("""
+		def position = new Position(BitBoard.from('''
 			. . . .
 			. . . .
-			. . T .
-			T . T T
-		""")
+			. . X .
+			X . X X
+		'''), PieceType.I)
 
-		def moves = new MoveEnumerator().findPossibleMoves(new Position(board.toBitBoard(), piece))
+		def moves = new MoveEnumerator().findPossibleMoves(position)
 
-		assert boardsForMoves(board, piece, moves) == [
-			GameBoard.from("""
+		assert boardsForMoves(position, moves) == [
+			BitBoard.from('''
 				. . . .
 				I I I I
-				. . T .
-				T . T T
-			"""),
-			GameBoard.from("""
+				. . X .
+				X . X X
+			'''),
+			BitBoard.from('''
 				. I . .
 				. I . .
-				. I T .
-				T I T T
-			"""),
+				. I X .
+				X I X X
+			'''),
 		]
 	}
 
 	@Test
 	void findPossibleMoves_L() {
-		def piece = new Piece(PieceType.L)
-		def board = GameBoard.from("""
+		def position = new Position(BitBoard.from('''
 			. . . .
 			. . . .
-			. . T .
-			T . T T
-		""")
+			. . X .
+			X . X X
+		'''), PieceType.L)
 
-		def moves = new MoveEnumerator().findPossibleMoves(new Position(board.toBitBoard(), piece))
+		def moves = new MoveEnumerator().findPossibleMoves(position)
 
-		assert boardsForMoves(board, piece, moves) == [
-			GameBoard.from("""
+		assert boardsForMoves(position, moves) == [
+			BitBoard.from('''
 				. . L .
 				L L L .
-				. . T .
-				T . T T
-			"""),
-			GameBoard.from("""
+				. . X .
+				X . X X
+			'''),
+			BitBoard.from('''
 				. . . L
 				. L L L
-				. . T .
-				T . T T
-			"""),
-			GameBoard.from("""
+				. . X .
+				X . X X
+			'''),
+			BitBoard.from('''
 				. . . .
 				L L . .
-				. L T .
-				T L T T
-			"""),
-			GameBoard.from("""
+				. L X .
+				X L X X
+			'''),
+			BitBoard.from('''
 				. . L L
 				. . . L
-				. . T L
-				T . T T
-			"""),
-			GameBoard.from("""
+				. . X L
+				X . X X
+			'''),
+			BitBoard.from('''
 				. . . .
 				L L L .
-				L . T .
-				T . T T
-			"""),
-			GameBoard.from("""
+				L . X .
+				X . X X
+			'''),
+			BitBoard.from('''
 				. . . .
 				. L L L
-				. L T .
-				T . T T
-			"""),
-			GameBoard.from("""
+				. L X .
+				X . X X
+			'''),
+			BitBoard.from('''
 				L . . .
 				L . . .
-				L L T .
-				T . T T
-			"""),
+				L L X .
+				X . X X
+			'''),
 		]
 	}
 
 	@Test
 	void findPossibleMoves_swap() {
-		def piece = new Piece(PieceType.I)
-		def swapPiece = new Piece(PieceType.O)
-		def board = GameBoard.from("""
+		def position = new Position(BitBoard.from('''
 			. . . .
 			. . . .
-			. . T .
-			T . T T
-		""")
+			. . X .
+			X . X X
+		'''), PieceType.I, [], PieceType.O, false)
 
-		// Moves for both the current piece (I) and the swap piece (O) will be generated.
-		def moves = new MoveEnumerator().findPossibleMoves(new Position(board.toBitBoard(), piece, null, swapPiece, false))
-
-		assert boardsForMoves(board, piece, moves) == [
-			GameBoard.from("""
-				. . . .
-				I I I I
-				. . T .
-				T . T T
-			"""),
-			GameBoard.from("""
-				. I . .
-				. I . .
-				. I T .
-				T I T T
-			"""),
-			GameBoard.from("""
-				. . . .
-				O O . .
-				O O T .
-				T . T T
-			"""),
-			GameBoard.from("""
-				. O O .
-				. O O .
-				. . T .
-				T . T T
-			"""),
-			GameBoard.from("""
-				. . O O
-				. . O O
-				. . T .
-				T . T T
-			"""),
-		]
+		// A swap move should be generated
+		def moves = new MoveEnumerator().findPossibleMoves(position)
+		assert moves.size == 3
+		assert moves.findAll { it.swap }.size() == 1
 	}
 
 	@Test
 	void findPossibleMoves_swap_noSwapPiece() {
-		def piece = new Piece(PieceType.I)
-		def nextPiece = new Piece(PieceType.O)
-		def board = GameBoard.from("""
+		def position = new Position(BitBoard.from('''
 			. . . .
 			. . . .
-			. . T .
-			T . T T
-		""")
+			. . X .
+			X . X X
+		'''), PieceType.I, [], PieceType.O, false)
 
-		// Because there is no swap piece, swap moves for the next piece will be generated.
-		def moves = new MoveEnumerator().findPossibleMoves(new Position(board.toBitBoard(), piece, nextPiece, null, false))
-
-		assert boardsForMoves(board, piece, moves) == [
-			GameBoard.from("""
-				. . . .
-				I I I I
-				. . T .
-				T . T T
-			"""),
-			GameBoard.from("""
-				. I . .
-				. I . .
-				. I T .
-				T I T T
-			"""),
-			GameBoard.from("""
-				. . . .
-				O O . .
-				O O T .
-				T . T T
-			"""),
-			GameBoard.from("""
-				. O O .
-				. O O .
-				. . T .
-				T . T T
-			"""),
-			GameBoard.from("""
-				. . O O
-				. . O O
-				. . T .
-				T . T T
-			"""),
-		]
+		// There's no swap piece, but there is a next piece, so we can still swap
+		def moves = new MoveEnumerator().findPossibleMoves(position)
+		assert moves.size == 3
+		assert moves.findAll { it.swap }.size() == 1
 	}
 
 	@Test
 	void findPossibleMoves_swap_samePieceType() {
-		def piece = new Piece(PieceType.I)
-		def swapPiece = new Piece(PieceType.I)
-		def board = GameBoard.from("""
+		def position = new Position(BitBoard.from('''
 			. . . .
 			. . . .
-			. . T .
-			T . T T
-		""")
+			. . X .
+			X . X X
+		'''), PieceType.I, [], PieceType.I, false)
 
 		// Because the swap piece and the piece in play are the same, no swap moves will be generated.
-		def moves = new MoveEnumerator().findPossibleMoves(new Position(board.toBitBoard(), piece, null, swapPiece, false))
+		def moves = new MoveEnumerator().findPossibleMoves(position)
+		assert moves.size == 2
+		assert moves.findAll { it.swap }.size() == 0
+	}
 
-		assert boardsForMoves(board, piece, moves) == [
-			GameBoard.from("""
-				. . . .
-				I I I I
-				. . T .
-				T . T T
-			"""),
-			GameBoard.from("""
-				. I . .
-				. I . .
-				. I T .
-				T I T T
-			"""),
-		]
+	@Test
+	void findPossibleMoves_swap_samePieceTypeAsNextPiece() {
+		def position = new Position(BitBoard.from('''
+			. . . .
+			. . . .
+			. . X .
+			X . X X
+		'''), PieceType.I, [PieceType.I], null, false)
+
+		// Because there is no swap piece and the next piece and piece in play are the same, no swap moves will be generated.
+		def moves = new MoveEnumerator().findPossibleMoves(position)
+		assert moves.size == 2
+		assert moves.findAll { it.swap }.size() == 0
 	}
 
 	@Test
 	void findPossibleMoves_swap_pieceAlreadySwapped() {
-		def piece = new Piece(PieceType.I)
-		def swapPiece = new Piece(PieceType.O)
-		def board = GameBoard.from("""
+		def position = new Position(BitBoard.from('''
 			. . . .
 			. . . .
-			. . T .
-			T . T T
-		""")
+			. . X .
+			X . X X
+		'''), PieceType.I, [], PieceType.O, true)
 
 		// Because the piece has already been swapped, no swap moves will be generated.
-		def moves = new MoveEnumerator().findPossibleMoves(new Position(board.toBitBoard(), piece, null, swapPiece, true))
-
-		assert boardsForMoves(board, piece, moves) == [
-			GameBoard.from("""
-				. . . .
-				I I I I
-				. . T .
-				T . T T
-			"""),
-			GameBoard.from("""
-				. I . .
-				. I . .
-				. I T .
-				T I T T
-			"""),
-		]
+		def moves = new MoveEnumerator().findPossibleMoves(position)
+		assert moves.size == 2
+		assert moves.findAll { it.swap }.size() == 0
 	}
 
 	@Test
 	void findPossibleMoves_swap_allowSwapFalse() {
-		def piece = new Piece(PieceType.I)
-		def swapPiece = new Piece(PieceType.O)
-		def board = GameBoard.from("""
+		def position = new Position(BitBoard.from('''
 			. . . .
 			. . . .
-			. . T .
-			T . T T
-		""")
+			. . X .
+			X . X X
+		'''), PieceType.I, [], PieceType.O, false)
 
 		// Because allowSwap is set to false, no swap moves will be generated.
 		def moveEnumerator = new MoveEnumerator(allowSwap: false)
-		def moves = moveEnumerator.findPossibleMoves(new Position(board.toBitBoard(), piece, null, swapPiece, false))
-
-		assert boardsForMoves(board, piece, moves) == [
-			GameBoard.from("""
-				. . . .
-				I I I I
-				. . T .
-				T . T T
-			"""),
-			GameBoard.from("""
-				. I . .
-				. I . .
-				. I T .
-				T I T T
-			"""),
-		]
+		def moves = moveEnumerator.findPossibleMoves(position)
+		assert moves.size == 2
+		assert moves.findAll { it.swap }.size() == 0
 	}
 
-	List<GameBoard> boardsForMoves(GameBoard board, Piece piece, List<Move> moves) {
+	List<BitBoard> boardsForMoves(Position position, List<Move> moves) {
 		return moves.collect {
-			def placed = board.clone()
-			placed.place(it.piece)
-			return placed
+			BitBoard board = position.board.clone()
+			board.place(it.piece)
+			return board
 		}
 	}
 }
