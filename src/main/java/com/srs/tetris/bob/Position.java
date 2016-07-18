@@ -46,6 +46,8 @@ public class Position {
 	}
 
 	public Position(BitBoard board, PieceType piece, List<PieceType> nextPieces, PieceType swapPiece, boolean isPieceSwapped) {
+		assert nextPieces != null;
+
 		this.board = board;
 		this.piece = piece;
 		this.nextPieces = nextPieces;

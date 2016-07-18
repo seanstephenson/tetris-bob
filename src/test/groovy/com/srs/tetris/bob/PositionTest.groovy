@@ -29,6 +29,52 @@ class PositionTest {
 	}
 
 	@Test
+	void doMove_lastNext() {
+		def position = new Position(BitBoard.from('''
+			. . .
+			X . .
+			X X .
+		'''), PieceType.O, [PieceType.S], null, false);
+
+		position = position.doMove(new Move(new Piece(PieceType.O, 0, 1, 0)))
+
+		assert position.board == BitBoard.from('''
+			. . .
+			. X X
+			X X .
+		''')
+
+		assert position.piece == PieceType.S
+		assert position.nextPiece == null
+		assert position.nextPieces == []
+		assert position.swapPiece == null
+		assert !position.pieceSwapped
+	}
+
+	@Test
+	void doMove_noNext() {
+		def position = new Position(BitBoard.from('''
+			. . .
+			X . .
+			X X .
+		'''), PieceType.O, [], null, false);
+
+		position = position.doMove(new Move(new Piece(PieceType.O, 0, 1, 0)))
+
+		assert position.board == BitBoard.from('''
+			. . .
+			. X X
+			X X .
+		''')
+
+		assert position.piece == null
+		assert position.nextPiece == null
+		assert position.nextPieces == []
+		assert position.swapPiece == null
+		assert !position.pieceSwapped
+	}
+
+	@Test
 	void doMove_swap() {
 		def position = new Position(BitBoard.from('''
 			. . .
