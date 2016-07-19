@@ -139,6 +139,7 @@ public class PlayerEvaluator {
 		PlayerEvaluator evaluator = new PlayerEvaluator(
 			() -> new BobPlayer(BobSettings.simple()),
 			//() -> new BobPlayer(BobSettings.noSwap().setMaxDepth(2)),
+			//() -> new BobPlayer(BobSettings.noSwap().setMaxDepth(4)),
 			executor,
 			100
 		);
