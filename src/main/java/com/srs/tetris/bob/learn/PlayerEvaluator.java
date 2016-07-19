@@ -13,7 +13,6 @@ import java.nio.file.Path;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.DoubleSummaryStatistics;
-import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.LongSummaryStatistics;
 import java.util.concurrent.Callable;
@@ -31,15 +30,19 @@ import static java.util.stream.Collectors.*;
 public class PlayerEvaluator {
 
 	private Supplier<DirectPlayer> playerSupplier;
-	private int games;
-	private Consumer<Game> onGameEnd = (game) -> {};
-	private boolean generateReplays;
 	private ExecutorService executor;
 
-	public PlayerEvaluator(Supplier<DirectPlayer> playerSupplier, ExecutorService executor, int games) {
+	private int gameCount;
+	private int maxLinesPerGame;
+
+	private Consumer<Game> onGameEnd = (game) -> {};
+
+	private boolean generateReplays;
+
+	public PlayerEvaluator(Supplier<DirectPlayer> playerSupplier, ExecutorService executor, int gameCount) {
 		this.playerSupplier = playerSupplier;
 		this.executor = executor;
-		this.games = games;
+		this.gameCount = gameCount;
 	}
 
 	public Result run() {
@@ -70,7 +73,7 @@ public class PlayerEvaluator {
 					return game;
 				}
 			})
-			.limit(games)
+			.limit(gameCount)
 			.collect(toList())
 		);
 
@@ -82,6 +85,7 @@ public class PlayerEvaluator {
 
 		GameSettings gameSettings = GameSettings.direct(player);
 		gameSettings.setGenerateReplay(generateReplays);
+		gameSettings.setMaxLines(maxLinesPerGame);
 
 		Game game = new Game(gameSettings);
 		game.init();
@@ -103,6 +107,10 @@ public class PlayerEvaluator {
 
 	public void setGenerateReplays(boolean generateReplays) {
 		this.generateReplays = generateReplays;
+	}
+
+	public void setMaxLinesPerGame(int maxLinesPerGame) {
+		this.maxLinesPerGame = maxLinesPerGame;
 	}
 
 	public static class Result {
@@ -139,6 +147,9 @@ public class PlayerEvaluator {
 		evaluator.setGenerateReplays(false);
 		//evaluator.setGenerateReplays(true);
 
+		evaluator.setMaxLinesPerGame(-1);
+		//evaluator.setMaxLinesPerGame(100);
+
 		// Print progress on each game start.
 		evaluator.setOnGameEnd(new PrintDotConsumer<Game>());
 
@@ -161,6 +172,11 @@ public class PlayerEvaluator {
 
 		DoubleSummaryStatistics elapsed = result.getGames().stream()
 			.mapToDouble(g -> (g.getStartTime().until(g.getEndTime(), ChronoUnit.NANOS) / 1e9))
+			.summaryStatistics();
+
+		LongSummaryStatistics positions = result.getGames().stream()
+			.map(game -> (BobPlayer) game.getPlayer())
+			.mapToLong(BobPlayer::getPositionsEvaluated)
 			.summaryStatistics();
 
 		// If we were recording replays, store the replay for the worst 5 games.
@@ -188,7 +204,10 @@ public class PlayerEvaluator {
 		System.out.println("Elapsed: " + elapsed);
 		System.out.println();
 		System.out.printf("Average Lines: %,.2f\n", lines.getAverage());
-		System.out.printf("Total Elapsed Time (s): %,.3f\n", result.getElapsedTime());
+		System.out.println();
+		System.out.printf("Positions per Piece: %,.3f\n", (double) positions.getSum() / pieces.getSum());
+		System.out.printf("Positions per Second: %,.3f\n", positions.getSum() / result.getElapsedTime());
 		System.out.printf("Pieces per Second: %,.3f\n", pieces.getSum() / result.getElapsedTime());
+		System.out.printf("Total Elapsed Time (s): %,.3f\n", result.getElapsedTime());
 	}
 }

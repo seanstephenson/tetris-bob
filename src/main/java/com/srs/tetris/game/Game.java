@@ -439,6 +439,10 @@ public class Game {
 
 			// Update the current level.
 			updateLevel();
+
+			if (settings.getMaxLines() > 0 && completedLines > settings.getMaxLines()) {
+				status = Status.Complete;
+			}
 		}
 	}
 

@@ -2,10 +2,8 @@ package com.srs.tetris.game;
 
 import com.google.common.util.concurrent.MoreExecutors;
 import com.srs.tetris.player.DirectPlayer;
-import com.srs.tetris.player.LocalPlayer;
 import com.srs.tetris.player.Player;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class GameSettings implements Cloneable {
@@ -58,6 +56,8 @@ public class GameSettings implements Cloneable {
 
 	private long pieceMoveInterval = 150;
 	private long pieceManualDownInterval = 100;
+
+	private long maxLines;
 
 	private boolean generateReplay = false;
 
@@ -158,6 +158,14 @@ public class GameSettings implements Cloneable {
 
 	public void setPieceManualDownInterval(long pieceManualDownInterval) {
 		this.pieceManualDownInterval = pieceManualDownInterval;
+	}
+
+	public long getMaxLines() {
+		return maxLines;
+	}
+
+	public void setMaxLines(long maxLines) {
+		this.maxLines = maxLines;
 	}
 
 	public boolean isGenerateReplay() {

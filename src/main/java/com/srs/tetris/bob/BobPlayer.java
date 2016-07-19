@@ -1,6 +1,7 @@
 package com.srs.tetris.bob;
 
 import com.google.common.util.concurrent.MoreExecutors;
+import com.srs.tetris.bob.evaluator.CountingPositionEvaluator;
 import com.srs.tetris.game.DirectInput;
 import com.srs.tetris.game.Game;
 import com.srs.tetris.game.GameListener;
@@ -22,6 +23,7 @@ public class BobPlayer implements DirectPlayer, GameListener {
 	private BobSettings settings;
 
 	private Game game;
+	private CountingPositionEvaluator positionEvaluator;
 	private MoveSelector moveSelector;
 
 	private Future<Move> moveFuture;
@@ -51,7 +53,8 @@ public class BobPlayer implements DirectPlayer, GameListener {
 		MoveEnumerator moveEnumerator = new MoveEnumerator();
 		moveEnumerator.setAllowSwap(settings.isAllowSwap());
 
-		moveSelector = new MoveSelector(moveEnumerator, settings.getPositionEvaluator());
+		positionEvaluator = new CountingPositionEvaluator(settings.getPositionEvaluator());
+		moveSelector = new MoveSelector(moveEnumerator, positionEvaluator);
 
 		game.addListener(this);
 	}
@@ -169,5 +172,9 @@ public class BobPlayer implements DirectPlayer, GameListener {
 	private boolean shouldRotateRight(Move move) {
 		// Rotate right if it is only one step away.  Otherwise rotate left.
 		return Math.floorMod(game.getPiece().getOrientation() - 1, 4) == move.getPiece().getOrientation();
+	}
+
+	public long getPositionsEvaluated() {
+		return positionEvaluator.getPositionsEvaluated();
 	}
 }
