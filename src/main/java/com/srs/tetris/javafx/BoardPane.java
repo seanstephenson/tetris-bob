@@ -2,6 +2,8 @@ package com.srs.tetris.javafx;
 
 import com.srs.tetris.game.GameBoard;
 import com.srs.tetris.game.Piece;
+import java.util.List;
+import javafx.animation.FillTransition;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
@@ -14,6 +16,7 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 import static com.srs.tetris.game.Color.*;
 
@@ -93,6 +96,20 @@ public class BoardPane extends Pane {
 	 */
 	public void drawTransparentPiece(Piece piece) {
 		drawPiece(piece, true);
+	}
+
+	/**
+	 * Fades out the given lines.
+	 */
+	public void fadeLines(List<Integer> completed, long delay) {
+		for (int line : completed) {
+			for (int x = 0; x < width; x++) {
+				FillTransition transition = new FillTransition(new Duration(delay), boardGrid[x][line]);
+				transition.setFromValue(((LinearGradient) boardGrid[x][line].getFill()).getStops().get(0).getColor());
+				transition.setToValue(EMPTY_SQUARE);
+				transition.play();
+			}
+		}
 	}
 
 	public void drawPiece(Piece piece, boolean transparent) {

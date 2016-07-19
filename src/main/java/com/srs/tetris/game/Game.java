@@ -443,6 +443,9 @@ public class Game {
 			if (settings.getMaxLines() > 0 && completedLines > settings.getMaxLines()) {
 				status = Status.Complete;
 			}
+
+			// If there is supposed to be a line complete delay wait now (typically to allow for animation).
+			sleep(settings.getLineCompleteDelay());
 		}
 	}
 

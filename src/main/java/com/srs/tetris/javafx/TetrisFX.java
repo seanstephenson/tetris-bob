@@ -21,6 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
+import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -196,6 +197,24 @@ public class TetrisFX extends Application implements GameListener {
 				swapPiece.setPieceType(game.getSwapPiece().getType());
 			}
 		});
+	}
+
+	@Override
+	public void onPieceLand(Piece piece) {
+		// Check for completed lines.
+		List<Integer> completed = new ArrayList<>();
+		for (int y = 0; y < game.getBoard().getHeight(); y++) {
+			if (game.getBoard().isLineComplete(y)) {
+				completed.add(y);
+			}
+		}
+
+		if (!completed.isEmpty()) {
+			Platform.runLater(() -> {
+				// Animate the line clear.
+				boardPane.fadeLines(completed, game.getSettings().getLineCompleteDelay());
+			});
+		}
 	}
 
 	@Override

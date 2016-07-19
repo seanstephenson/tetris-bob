@@ -8,7 +8,6 @@ import java.util.concurrent.Executors;
 
 public class GameSettings implements Cloneable {
 
-	private static final Executor DEFAULT_LISTENER_EXECUTOR = Executors.newCachedThreadPool();
 	private static final Executor DIRECT_EXECUTOR = MoreExecutors.directExecutor();
 
 	/**
@@ -28,6 +27,7 @@ public class GameSettings implements Cloneable {
 		settings.setFrameInterval(0);
 		settings.setPieceMoveInterval(0);
 		settings.setPieceManualDownInterval(0);
+		settings.setLineCompleteDelay(0);
 		return settings;
 	}
 
@@ -57,11 +57,13 @@ public class GameSettings implements Cloneable {
 	private long pieceMoveInterval = 150;
 	private long pieceManualDownInterval = 100;
 
+	private long lineCompleteDelay = 300;
+
 	private long maxLines;
 
 	private boolean generateReplay = false;
 
-	private Executor listenerExecutor = DEFAULT_LISTENER_EXECUTOR;
+	private Executor listenerExecutor = DIRECT_EXECUTOR;
 
 	private PieceGenerator pieceGenerator = new BagPieceGenerator();
 
@@ -158,6 +160,14 @@ public class GameSettings implements Cloneable {
 
 	public void setPieceManualDownInterval(long pieceManualDownInterval) {
 		this.pieceManualDownInterval = pieceManualDownInterval;
+	}
+
+	public long getLineCompleteDelay() {
+		return lineCompleteDelay;
+	}
+
+	public void setLineCompleteDelay(long lineCompleteDelay) {
+		this.lineCompleteDelay = lineCompleteDelay;
 	}
 
 	public long getMaxLines() {
