@@ -9,6 +9,7 @@ public class Specimen implements Cloneable {
 	private int generation;
 	private SapientEvaluator.Weights weights;
 
+	private double averageLines;
 	private LongSummaryStatistics lines;
 
 	public Specimen(String name, int generation, SapientEvaluator.Weights weights) {
@@ -30,7 +31,7 @@ public class Specimen implements Cloneable {
 	}
 
 	public double getAverageLines() {
-		return getLines().getAverage();
+		return averageLines;
 	}
 
 	public LongSummaryStatistics getLines() {
@@ -39,6 +40,7 @@ public class Specimen implements Cloneable {
 
 	public void setLines(LongSummaryStatistics lines) {
 		this.lines = lines;
+		this.averageLines = lines.getAverage();
 	}
 
 	@Override
