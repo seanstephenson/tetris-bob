@@ -82,6 +82,8 @@ public class TetrisFX extends Application implements GameListener {
 		//gameSettings.setWidth(6);
 		//gameSettings.setHeight(8);
 
+		//gameSettings.setPieceGenerator(() -> new Piece(PieceType.T));
+
 		game = new Game(gameSettings);
 		game.addListener(this);
 		game.init();
