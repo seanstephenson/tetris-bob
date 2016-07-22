@@ -19,6 +19,7 @@ public class DangerZoneEvaluator implements PositionEvaluator {
 	public Score evaluate(Position position) {
 		BitBoard board = position.getBoard();
 		int height = 0;
+		int dangerZoneSize = Math.min(board.getHeight(), this.dangerZoneSize);
 
 		for (int y = 0; y < dangerZoneSize; y++) {
 			if (!board.isLineEmpty(y)) {
