@@ -7,8 +7,10 @@ import com.srs.tetris.game.Piece;
 import com.srs.tetris.game.PieceType;
 import java.util.Collections;
 import java.util.List;
+import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
@@ -19,9 +21,12 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 public class PieceBox extends VBox {
+	private static final double ROTATE_TRANSITION_DURATION = 100;
 
 	private List<PieceType> pieces;
 
@@ -29,6 +34,31 @@ public class PieceBox extends VBox {
 		setPieces(Collections.emptyList());
 
 		setPrefWidth(130);
+	}
+
+	/**
+	 * Removes the first piece type, animating the others upward, and appending the given piecetype to the end.
+	 * @param next the piece type to be appended to the end after the others are moved upward.
+	 */
+	public void rotate(PieceType next) {
+		pieces.remove(0);
+		pieces.add(next);
+
+		// Animate each child upward.
+		for (Node node : getChildren()) {
+			Pane child = (Pane) node;
+			TranslateTransition transition = new TranslateTransition(new Duration(ROTATE_TRANSITION_DURATION), child);
+			transition.setToY(-child.getPrefHeight());
+
+			if (child == getChildren().get(0)) {
+				transition.setOnFinished(event -> {
+					setPieces(pieces);
+				});
+
+			}
+
+			transition.play();
+		}
 	}
 
 	/**
@@ -42,6 +72,16 @@ public class PieceBox extends VBox {
 		for (PieceType piece : pieces) {
 			getChildren().add(createPiece(piece));
 		}
+
+		// Update the clip bounds.
+		if (!pieces.isEmpty()) {
+			double height = getChildren().stream().mapToDouble(c -> ((Pane) c).getPrefHeight()).sum();
+			setClip(new Rectangle(0, 0, getWidth(), height));
+		}
+	}
+
+	public List<PieceType> getPieces() {
+		return pieces;
 	}
 
 	private Pane createPiece(PieceType piece) {
@@ -49,6 +89,7 @@ public class PieceBox extends VBox {
 		Pane container = new Pane();
 		container.setPrefWidth(getPrefWidth());
 		container.setPrefHeight(70);
+		container.layout();
 
 		if (piece != null) {
 			// Create a board pane with the correct piece pattern.

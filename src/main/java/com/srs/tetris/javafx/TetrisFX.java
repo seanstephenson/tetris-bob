@@ -176,9 +176,17 @@ public class TetrisFX extends Application implements GameListener {
 	@Override
 	public void onPieceStart(Piece piece) {
 		Platform.runLater(() -> {
-			// Update the next and swap piece boxes.
-			nextPieces.getPieceBox().setPieces(game.getNextPieces().stream()
-				.map(Piece::getType).collect(toList()));
+			if (nextPieces.getPieceBox().getPieces().isEmpty()) {
+				// First frame, so just set the next pieces whole sale.
+				nextPieces.getPieceBox().setPieces(game.getNextPieces().stream()
+					.map(Piece::getType).collect(toList()));
+
+			} else {
+				// Rotate out the first next piece from the top, and add the new one to the bottom.
+				List<Piece> pieces = new ArrayList<>(game.getNextPieces());
+				PieceType nextPiece = pieces.get(pieces.size() - 1).getType();
+				nextPieces.getPieceBox().rotate(nextPiece);
+			}
 
 			PieceType swapPieceType = game.getSwapPiece() != null ? game.getSwapPiece().getType() : null;
 			swapPiece.getPieceBox().setPieces(Arrays.asList(swapPieceType));
