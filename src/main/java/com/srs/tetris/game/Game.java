@@ -1,5 +1,6 @@
 package com.srs.tetris.game;
 
+import com.srs.tetris.game.piecegen.PieceGenerator;
 import com.srs.tetris.player.DirectPlayer;
 import com.srs.tetris.player.Player;
 import com.srs.tetris.replay.Replay;

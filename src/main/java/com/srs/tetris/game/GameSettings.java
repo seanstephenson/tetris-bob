@@ -1,10 +1,11 @@
 package com.srs.tetris.game;
 
 import com.google.common.util.concurrent.MoreExecutors;
+import com.srs.tetris.game.piecegen.BagPieceGenerator;
+import com.srs.tetris.game.piecegen.PieceGenerator;
 import com.srs.tetris.player.DirectPlayer;
 import com.srs.tetris.player.Player;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 public class GameSettings implements Cloneable {
 

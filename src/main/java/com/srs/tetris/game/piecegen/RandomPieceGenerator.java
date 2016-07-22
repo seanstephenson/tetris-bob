@@ -1,5 +1,6 @@
-package com.srs.tetris.game;
+package com.srs.tetris.game.piecegen;
 
+import com.srs.tetris.game.PieceType;
 import java.util.Random;
 
 public class RandomPieceGenerator implements PieceGenerator {

@@ -1,14 +1,13 @@
-package com.srs.tetris.game;
+package com.srs.tetris.game.piecegen;
 
+import com.srs.tetris.game.PieceType;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Random;
-import java.util.concurrent.SynchronousQueue;
 
 import static java.util.stream.Collectors.*;
 

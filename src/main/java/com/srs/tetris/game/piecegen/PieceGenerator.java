@@ -1,4 +1,6 @@
-package com.srs.tetris.game;
+package com.srs.tetris.game.piecegen;
+
+import com.srs.tetris.game.PieceType;
 
 /**
  * A strategy for generating pieces
