@@ -5,6 +5,8 @@ import com.srs.tetris.game.Board;
 import com.srs.tetris.game.GameBoard;
 import com.srs.tetris.game.Piece;
 import com.srs.tetris.game.PieceType;
+import java.util.Collections;
+import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.Background;
@@ -20,42 +22,37 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 public class PieceBox extends VBox {
-	private static final double PIECE_BOX_BORDER = 1.0;
-	private static final Color PIECE_BOX_BORDER_COLOR = Color.web("0x202020");
-	private static final Color PIECE_BOX_BACKGROUND = Color.web("0x303030");
 
-	private Text label;
-	private Pane boardContainer;
+	private List<PieceType> pieces;
 
-	public PieceBox(String labelText) {
-		super(5);
+	public PieceBox() {
+		setPieces(Collections.emptyList());
 
-		boardContainer = new Pane();
-		boardContainer.setPrefWidth(getPrefWidth());
-		boardContainer.setPrefHeight(70);
-
-		setAlignment(Pos.CENTER);
 		setPrefWidth(130);
-		setPadding(new Insets(5));
-		setBackground(new Background(new BackgroundFill(PIECE_BOX_BACKGROUND, null, null)));
-		setBorder(new Border(new BorderStroke(PIECE_BOX_BORDER_COLOR, BorderStrokeStyle.SOLID, null, new BorderWidths(PIECE_BOX_BORDER))));
-
-		if (labelText != null) {
-			label = new Text(labelText);
-			label.setFill(Color.LIGHTGRAY);
-			getChildren().add(label);
-		}
-
-		getChildren().add(boardContainer);
-
-		setPieceType(null);
 	}
 
-	public void setPieceType(PieceType pieceType) {
-		boardContainer.getChildren().clear();
+	/**
+	 * Sets the piece types for this container.
+	 */
+	public void setPieces(List<PieceType> pieces) {
+		this.pieces = pieces;
 
-		if (pieceType != null) {
-			GameBoard board = new GameBoard(pieceType.getBoard().crop(), pieceType.getColor());
+		getChildren().clear();
+
+		for (PieceType piece : pieces) {
+			getChildren().add(createPiece(piece));
+		}
+	}
+
+	private Pane createPiece(PieceType piece) {
+		// Create a container that is constant sized.
+		Pane container = new Pane();
+		container.setPrefWidth(getPrefWidth());
+		container.setPrefHeight(70);
+
+		if (piece != null) {
+			// Create a board pane with the correct piece pattern.
+			GameBoard board = new GameBoard(piece.getBoard().crop(), piece.getColor());
 			BoardPane boardPane = new BoardPane(board);
 
 			// Use a transparent background and border.
@@ -65,10 +62,15 @@ public class PieceBox extends VBox {
 			boardPane.setScaleX(0.75);
 			boardPane.setScaleY(0.75);
 
-			boardContainer.getChildren().add(boardPane);
+			container.getChildren().add(boardPane);
 
-			// Center the board pane in the board container.
-			boardPane.relocate((boardContainer.getWidth() - boardPane.getPrefWidth()) / 2, (boardContainer.getHeight() - boardPane.getPrefHeight()) / 2);
+			// Center the board in the container.
+			boardPane.relocate(
+				(container.getPrefWidth() - boardPane.getPrefWidth()) / 2,
+				(container.getPrefHeight() - boardPane.getPrefHeight()) / 2
+			);
 		}
+
+		return container;
 	}
 }

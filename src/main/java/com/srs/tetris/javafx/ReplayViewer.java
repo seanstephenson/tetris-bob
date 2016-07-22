@@ -39,8 +39,8 @@ public class ReplayViewer extends Application {
 
 	private BorderPane root;
 	private BoardPane boardPane;
-	private InfoBox lines;
-	private InfoBox move;
+	private InfoTextBox lines;
+	private InfoTextBox move;
 	private Stage primaryStage;
 
 	public static void main(String[] args) {
@@ -53,8 +53,8 @@ public class ReplayViewer extends Application {
 
 		// Create the info pane.
 		VBox infoPane = new VBox(15,
-			lines = new InfoBox("Lines"),
-			move = new InfoBox("Move")
+			lines = new InfoTextBox("Lines"),
+			move = new InfoTextBox("Move")
 		);
 		infoPane.setPadding(new Insets(0, 0, 0, 25));
 
