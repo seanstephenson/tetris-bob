@@ -206,6 +206,9 @@ public class Game {
 			piece = swapPiece;
 			swapPiece = current.moveTo(0, 0, 0);
 
+			// Don't allow it to be swapped again until they place this one.
+			pieceSwapped = true;
+
 			if (piece == null) {
 				// If there was no piece already in the swap position, just drop the next piece.
 				dropNextPiece();
@@ -217,9 +220,6 @@ public class Game {
 				Piece started = this.piece;
 				notifyListeners((listener) -> listener.onPieceStart(started));
 			}
-
-			// Don't allow it to be swapped again until they place this one.
-			pieceSwapped = true;
 		}
 	}
 

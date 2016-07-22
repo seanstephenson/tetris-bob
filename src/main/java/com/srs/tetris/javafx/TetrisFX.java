@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 import javafx.animation.FadeTransition;
 import javafx.application.Application;
@@ -81,8 +82,6 @@ public class TetrisFX extends Application implements GameListener {
 
 		//gameSettings.setWidth(6);
 		//gameSettings.setHeight(8);
-
-		//gameSettings.setPieceGenerator(() -> new Piece(PieceType.T));
 
 		game = new Game(gameSettings);
 		game.addListener(this);
@@ -177,20 +176,24 @@ public class TetrisFX extends Application implements GameListener {
 
 	@Override
 	public void onPieceStart(Piece piece) {
+
+		List<PieceType> nextPieceTypes = new ArrayList<>(game.getNextPieces().stream()
+			.map(Piece::getType).collect(toList()));
+
+		boolean isPieceSwapped = game.isPieceSwapped();
+		PieceType swapPieceType = game.getSwapPiece() != null ? game.getSwapPiece().getType() : null;
+
 		Platform.runLater(() -> {
 			if (nextPieces.getPieceBox().getPieces().isEmpty()) {
 				// First frame, so just set the next pieces whole sale.
-				nextPieces.getPieceBox().setPieces(game.getNextPieces().stream()
-					.map(Piece::getType).collect(toList()));
+				nextPieces.getPieceBox().setPieces(nextPieceTypes);
 
-			} else {
+			} else if (!isPieceSwapped) {
 				// Rotate out the first next piece from the top, and add the new one to the bottom.
-				List<Piece> pieces = new ArrayList<>(game.getNextPieces());
-				PieceType nextPiece = pieces.get(pieces.size() - 1).getType();
+				PieceType nextPiece = nextPieceTypes.get(nextPieceTypes.size() - 1);
 				nextPieces.getPieceBox().rotate(nextPiece);
 			}
 
-			PieceType swapPieceType = game.getSwapPiece() != null ? game.getSwapPiece().getType() : null;
 			swapPiece.getPieceBox().setPieces(Arrays.asList(swapPieceType));
 		});
 	}

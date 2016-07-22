@@ -22,7 +22,6 @@ public class GameSettings implements Cloneable {
 	 */
 	public static GameSettings direct(DirectPlayer player) {
 		GameSettings settings = new GameSettings(player);
-		settings.setListenerExecutor(DIRECT_EXECUTOR);
 		settings.setInputMode(InputMode.Direct);
 		settings.setFrameInterval(0);
 		settings.setPieceMoveInterval(0);
