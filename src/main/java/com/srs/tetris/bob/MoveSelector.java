@@ -1,6 +1,7 @@
 package com.srs.tetris.bob;
 
 import com.srs.tetris.bob.evaluator.PositionEvaluator;
+import com.srs.tetris.bob.evaluator.ScalarScore;
 import com.srs.tetris.game.BitBoard;
 import com.srs.tetris.game.Piece;
 import java.util.List;
@@ -40,7 +41,15 @@ public class MoveSelector {
 				// We can still go deeper, so find the best move from this position.
 				int nextDepth = move.isSwap() ? depth : depth - 1;
 				Move nextMove = getMove(after, nextDepth);
-				move.setScore(nextMove.getScore());
+
+				if (nextMove != null) {
+					// Pass the next move's best score onto this move.
+					move.setScore(nextMove.getScore());
+
+				} else {
+					// There were no possible moves from this position, so it's game over!
+					move.setScore(new ScalarScore(Double.NEGATIVE_INFINITY));
+				}
 			}
 
 			// If this move is the best so far, remember it.
