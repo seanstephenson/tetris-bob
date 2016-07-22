@@ -27,8 +27,8 @@ public class Position {
 		this(
 			game.getBoard().toBitBoard(),
 			game.getPiece() != null ? game.getPiece().getType() : null,
-			game.getNextPieces().stream().map(Piece::getType).collect(toList()),
-			game.getSwapPiece() != null ? game.getSwapPiece().getType() : null,
+			new ArrayList<>(game.getNextPieces()),
+			game.getSwapPiece(),
 			game.isPieceSwapped()
 		);
 	}

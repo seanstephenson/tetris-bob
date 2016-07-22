@@ -20,7 +20,7 @@ public class BagPieceGenerator implements PieceGenerator {
 
 	private Random random;
 	private int bagSize;
-	private Queue<Piece> bag;
+	private Queue<PieceType> bag;
 
 	public BagPieceGenerator() {
 		this(DEFAULT_BAG_SIZE);
@@ -41,7 +41,7 @@ public class BagPieceGenerator implements PieceGenerator {
 	}
 
 	@Override
-	public Piece generate() {
+	public PieceType generate() {
 		if (bag.isEmpty()) {
 			fillBag();
 		}
@@ -49,11 +49,10 @@ public class BagPieceGenerator implements PieceGenerator {
 	}
 
 	private void fillBag() {
-		List<Piece> pieces = new ArrayList<>();
+		List<PieceType> pieces = new ArrayList<>();
 
 		while (pieces.size() < bagSize) {
 			pieces.addAll(Arrays.stream(PieceType.values())
-				.map((type) -> new Piece(type))
 				.collect(toList()));
 		}
 

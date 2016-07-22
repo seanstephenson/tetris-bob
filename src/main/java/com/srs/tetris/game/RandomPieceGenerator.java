@@ -18,9 +18,7 @@ public class RandomPieceGenerator implements PieceGenerator {
 	}
 
 	@Override
-	public Piece generate() {
-		return new Piece(PieceType.random());
+	public PieceType generate() {
+		return PieceType.random();
 	}
-
-
 }

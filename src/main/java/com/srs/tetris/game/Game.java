@@ -25,8 +25,8 @@ public class Game {
 
 	private Piece piece;
 
-	private Queue<Piece> nextPieces;
-	private Piece swapPiece;
+	private Queue<PieceType> nextPieces;
+	private PieceType swapPiece;
 
 	private Input lastInput;
 	private Input input;
@@ -202,9 +202,9 @@ public class Game {
 	private void updatePieceSwap() {
 		if (input.isSwap() && !pieceSwapped) {
 			// Swap out the current piece
-			Piece current = piece;
-			piece = swapPiece;
-			swapPiece = current.moveTo(0, 0, 0);
+			PieceType current = piece.getType();
+			piece = swapPiece != null ? new Piece(swapPiece) : null;
+			swapPiece = current;
 
 			// Don't allow it to be swapped again until they place this one.
 			pieceSwapped = true;
@@ -343,7 +343,7 @@ public class Game {
 
 	private void dropNextPiece() {
 		// Place the next piece at the top of the game board.
-		piece = nextPieces.remove();
+		piece = new Piece(nextPieces.remove());
 		movePieceToTopCenter();
 
 		// If the new piece is blocked, the game is over.
@@ -520,15 +520,15 @@ public class Game {
 		return piece;
 	}
 
-	public Piece getNextPiece() {
+	public PieceType getNextPiece() {
 		return nextPieces.peek();
 	}
 
-	public Collection<Piece> getNextPieces() {
+	public Collection<PieceType> getNextPieces() {
 		return nextPieces;
 	}
 
-	public Piece getSwapPiece() {
+	public PieceType getSwapPiece() {
 		return swapPiece;
 	}
 

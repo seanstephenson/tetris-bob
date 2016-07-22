@@ -177,11 +177,10 @@ public class TetrisFX extends Application implements GameListener {
 	@Override
 	public void onPieceStart(Piece piece) {
 
-		List<PieceType> nextPieceTypes = new ArrayList<>(game.getNextPieces().stream()
-			.map(Piece::getType).collect(toList()));
+		List<PieceType> nextPieceTypes = new ArrayList<>(game.getNextPieces());
 
 		boolean isPieceSwapped = game.isPieceSwapped();
-		PieceType swapPieceType = game.getSwapPiece() != null ? game.getSwapPiece().getType() : null;
+		PieceType swapPieceType = game.getSwapPiece();
 
 		Platform.runLater(() -> {
 			if (nextPieces.getPieceBox().getPieces().isEmpty()) {

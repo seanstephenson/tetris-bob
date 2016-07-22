@@ -7,5 +7,5 @@ public interface PieceGenerator {
 	/**
 	 * Generates the next piece to be used in the game.
 	 */
-	Piece generate();
+	PieceType generate();
 }
