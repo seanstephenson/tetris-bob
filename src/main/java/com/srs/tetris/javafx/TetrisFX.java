@@ -9,6 +9,8 @@ import com.srs.tetris.game.GameListener;
 import com.srs.tetris.game.GameSettings;
 import com.srs.tetris.game.Piece;
 import com.srs.tetris.game.PieceType;
+import com.srs.tetris.game.piecegen.MonoPieceGenerator;
+import com.srs.tetris.game.piecegen.SerialPieceGenerator;
 import com.srs.tetris.player.DirectPlayer;
 import com.srs.tetris.player.LocalPlayer;
 import com.srs.tetris.player.Player;
@@ -82,6 +84,9 @@ public class TetrisFX extends Application implements GameListener {
 
 		//gameSettings.setWidth(6);
 		//gameSettings.setHeight(8);
+
+		//gameSettings.setPieceGenerator(new MonoPieceGenerator(PieceType.I));
+		//gameSettings.setPieceGenerator(new SerialPieceGenerator());
 
 		game = new Game(gameSettings);
 		game.addListener(this);
