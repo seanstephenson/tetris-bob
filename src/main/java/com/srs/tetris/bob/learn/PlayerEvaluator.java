@@ -4,7 +4,6 @@ import com.srs.tetris.bob.BobPlayer;
 import com.srs.tetris.bob.BobSettings;
 import com.srs.tetris.game.Game;
 import com.srs.tetris.game.GameSettings;
-import com.srs.tetris.game.piecegen.RandomPieceGenerator;
 import com.srs.tetris.player.DirectPlayer;
 import com.srs.tetris.replay.Replay;
 import com.srs.tetris.replay.ReplayUtil;
@@ -38,6 +37,7 @@ public class PlayerEvaluator {
 	private int gameCount;
 	private int maxLinesPerGame;
 
+	private Consumer<Game> onGameStart = (game) -> {};
 	private Consumer<Game> onGameEnd = (game) -> {};
 
 	private boolean generateReplays;
@@ -70,6 +70,7 @@ public class PlayerEvaluator {
 					// Create and play the game.
 					Game game = createGame();
 
+					onGameStart.accept(game);
 					game.run();
 					onGameEnd.accept(game);
 
@@ -110,6 +111,10 @@ public class PlayerEvaluator {
 
 	public void setGameSettingsCustomizer(Function<GameSettings, GameSettings> gameSettingsCustomizer) {
 		this.gameSettingsCustomizer = gameSettingsCustomizer;
+	}
+
+	public void setOnGameStart(Consumer<Game> onGameStart) {
+		this.onGameStart = onGameStart;
 	}
 
 	public void setOnGameEnd(Consumer<Game> onGameEnd) {
@@ -164,7 +169,8 @@ public class PlayerEvaluator {
 		evaluator.setMaxLinesPerGame(-1);
 		//evaluator.setMaxLinesPerGame(100);
 
-		// Print progress on each game start.
+		// Print progress on each game.
+		//evaluator.setOnGameStart(game -> game.addListener(new PrintCompleteLinesListener(game)));
 		evaluator.setOnGameEnd(new PrintDotConsumer<Game>());
 
 		// Run the evaluation and get the result.
@@ -224,4 +230,5 @@ public class PlayerEvaluator {
 		System.out.printf("Pieces per Second: %,.3f\n", pieces.getSum() / result.getElapsedTime());
 		System.out.printf("Total Elapsed Time (s): %,.3f\n", result.getElapsedTime());
 	}
+
 }

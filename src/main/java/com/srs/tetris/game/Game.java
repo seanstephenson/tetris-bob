@@ -441,6 +441,9 @@ public class Game {
 			// Update the current level.
 			updateLevel();
 
+			// Notify listeners.
+			notifyListeners(listener -> listener.onLinesComplete());
+
 			if (settings.getMaxLines() > 0 && completedLines > settings.getMaxLines()) {
 				status = Status.Complete;
 			}

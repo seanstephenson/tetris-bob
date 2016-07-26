@@ -29,4 +29,9 @@ public interface GameListener {
 	 * Called after each piece lands.
 	 */
 	default void onPieceLand(Piece piece) {}
+
+	/**
+	 * Called after any lines are completed.
+	 */
+	default void onLinesComplete() {}
 }
