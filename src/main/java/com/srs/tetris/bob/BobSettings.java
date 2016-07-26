@@ -44,6 +44,8 @@ public class BobSettings {
 	private boolean allowSwap = true;
 	private int maxDepth = 3;
 
+	private InputSupplier inputSupplier = new NormalInputSupplier();
+
 	public BobSettings() {
 		this(new SapientEvaluator());
 	}
@@ -76,6 +78,15 @@ public class BobSettings {
 
 	public BobSettings setPositionEvaluator(PositionEvaluator positionEvaluator) {
 		this.positionEvaluator = positionEvaluator;
+		return this;
+	}
+
+	public InputSupplier getInputSupplier() {
+		return inputSupplier;
+	}
+
+	public BobSettings setInputSupplier(InputSupplier inputSupplier) {
+		this.inputSupplier = inputSupplier;
 		return this;
 	}
 }
