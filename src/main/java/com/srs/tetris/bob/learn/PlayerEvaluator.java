@@ -4,6 +4,7 @@ import com.srs.tetris.bob.BobPlayer;
 import com.srs.tetris.bob.BobSettings;
 import com.srs.tetris.game.Game;
 import com.srs.tetris.game.GameSettings;
+import com.srs.tetris.game.piecegen.RandomPieceGenerator;
 import com.srs.tetris.player.DirectPlayer;
 import com.srs.tetris.replay.Replay;
 import com.srs.tetris.replay.ReplayUtil;
@@ -21,6 +22,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,6 +32,7 @@ import static java.util.stream.Collectors.*;
 public class PlayerEvaluator {
 
 	private Supplier<DirectPlayer> playerSupplier;
+	private Function<GameSettings, GameSettings> gameSettingsCustomizer;
 	private ExecutorService executor;
 
 	private int gameCount;
@@ -87,6 +90,10 @@ public class PlayerEvaluator {
 		gameSettings.setGenerateReplay(generateReplays);
 		gameSettings.setMaxLines(maxLinesPerGame);
 
+		if (gameSettingsCustomizer != null) {
+			gameSettingsCustomizer.apply(gameSettings);
+		}
+
 		Game game = new Game(gameSettings);
 		game.init();
 
@@ -99,6 +106,10 @@ public class PlayerEvaluator {
 		} catch (Throwable t) {
 			throw new RuntimeException(t);
 		}
+	}
+
+	public void setGameSettingsCustomizer(Function<GameSettings, GameSettings> gameSettingsCustomizer) {
+		this.gameSettingsCustomizer = gameSettingsCustomizer;
 	}
 
 	public void setOnGameEnd(Consumer<Game> onGameEnd) {
@@ -143,6 +154,8 @@ public class PlayerEvaluator {
 			executor,
 			100
 		);
+
+		//evaluator.setGameSettingsCustomizer(settings -> settings.setPieceGenerator(new RandomPieceGenerator()));
 
 		// Generate replays.
 		evaluator.setGenerateReplays(false);
