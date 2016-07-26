@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 
 public class NormalInputSupplier implements InputSupplier {
 	private Input lastInput;
+	private boolean rapidMovement;
 
 	public NormalInputSupplier() {
 		// Assume empty last input.
@@ -53,7 +54,11 @@ public class NormalInputSupplier implements InputSupplier {
 
 		} else {
 			// It's in the right place, so drop it.
-			input.setDrop(true);
+			if (isRapidMovement()) {
+				input.setDrop(true);
+			} else {
+				input.setDown(true);
+			}
 		}
 
 		// Make sure we release buttons if necessary before pressing them again.
@@ -69,12 +74,27 @@ public class NormalInputSupplier implements InputSupplier {
 		if (lastInput.isRotateRight()) input.setRotateRight(false);
 		if (lastInput.isDrop()) input.setDrop(false);
 		if (lastInput.isSwap()) input.setSwap(false);
-		if (lastInput.isLeft()) input.setLeft(false);
-		if (lastInput.isRight()) input.setRight(false);
+
+		if (isRapidMovement()) {
+			if (lastInput.isLeft()) input.setLeft(false);
+			if (lastInput.isRight()) input.setRight(false);
+		}
 	}
 
 	private boolean shouldRotateRight(Move move, Piece piece) {
 		// Rotate right if it is only one step away.  Otherwise rotate left.
 		return Math.floorMod(piece.getOrientation() - 1, 4) == move.getPiece().getOrientation();
+	}
+
+	/**
+	 * Indicates if "rapid movement" is enabled, meaning the left and right buttons will be pressed each frame rather than simply
+	 * held in.
+	 */
+	public boolean isRapidMovement() {
+		return rapidMovement;
+	}
+
+	public void setRapidMovement(boolean rapidMovement) {
+		this.rapidMovement = rapidMovement;
 	}
 }

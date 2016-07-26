@@ -54,6 +54,13 @@ public class BobSettings {
 		this.positionEvaluator = positionEvaluator;
 	}
 
+	public BobSettings withRapidMovement() {
+		NormalInputSupplier inputSupplier = new NormalInputSupplier();
+		inputSupplier.setRapidMovement(true);
+		setInputSupplier(inputSupplier);
+		return this;
+	}
+
 	public boolean isAllowSwap() {
 		return allowSwap;
 	}
