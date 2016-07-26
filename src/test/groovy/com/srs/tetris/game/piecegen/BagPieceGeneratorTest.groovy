@@ -12,10 +12,10 @@ class BagPieceGeneratorTest {
 		100.times {
 			def pieceTypes = new ArrayList<>(Arrays.asList(PieceType.values()))
 			while (!pieceTypes.isEmpty()) {
-				def piece = generator.generate()
-				assert pieceTypes.contains(piece.type) : "Same piece type was generated twice before all others were used: $piece.type"
+				def pieceType = generator.generate()
+				assert pieceTypes.contains(pieceType) : "Same piece type was generated twice before all others were used: $pieceType.type"
 
-				pieceTypes.remove(piece.type)
+				pieceTypes.remove(pieceType)
 			}
 		}
 	}
@@ -30,10 +30,10 @@ class BagPieceGeneratorTest {
 			4.times { pieceTypes.addAll(Arrays.asList(PieceType.values())) }
 
 			while (!pieceTypes.isEmpty()) {
-				def piece = generator.generate()
-				assert pieceTypes.contains(piece.type) : "Same piece type was generated twice before all others were used: $piece.type"
+				def pieceType = generator.generate()
+				assert pieceTypes.contains(pieceType) : "Same piece type was generated too many times before all others were used: $pieceType.type"
 
-				pieceTypes.remove(piece.type)
+				pieceTypes.remove(pieceType)
 			}
 		}
 	}
