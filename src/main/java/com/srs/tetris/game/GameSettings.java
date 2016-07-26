@@ -22,13 +22,12 @@ public class GameSettings implements Cloneable {
 	 * Creates a new game with no delays for instant play.
 	 */
 	public static GameSettings direct(DirectPlayer player) {
-		GameSettings settings = new GameSettings(player);
-		settings.setInputMode(InputMode.Direct);
-		settings.setFrameInterval(0);
-		settings.setPieceMoveInterval(0);
-		settings.setPieceManualDownInterval(0);
-		settings.setLineCompleteDelay(0);
-		return settings;
+		return new GameSettings(player)
+			.setInputMode(InputMode.Direct)
+			.setFrameInterval(0)
+			.setPieceMoveInterval(0)
+			.setPieceManualDownInterval(0)
+			.setLineCompleteDelay(0);
 	}
 
 	public GameSettings clone() {
@@ -78,135 +77,152 @@ public class GameSettings implements Cloneable {
 		return player;
 	}
 
-	public void setPlayer(Player player) {
+	public GameSettings setPlayer(Player player) {
 		this.player = player;
+		return this;
 	}
 
 	public int getWidth() {
 		return width;
 	}
 
-	public void setWidth(int width) {
+	public GameSettings setWidth(int width) {
 		this.width = width;
+		return this;
 	}
 
 	public int getHeight() {
 		return height;
 	}
 
-	public void setHeight(int height) {
+	public GameSettings setHeight(int height) {
 		this.height = height;
+		return this;
 	}
 
 	public int getNextPieceCount() {
 		return nextPieceCount;
 	}
 
-	public void setNextPieceCount(int nextPieceCount) {
+	public GameSettings setNextPieceCount(int nextPieceCount) {
 		this.nextPieceCount = nextPieceCount;
+		return this;
 	}
 
 	public long getFrameInterval() {
 		return frameInterval;
 	}
 
-	public void setFrameInterval(long frameInterval) {
+	public GameSettings setFrameInterval(long frameInterval) {
 		this.frameInterval = frameInterval;
+		return this;
 	}
 
 	public long getStartingDropInterval() {
 		return startingDropInterval;
 	}
 
-	public void setStartingDropInterval(long startingDropInterval) {
+	public GameSettings setStartingDropInterval(long startingDropInterval) {
 		this.startingDropInterval = startingDropInterval;
+		return this;
 	}
 
 	public long getMinDropInterval() {
 		return minDropInterval;
 	}
 
-	public void setMinDropInterval(long minDropInterval) {
+	public GameSettings setMinDropInterval(long minDropInterval) {
 		this.minDropInterval = minDropInterval;
+		return this;
 	}
 
 	public int getLinesPerLevel() {
 		return linesPerLevel;
 	}
 
-	public void setLinesPerLevel(int linesPerLevel) {
+	public GameSettings setLinesPerLevel(int linesPerLevel) {
 		this.linesPerLevel = linesPerLevel;
+		return this;
 	}
 
 	public double getLevelAccelerator() {
 		return levelAccelerator;
 	}
 
-	public void setLevelAccelerator(double levelAccelerator) {
+	public GameSettings setLevelAccelerator(double levelAccelerator) {
 		this.levelAccelerator = levelAccelerator;
+		return this;
 	}
 
 	public long getPieceMoveInterval() {
 		return pieceMoveInterval;
 	}
 
-	public void setPieceMoveInterval(long pieceMoveInterval) {
+	public GameSettings setPieceMoveInterval(long pieceMoveInterval) {
 		this.pieceMoveInterval = pieceMoveInterval;
+		return this;
 	}
 
 	public long getPieceManualDownInterval() {
 		return pieceManualDownInterval;
 	}
 
-	public void setPieceManualDownInterval(long pieceManualDownInterval) {
+	public GameSettings setPieceManualDownInterval(long pieceManualDownInterval) {
 		this.pieceManualDownInterval = pieceManualDownInterval;
+		return this;
 	}
 
 	public long getLineCompleteDelay() {
 		return lineCompleteDelay;
 	}
 
-	public void setLineCompleteDelay(long lineCompleteDelay) {
+	public GameSettings setLineCompleteDelay(long lineCompleteDelay) {
 		this.lineCompleteDelay = lineCompleteDelay;
+		return this;
 	}
 
 	public long getMaxLines() {
 		return maxLines;
 	}
 
-	public void setMaxLines(long maxLines) {
+	public GameSettings setMaxLines(long maxLines) {
 		this.maxLines = maxLines;
+		return this;
 	}
 
 	public boolean isGenerateReplay() {
 		return generateReplay;
 	}
 
-	public void setGenerateReplay(boolean generateReplay) {
+	public GameSettings setGenerateReplay(boolean generateReplay) {
 		this.generateReplay = generateReplay;
+		return this;
 	}
 
 	public Executor getListenerExecutor() {
 		return listenerExecutor;
 	}
 
-	public void setListenerExecutor(Executor listenerExecutor) {
+	public GameSettings setListenerExecutor(Executor listenerExecutor) {
 		this.listenerExecutor = listenerExecutor;
+		return this;
 	}
 
 	public PieceGenerator getPieceGenerator() {
 		return pieceGenerator;
 	}
 
-	public void setPieceGenerator(PieceGenerator pieceGenerator) {
+	public GameSettings setPieceGenerator(PieceGenerator pieceGenerator) {
 		this.pieceGenerator = pieceGenerator;
+		return this;
 	}
 
 	public InputMode getInputMode() {
 		return inputMode;
 	}
 
-	public void setInputMode(InputMode inputMode) {
+	public GameSettings setInputMode(InputMode inputMode) {
 		this.inputMode = inputMode;
+		return this;
 	}
 }
