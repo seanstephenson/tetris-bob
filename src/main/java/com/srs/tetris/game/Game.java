@@ -524,10 +524,6 @@ public class Game {
 		return piece;
 	}
 
-	public PieceType getNextPiece() {
-		return nextPieces.peek();
-	}
-
 	public Collection<PieceType> getNextPieces() {
 		return nextPieces;
 	}
