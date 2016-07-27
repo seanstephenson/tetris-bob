@@ -153,9 +153,9 @@ public class PlayerEvaluator {
 
 		// Create an evaluator that runs a number of games.
 		PlayerEvaluator evaluator = new PlayerEvaluator(
-			() -> new BobPlayer(BobSettings.simple()),
-			//() -> new BobPlayer(BobSettings.noSwap().setMaxDepth(2)),
-			//() -> new BobPlayer(BobSettings.noSwap().setMaxDepth(4)),
+			() -> new BobPlayer(new BobSettings().withCurrentPieceOnly()),
+			//() -> new BobPlayer(new BobSettings().withoutSwapping().withNextPieces(1)),
+			//() -> new BobPlayer(new BobSettings().withoutSwapping().withNextPieces(3)),
 			executor,
 			100
 		);

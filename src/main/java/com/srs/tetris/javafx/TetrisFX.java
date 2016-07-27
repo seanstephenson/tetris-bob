@@ -75,10 +75,10 @@ public class TetrisFX extends Application implements GameListener {
 	public void init() throws Exception {
 		// Create the player.
 		//Player player = new LocalPlayer();
-		//DirectPlayer player = new BobPlayer(BobSettings.standard());
-		//DirectPlayer player = new BobPlayer(BobSettings.standard().withRapidMovement());
-		DirectPlayer player = new BobPlayer(BobSettings.standard().withSloppyMovement());
-		//DirectPlayer player = new BobPlayer(BobSettings.standard().setMaxDepth(4));
+		//DirectPlayer player = new BobPlayer(new BobSettings());
+		//DirectPlayer player = new BobPlayer(new BobSettings().withRapidMovement());
+		//DirectPlayer player = new BobPlayer(new BobSettings().withSloppyMovement());
+		DirectPlayer player = new BobPlayer(new BobSettings().withNextPieces(3));
 
 		// Create the game.
 		GameSettings gameSettings = GameSettings.standard(player);

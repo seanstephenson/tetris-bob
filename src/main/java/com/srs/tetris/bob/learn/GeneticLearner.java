@@ -147,9 +147,9 @@ public class GeneticLearner {
 		PlayerEvaluator evaluator = new PlayerEvaluator(
 			() -> {
 				// Create a new player with the weights from this specimen.
-				BobPlayer player = new BobPlayer(BobSettings.simple(
+				BobPlayer player = new BobPlayer(new BobSettings(
 					new SapientEvaluator(specimen.getWeights())
-				));
+				).withCurrentPieceOnly());
 				return player;
 			},
 			executor,

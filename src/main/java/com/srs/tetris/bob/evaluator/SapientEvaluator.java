@@ -7,6 +7,7 @@ public class SapientEvaluator extends CompositeEvaluator {
 
 	public static class Weights implements Cloneable {
 
+		/*
 		private double height = -1.5;
 		private double averageHeight = -1.5;
 
@@ -22,6 +23,20 @@ public class SapientEvaluator extends CompositeEvaluator {
 		private double narrowFourGap = 6.0;
 
 		private double nearlyCompleteLines = 3.0;
+		*/
+
+		private double height = -7.401;
+		private double averageHeight = -2.987;
+		private double dangerZone = -9.853;
+		private double dangerZoneExponent = 1.642;
+		private double dangerZoneSize = 2.045;
+		private double holes = -20.211;
+		private double narrowGaps = -2.813;
+		private double narrowTwoGap = 1.858;
+		private double narrowThreeGap = 4.665;
+		private double narrowFourGap = 6.000;
+		private double nearlyCompleteLines = 4.500;
+
 
 		public double getHeight() {
 			return height;
