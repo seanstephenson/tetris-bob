@@ -31,7 +31,7 @@ public class GeneticLearner {
 
 	private static final double INITIAL_POPULATION_VARIANCE = 2.0;
 
-	private static final int GENERATIONS = 20;
+	private static final int GENERATIONS = 200;
 	private static final int SPECIMENS_PER_GENERATION = 20;
 	private static final double SUCCESS_THRESHOLD = 0.25;
 
@@ -165,11 +165,7 @@ public class GeneticLearner {
 			.mapToLong(Game::getCompletedLines)
 			.summaryStatistics();
 
-		if (specimen.getLines() == null) {
-			specimen.setLines(lines);
-		} else {
-			specimen.getLines().combine(lines);
-		}
+		specimen.addLines(lines);
 	}
 
 	private List<Specimen> createInitialPopulation() {

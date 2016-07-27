@@ -38,9 +38,14 @@ public class Specimen implements Cloneable {
 		return lines;
 	}
 
-	public void setLines(LongSummaryStatistics lines) {
-		this.lines = lines;
-		this.averageLines = lines.getAverage();
+	public void addLines(LongSummaryStatistics lines) {
+		if (this.lines == null) {
+			this.lines = lines;
+		} else {
+			this.lines.combine(lines);
+		}
+
+		this.averageLines = this.lines.getAverage();
 	}
 
 	@Override
