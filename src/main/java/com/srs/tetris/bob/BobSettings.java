@@ -61,6 +61,11 @@ public class BobSettings {
 		return this;
 	}
 
+	public BobSettings withSloppyMovement() {
+		setInputSupplier(new SloppyInputSupplier());
+		return this;
+	}
+
 	public boolean isAllowSwap() {
 		return allowSwap;
 	}

@@ -92,4 +92,8 @@ public class Piece implements Cloneable {
 	public int getOrientation() {
 		return orientation;
 	}
+
+	public String toString() {
+		return String.format("[%s, (%d, %d) <%d]", type, x, y, orientation);
+	}
 }
