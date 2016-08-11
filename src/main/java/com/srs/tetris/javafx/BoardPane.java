@@ -18,7 +18,7 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
-import static com.srs.tetris.game.Color.*;
+import static com.srs.tetris.game.Color.Empty;
 
 /**
  * A javafx pane that displays a game board.

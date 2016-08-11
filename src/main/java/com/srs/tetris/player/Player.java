@@ -1,7 +1,7 @@
 package com.srs.tetris.player;
 
-import com.srs.tetris.game.Input;
 import com.srs.tetris.game.Game;
+import com.srs.tetris.game.Input;
 
 /**
  * A Tetris game player.

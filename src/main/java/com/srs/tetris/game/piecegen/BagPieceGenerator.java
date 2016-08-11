@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A piece generator that guarantees an even distribution of piece types over the size of a bag.

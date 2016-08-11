@@ -2,8 +2,6 @@ package com.srs.tetris.game;
 
 import java.util.Random;
 
-import static java.awt.Color.*;
-
 public enum Color {
 	Empty(0, 0, 0),
 	Red(255, 0, 0),

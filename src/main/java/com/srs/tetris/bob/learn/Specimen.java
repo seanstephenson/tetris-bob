@@ -1,7 +1,6 @@
 package com.srs.tetris.bob.learn;
 
 import com.srs.tetris.bob.evaluator.SapientEvaluator;
-import java.util.IntSummaryStatistics;
 import java.util.LongSummaryStatistics;
 
 public class Specimen implements Cloneable {

@@ -1,7 +1,6 @@
 package com.srs.tetris.bob;
 
 import com.srs.tetris.game.BitBoard;
-import com.srs.tetris.game.Board;
 import com.srs.tetris.game.Game;
 import com.srs.tetris.game.Piece;
 import com.srs.tetris.game.PieceType;
@@ -9,9 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.*;
 
 /**
  * Encapsulates all attributes that make up a game position.

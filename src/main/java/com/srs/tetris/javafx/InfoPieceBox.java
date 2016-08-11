@@ -1,7 +1,5 @@
 package com.srs.tetris.javafx;
 
-import javafx.scene.Node;
-
 public class InfoPieceBox extends InfoBox {
 
 	private PieceBox pieceBox;

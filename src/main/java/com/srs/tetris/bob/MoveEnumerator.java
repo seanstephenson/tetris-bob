@@ -5,7 +5,6 @@ import com.srs.tetris.game.Piece;
 import com.srs.tetris.game.PieceType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * Generates all possible moves for a position.

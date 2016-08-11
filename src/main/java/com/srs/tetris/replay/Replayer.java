@@ -1,6 +1,5 @@
 package com.srs.tetris.replay;
 
-import com.srs.tetris.game.Board;
 import com.srs.tetris.game.GameBoard;
 import com.srs.tetris.game.Piece;
 

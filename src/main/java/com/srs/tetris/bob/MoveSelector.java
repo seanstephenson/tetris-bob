@@ -2,8 +2,6 @@ package com.srs.tetris.bob;
 
 import com.srs.tetris.bob.evaluator.PositionEvaluator;
 import com.srs.tetris.bob.evaluator.ScalarScore;
-import com.srs.tetris.game.BitBoard;
-import com.srs.tetris.game.Piece;
 import java.util.List;
 
 public class MoveSelector {

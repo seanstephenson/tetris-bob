@@ -3,7 +3,6 @@ package com.srs.tetris.bob;
 import com.srs.tetris.game.Game;
 import com.srs.tetris.game.Input;
 import com.srs.tetris.game.Piece;
-import java.util.function.Supplier;
 
 public class NormalInputSupplier implements InputSupplier {
 	private Input lastInput;

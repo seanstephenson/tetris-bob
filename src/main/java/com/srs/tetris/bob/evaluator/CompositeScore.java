@@ -1,7 +1,5 @@
 package com.srs.tetris.bob.evaluator;
 
-import java.util.Arrays;
-
 public class CompositeScore implements Score {
 	private Score[] scores;
 

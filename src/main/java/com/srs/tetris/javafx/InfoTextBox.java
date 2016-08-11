@@ -1,6 +1,5 @@
 package com.srs.tetris.javafx;
 
-import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;

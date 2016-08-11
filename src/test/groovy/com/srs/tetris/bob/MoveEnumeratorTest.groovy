@@ -1,7 +1,6 @@
 package com.srs.tetris.bob
 
 import com.srs.tetris.game.BitBoard
-import com.srs.tetris.game.Piece
 import com.srs.tetris.game.PieceType
 import org.junit.Test
 
@@ -134,7 +133,7 @@ class MoveEnumeratorTest {
 
 		// A swap move should be generated
 		def moves = new MoveEnumerator().findPossibleMoves(position)
-		assert moves.size == 3
+		assert moves.size() == 3
 		assert moves.findAll { it.swap }.size() == 1
 	}
 
@@ -149,7 +148,7 @@ class MoveEnumeratorTest {
 
 		// There's no swap piece, but there is a next piece, so we can still swap
 		def moves = new MoveEnumerator().findPossibleMoves(position)
-		assert moves.size == 3
+		assert moves.size() == 3
 		assert moves.findAll { it.swap }.size() == 1
 	}
 
@@ -164,7 +163,7 @@ class MoveEnumeratorTest {
 
 		// Because the swap piece and the piece in play are the same, no swap moves will be generated.
 		def moves = new MoveEnumerator().findPossibleMoves(position)
-		assert moves.size == 2
+		assert moves.size() == 2
 		assert moves.findAll { it.swap }.size() == 0
 	}
 
@@ -179,7 +178,7 @@ class MoveEnumeratorTest {
 
 		// Because there is no swap piece and the next piece and piece in play are the same, no swap moves will be generated.
 		def moves = new MoveEnumerator().findPossibleMoves(position)
-		assert moves.size == 2
+		assert moves.size() == 2
 		assert moves.findAll { it.swap }.size() == 0
 	}
 
@@ -194,7 +193,7 @@ class MoveEnumeratorTest {
 
 		// Because the piece has already been swapped, no swap moves will be generated.
 		def moves = new MoveEnumerator().findPossibleMoves(position)
-		assert moves.size == 2
+		assert moves.size() == 2
 		assert moves.findAll { it.swap }.size() == 0
 	}
 
@@ -210,7 +209,7 @@ class MoveEnumeratorTest {
 		// Because allowSwap is set to false, no swap moves will be generated.
 		def moveEnumerator = new MoveEnumerator(allowSwap: false)
 		def moves = moveEnumerator.findPossibleMoves(position)
-		assert moves.size == 2
+		assert moves.size() == 2
 		assert moves.findAll { it.swap }.size() == 0
 	}
 

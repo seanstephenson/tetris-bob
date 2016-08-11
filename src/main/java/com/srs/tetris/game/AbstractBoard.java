@@ -1,9 +1,6 @@
 package com.srs.tetris.game;
 
 import java.util.Arrays;
-import java.util.List;
-
-import static java.util.stream.Collectors.*;
 
 public abstract class AbstractBoard<T> implements Board<T> {
 	private int width;

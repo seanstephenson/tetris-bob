@@ -2,7 +2,6 @@ package com.srs.tetris.player;
 
 import com.srs.tetris.game.DirectInput;
 import com.srs.tetris.game.Input;
-import com.srs.tetris.game.Piece;
 
 /**
  * A player that uses "direct" input, telling the game exactly where the piece should go rather than

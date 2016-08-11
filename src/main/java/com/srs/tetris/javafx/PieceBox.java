@@ -1,28 +1,17 @@
 package com.srs.tetris.javafx;
 
-import com.srs.tetris.game.BitBoard;
-import com.srs.tetris.game.Board;
 import com.srs.tetris.game.GameBoard;
-import com.srs.tetris.game.Piece;
 import com.srs.tetris.game.PieceType;
 import java.util.Collections;
 import java.util.List;
 import javafx.animation.TranslateTransition;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 public class PieceBox extends VBox {

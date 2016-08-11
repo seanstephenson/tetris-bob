@@ -1,9 +1,6 @@
 package com.srs.tetris.game;
 
 import java.util.Arrays;
-import java.util.List;
-
-import static java.util.stream.Collectors.*;
 
 /**
  * A grid of squares that can each have an individual color.
