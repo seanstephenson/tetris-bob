@@ -5,6 +5,7 @@ import com.srs.tetris.player.DirectPlayer;
 import com.srs.tetris.player.Player;
 import com.srs.tetris.replay.Replay;
 import com.srs.tetris.replay.ReplayGenerator;
+import com.srs.tetris.util.ThreadUtil;
 import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -12,7 +13,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class Game {
@@ -87,7 +87,7 @@ public class Game {
 		startReplay();
 
 		try {
-			notifyListeners((listener) -> listener.onGameStart());
+			notifyListeners(GameListener::onGameStart);
 
 			// Drop the first piece.
 			dropNextPiece();
@@ -103,10 +103,10 @@ public class Game {
 				// Update the game state.
 				updateGame(interval);
 
-				notifyListeners((listener) -> listener.onFrame());
+				notifyListeners(GameListener::onFrame);
 
 				// Sleep until the next frame.
-				sleep(settings.getFrameInterval());
+				ThreadUtil.sleep(settings.getFrameInterval(), this::cancel);
 			}
 
 		} catch (Throwable throwable) {
@@ -116,7 +116,7 @@ public class Game {
 
 		} finally {
 			endTime = Instant.now();
-			notifyListeners((listener) -> listener.onGameOver());
+			notifyListeners(GameListener::onGameOver);
 		}
 	}
 
@@ -442,14 +442,14 @@ public class Game {
 			updateLevel();
 
 			// Notify listeners.
-			notifyListeners(listener -> listener.onLinesComplete());
+			notifyListeners(GameListener::onLinesComplete);
 
 			if (settings.getMaxLines() > 0 && completedLines > settings.getMaxLines()) {
 				status = Status.Complete;
 			}
 
 			// If there is supposed to be a line complete delay wait now (typically to allow for animation).
-			sleep(settings.getLineCompleteDelay());
+			ThreadUtil.sleep(settings.getLineCompleteDelay(), this::cancel);
 		}
 	}
 
@@ -479,21 +479,6 @@ public class Game {
 
 	public boolean isGameOver() {
 		return status != Status.New && status != Status.InProgress;
-	}
-
-	private void sleep(long interval) {
-		try {
-			if (interval > 0) {
-				TimeUnit.MILLISECONDS.sleep(interval);
-			}
-
-			if (Thread.interrupted()) {
-				cancel();
-			}
-
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	public void cancel() {
