@@ -14,6 +14,7 @@ public class ReplayUtil {
 	 */
 	public static void writeReplay(Replay replay, Path file) {
 		try (Writer out = Files.newBufferedWriter(file)) {
+			Files.createDirectories(file.getParent());
 			writeReplay(replay, out);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
