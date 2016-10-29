@@ -156,13 +156,13 @@ public class ReplayViewer extends Application {
 	private Path chooseReplayFile() {
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Choose Replay File");
-		chooser.setInitialDirectory(FileUtil.getReplayDataBase().toFile());
+		chooser.setInitialDirectory(FileUtil.getReplayDataPath().toFile());
 		File file = chooser.showOpenDialog(primaryStage);
 		return file != null ? file.toPath() : null;
 	}
 
 	private Path findLatestReplayFile() throws IOException {
-		return Files.list(FileUtil.getReplayDataBase())
+		return Files.list(FileUtil.getReplayDataPath())
 			.filter(Files::isRegularFile)
 			.sorted(comparing(this::getLastModifiedTime, reverseOrder()))
 			.findFirst()

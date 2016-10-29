@@ -207,7 +207,7 @@ public class PlayerEvaluator {
 				.map(Game::getReplay)
 				.collect(Collectors.toList());
 
-			Path outputBase = FileUtil.getReplayDataBase().resolve(FileUtil.createFilenameSafeTimestamp());
+			Path outputBase = FileUtil.getReplayDataPath().resolve(FileUtil.createFilenameSafeTimestamp());
 			Files.createDirectories(outputBase);
 
 			for (int i = 0; i < replays.size(); i++) {

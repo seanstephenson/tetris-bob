@@ -1,5 +1,7 @@
 package com.srs.tetris.bob.learn;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -11,15 +13,24 @@ public class FileUtil {
 	/**
 	 * Gets the base location for learning data.
 	 */
-	public static Path getLearningDataBase() {
-		return Paths.get("learning-data");
+	public static Path getLearningDataPath() {
+		return createDirectory(Paths.get("learning-data"));
 	}
 
 	/**
 	 * Gets the base location for replay data.
 	 */
-	public static Path getReplayDataBase() {
-		return Paths.get("replay-data");
+	public static Path getReplayDataPath() {
+		return createDirectory(Paths.get("replay-data"));
+	}
+
+	private static Path createDirectory(Path path) {
+		try {
+			Files.createDirectories(path);
+			return path;
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**

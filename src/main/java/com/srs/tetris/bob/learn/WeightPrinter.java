@@ -17,7 +17,7 @@ import static java.util.Comparator.reverseOrder;
 public class WeightPrinter {
 	public static void main(String[] args) throws IOException {
 		// Load the last weights from the last generation.
-		Path data = FileUtil.getLearningDataBase();
+		Path data = FileUtil.getLearningDataPath();
 
 		Path lastFolder = Files.list(data)
 			.sorted(comparing(Path::getFileName, reverseOrder()))

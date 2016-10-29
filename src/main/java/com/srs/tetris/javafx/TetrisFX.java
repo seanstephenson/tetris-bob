@@ -85,7 +85,7 @@ public class TetrisFX extends Application implements GameListener {
 			@Override
 			public void onGameOver() {
 				// Write out the replay to disk on game over.
-				Path replayFile = FileUtil.getReplayDataBase().resolve("local-" + FileUtil.createFilenameSafeTimestamp());
+				Path replayFile = FileUtil.getReplayDataPath().resolve("local-" + FileUtil.createFilenameSafeTimestamp());
 				ReplayUtil.writeReplay(game.getReplay(), replayFile);
 			}
 		});

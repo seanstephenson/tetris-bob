@@ -209,7 +209,7 @@ public class GeneticLearner {
 
 	private static Path createOutputBase() throws IOException {
 		String now = FileUtil.createFilenameSafeTimestamp();
-		Path outputBase = FileUtil.getLearningDataBase().resolve(now);
+		Path outputBase = FileUtil.getLearningDataPath().resolve(now);
 		Files.createDirectories(outputBase);
 
 		return outputBase;
