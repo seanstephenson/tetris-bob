@@ -152,6 +152,7 @@ public class BoardPane extends Pane {
 			case Purple: return Color.PURPLE;
 			case Orange: return Color.ORANGE;
 			case Yellow: return Color.YELLOW;
+			case Gray: return Color.GRAY;
 			default: throw new IllegalStateException();
 		}
 	}

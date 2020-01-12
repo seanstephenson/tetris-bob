@@ -3,31 +3,52 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath('org.springframework.boot:spring-boot-gradle-plugin:1.3.3.RELEASE')
+		classpath('org.springframework.boot:spring-boot-gradle-plugin:2.2.1.RELEASE')
 	}
 }
 
+plugins {
+	id 'org.openjfx.javafxplugin' version '0.0.8'
+}
+
 apply plugin: 'java'
-apply plugin: 'spring-boot'
 apply plugin: 'groovy'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.springframework.boot'
+
+javafx {
+	version = '11'
+	modules = [
+		'javafx.controls',
+		'javafx.swing'
+	]
+}
+
+dependencyManagement {
+	imports {
+		// Use the Spring boot versions of dependencies
+		mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+	}
+}
 
 repositories {
 	mavenCentral()
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-springBoot {
-    mainClass = 'com.srs.tetris.web.TetrisWeb'
-}
+sourceCompatibility = 11
+targetCompatibility = 11
 
 dependencies {
-	compile('org.springframework.boot:spring-boot-starter-web')
-	compile('org.springframework.boot:spring-boot-starter-actuator')
-	compile('com.google.guava:guava:19.0')
-	compile('com.google.code.gson:gson:2.7')
+	compile 'org.springframework.boot:spring-boot-starter-web'
+	compile 'org.springframework.boot:spring-boot-starter-actuator'
 
-	testCompile('junit:junit')
-	testCompile('org.codehaus.groovy:groovy-all:2.4.6')
+	compile('com.google.guava:guava:19.0')
+	compile('com.google.code.gson:gson')
+
+	testCompile 'junit:junit'
+	testCompile 'org.codehaus.groovy:groovy'
+}
+
+wrapper {
+	gradleVersion = '5.4.1'
 }

@@ -60,8 +60,8 @@ public class TetrisFX extends Application implements GameListener {
 		// Create the player.
 		//Player player = new LocalPlayer();
 		//DirectPlayer player = new BobPlayer(new BobSettings());
-		//DirectPlayer player = new BobPlayer(new BobSettings().withRapidMovement());
-		DirectPlayer player = new BobPlayer(new BobSettings().withSloppyMovement());
+		DirectPlayer player = new BobPlayer(new BobSettings().withRapidMovement());
+		//DirectPlayer player = new BobPlayer(new BobSettings().withSloppyMovement());
 		//DirectPlayer player = new BobPlayer(new BobSettings().withNextPieces(3));
 
 		// Create the game.
@@ -77,6 +77,17 @@ public class TetrisFX extends Application implements GameListener {
 		game = new Game(gameSettings);
 		game.addListener(this);
 		game.init();
+
+		// Fill bottom half of board with garbage.
+		/*
+		for (int x = 0; x < game.getBoard().getWidth(); x++) {
+			for (int y = game.getBoard().getHeight() - 1; y > game.getBoard().getHeight() / 3; y--) {
+				if (Math.random() > 0.8) {
+					game.getBoard().set(x, y, com.srs.tetris.game.Color.Gray);
+				}
+			}
+		}
+		*/
 
 		// Generate a replay.
 		gameSettings.setGenerateReplay(true);
