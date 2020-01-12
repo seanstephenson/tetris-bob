@@ -12,11 +12,10 @@ import com.srs.tetris.game.PieceType;
 import com.srs.tetris.player.DirectPlayer;
 import com.srs.tetris.player.LocalPlayer;
 import com.srs.tetris.replay.ReplayUtil;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -56,7 +55,7 @@ public class TetrisFX extends Application implements GameListener {
 	}
 
 	@Override
-	public void init() throws Exception {
+	public void init() {
 		// Create the player.
 		//Player player = new LocalPlayer();
 		//DirectPlayer player = new BobPlayer(new BobSettings());
@@ -104,6 +103,7 @@ public class TetrisFX extends Application implements GameListener {
 		// Create the scene.
 		scene = new Scene(createUI());
 
+		//noinspection ConstantConditions
 		if (player instanceof LocalPlayer) {
 			LocalPlayer localPlayer = (LocalPlayer) player;
 			scene.setOnKeyPressed(localPlayer);
@@ -111,7 +111,7 @@ public class TetrisFX extends Application implements GameListener {
 		}
 	}
 
-	private Pane createUI() throws IOException {
+	private Pane createUI() {
 		// Create the board.
 		boardPane = new BoardPane(game.getBoard());
 
@@ -141,7 +141,7 @@ public class TetrisFX extends Application implements GameListener {
 	}
 
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage primaryStage) {
 		// Configure the stage.
 		primaryStage.setTitle("Tetris Bob");
 		primaryStage.setScene(scene);
@@ -195,7 +195,7 @@ public class TetrisFX extends Application implements GameListener {
 				nextPieces.getPieceBox().rotate(nextPiece);
 			}
 
-			swapPiece.getPieceBox().setPieces(Arrays.asList(swapPieceType));
+			swapPiece.getPieceBox().setPieces(Collections.singletonList(swapPieceType));
 		});
 	}
 
